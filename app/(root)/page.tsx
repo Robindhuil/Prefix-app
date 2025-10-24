@@ -1,34 +1,40 @@
 "use client";
 import { useTranslation } from "@/app/i18n/I18nProvider";
 import { useTheme } from "@/app/theme/ThemeProvider";
+import Image from "next/image";
 
 export default function HomePage() {
   const { t } = useTranslation();
-  const { theme, toggleTheme } = useTheme();
+  const { theme } = useTheme();
 
   return (
-    <section className="text-center py-20 min-h-screen flex items-center justify-center bg-[var(--background)]">
-      <div className="max-w-4xl mx-auto px-4">
-        <h1 className="text-6xl font-bold text-red-600 mb-6">{t("home.title")}</h1>
-        <p className="text-[var(--foreground)] text-lg max-w-2xl mx-auto mb-8">
+    <section className="relative min-h-screen flex items-center justify-center bg-linear-to-b from-gray-100/80 to-white/80 dark:from-gray-900/80 dark:to-black/80">
+      <div className="absolute inset-0 bg-[url('/grid-pattern.svg')] bg-repeat bg-[length:40px_40px] opacity-5"></div>
+      <div className="relative w-full max-w-7xl px-2 sm:px-4 lg:px-6 text-center">
+        <div className="mb-12">
+          <Image
+            src={theme === 'light' ? '/logos/light/full_logo.svg' : '/logos/dark/full_logo.svg'}
+            alt="Full Logo"
+            width={400}
+            height={200}
+            priority
+            className="mx-auto w-auto h-auto transition-transform duration-500 hover:scale-105"
+          />
+        </div>
+        <h1 className="text-5xl sm:text-6xl font-bold text-red-600 mb-6 tracking-tight">{t("home.title")}</h1>
+        <p className="text-lg sm:text-xl text-(--foreground) max-w-3xl mx-auto mb-10 leading-relaxed">
           {t("home.subtitle")}
         </p>
-        <button
-          onClick={toggleTheme}
-          className="mb-6 px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
-        >
-          Current theme: {theme} | Toggle
-        </button>
-        <div className="flex justify-center gap-4">
+        <div className="flex flex-col sm:flex-row justify-center gap-4">
           <a
             href="#get-started"
-            className="px-6 py-3 bg-red-600 text-white font-medium rounded-lg shadow-lg hover:bg-red-700 transition-all duration-300 hover:transform hover:scale-105"
+            className="px-8 py-4 bg-linear-to-r from-red-600 to-red-700 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300"
           >
             {t("home.getStarted")}
           </a>
           <a
             href="#learn-more"
-            className="px-6 py-3 border border-gray-700 dark:border-gray-300 rounded-lg text-(--foreground) hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-300 hover:transform hover:scale-105"
+            className="px-8 py-4 border border-gray-300 dark:border-gray-700 text-(--foreground) rounded-lg font-semibold hover:bg-teal-500/20 dark:hover:bg-teal-600/20 hover:scale-105 transition-all duration-300"
           >
             {t("home.learnMore")}
           </a>

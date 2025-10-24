@@ -12,12 +12,12 @@ body {
 }
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f1faee;
+  --foreground: #2d2d2d;
 }
 
 .dark {
   --background: #0a0a0a;
-  --foreground: #ededed;
+  --foreground: #e0e0e0;
   color-scheme: dark;
 }
