@@ -23,7 +23,7 @@ export default function LanguageSelector() {
         <div className="relative">
             <button
                 onClick={() => setIsOpen(!isOpen)}
-                className="flex items-center space-x-2 text-gray-300 hover:text-red-500 transition-colors duration-300"
+                className="flex items-center space-x-2 text-gray-800 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-500 transition-colors duration-300"
                 aria-haspopup="listbox"
                 aria-expanded={isOpen}
                 type="button"
@@ -34,7 +34,7 @@ export default function LanguageSelector() {
             </button>
 
             {isOpen && (
-                <div className="absolute right-0 mt-2 py-2 w-56 bg-black border border-gray-800 rounded-lg shadow-xl z-50" role="listbox">
+                <div className="absolute right-0 mt-2 py-2 w-56 bg-white dark:bg-black border border-gray-200 dark:border-gray-800 rounded-lg shadow-xl z-50" role="listbox">
                     {languages.map((lang) => (
                         <button
                             key={lang.locale}
@@ -42,7 +42,7 @@ export default function LanguageSelector() {
                                 setLocale(lang.locale as any);
                                 setIsOpen(false);
                             }}
-                            className="flex items-center space-x-3 w-full px-4 py-2 text-left text-gray-300 hover:bg-gray-800 transition-colors duration-200"
+                            className="flex items-center space-x-3 w-full px-4 py-2 text-left text-gray-800 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-900 transition-colors duration-200"
                             role="option"
                             aria-selected={locale === lang.locale}
                             type="button"
