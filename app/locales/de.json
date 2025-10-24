@@ -1,0 +1,25 @@
+{
+    "navbar": {
+        "home": "Start",
+        "about": "Über uns",
+        "contact": "Kontakt",
+        "news": "Neuigkeiten",
+        "gallery": "Galerie",
+        "login": "Anmelden"
+    },
+    "home": {
+        "title": "Willkommen bei MyApp",
+        "subtitle": "Erstellen Sie moderne Web-Apps schneller mit Next.js und Tailwind CSS.",
+        "getStarted": "Loslegen",
+        "learnMore": "Mehr erfahren"
+    },
+    "footer": {
+        "newsletter": "Newsletter",
+        "getUpdates": "Updates erhalten",
+        "subscribe": "Abonnieren",
+        "rights": "Alle Rechte vorbehalten.",
+        "terms": "Nutzungsbedingungen",
+        "security": "Sicherheit",
+        "contact": "Kontakt"
+    }
+}

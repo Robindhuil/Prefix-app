@@ -1,0 +1,25 @@
+{
+    "navbar": {
+        "home": "Start",
+        "about": "Over ons",
+        "contact": "Contact",
+        "news": "Nieuws",
+        "gallery": "Galerij",
+        "login": "Inloggen"
+    },
+    "home": {
+        "title": "Welkom bij MyApp",
+        "subtitle": "Bouw moderne webapps sneller met Next.js en Tailwind CSS.",
+        "getStarted": "Beginnen",
+        "learnMore": "Meer lezen"
+    },
+    "footer": {
+        "newsletter": "Nieuwsbrief",
+        "getUpdates": "Ontvang updates",
+        "subscribe": "Abonneren",
+        "rights": "Alle rechten voorbehouden.",
+        "terms": "Voorwaarden",
+        "security": "Beveiliging",
+        "contact": "Contact"
+    }
+}

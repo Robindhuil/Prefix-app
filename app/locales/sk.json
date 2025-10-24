@@ -1,0 +1,25 @@
+{
+    "navbar": {
+        "home": "Domov",
+        "about": "O nás",
+        "contact": "Kontakt",
+        "news": "Aktuality",
+        "gallery": "Galéria",
+        "login": "Prihlásiť sa"
+    },
+    "home": {
+        "title": "Vitajte v MyApp",
+        "subtitle": "Vytvárajte moderné webové aplikácie rýchlejšie s Next.js a Tailwind CSS.",
+        "getStarted": "Začať",
+        "learnMore": "Viac informácií"
+    },
+    "footer": {
+        "newsletter": "Newsletter",
+        "getUpdates": "Získaj novinky",
+        "subscribe": "Prihlásiť sa",
+        "rights": "Všetky práva vyhradené.",
+        "terms": "Podmienky",
+        "security": "Bezpečnosť",
+        "contact": "Kontakt"
+    }
+}
