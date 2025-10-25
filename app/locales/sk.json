@@ -21,5 +21,25 @@
         "terms": "Podmienky",
         "security": "Bezpečnosť",
         "contact": "Kontakt"
+    },
+    "login": {
+        "title": "Vitajte späť",
+        "subtitle": "Prihláste sa do svojho účtu",
+        "username": "Používateľské meno",
+        "usernamePlaceholder": "Zadajte používateľské meno",
+        "usernameRequired": "Používateľské meno je povinné",
+        "usernameMinLength": "Používateľské meno musí mať aspoň 3 znaky",
+        "password": "Heslo",
+        "passwordPlaceholder": "Zadajte heslo",
+        "passwordRequired": "Heslo je povinné",
+        "passwordMinLength": "Heslo musí mať aspoň 6 znakov",
+        "forgotPassword": "Zabudli ste heslo?",
+        "signIn": "Prihlásiť sa",
+        "signingIn": "Prihlasujem sa...",
+        "loginFailed": "Prihlásenie zlyhalo. Skúste to znovu.",
+        "or": "alebo",
+        "success": "Prihlásenie úspešné!",
+        "invalidCredentials": "Nesprávne prihlasovacie údaje",
+        "serverError": "Chyba servera. Skúste to znova neskôr."
     }
 }

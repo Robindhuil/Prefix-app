@@ -21,5 +21,25 @@
         "terms": "Nutzungsbedingungen",
         "security": "Sicherheit",
         "contact": "Kontakt"
+    },
+    "login": {
+        "title": "Willkommen zurück",
+        "subtitle": "Melde dich bei deinem Konto an",
+        "username": "Benutzername",
+        "usernamePlaceholder": "Gib deinen Benutzernamen ein",
+        "usernameRequired": "Benutzername ist erforderlich",
+        "usernameMinLength": "Der Benutzername muss mindestens 3 Zeichen lang sein",
+        "password": "Passwort",
+        "passwordPlaceholder": "Gib dein Passwort ein",
+        "passwordRequired": "Passwort ist erforderlich",
+        "passwordMinLength": "Das Passwort muss mindestens 6 Zeichen lang sein",
+        "forgotPassword": "Passwort vergessen?",
+        "signIn": "Anmelden",
+        "signingIn": "Anmeldung läuft...",
+        "loginFailed": "Anmeldung fehlgeschlagen. Bitte versuche es erneut.",
+        "or": "oder",
+        "success": "Anmeldung erfolgreich!",
+        "invalidCredentials": "Ungültige Anmeldedaten",
+        "serverError": "Serverfehler. Bitte versuche es später erneut."
     }
 }

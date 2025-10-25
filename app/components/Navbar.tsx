@@ -6,12 +6,18 @@ import Image from "next/image";
 import { useTranslation } from "@/app/i18n/I18nProvider";
 import LanguageSelector from "./LanguageSelector";
 import { useTheme } from "@/app/theme/ThemeProvider";
+import { useRouter } from "next/navigation";
 
 export default function Navbar() {
     const [isOpen, setIsOpen] = useState(false);
     const { t } = useTranslation();
     const { theme, toggleTheme } = useTheme();
+    const router = useRouter();
     const toggleMenu = () => setIsOpen(!isOpen);
+
+    const handleLoginClick = () => {
+        router.push('/login');
+    };
 
     return (
         <nav className="bg-linear-to-r from-gray-100/90 to-white/90 dark:from-gray-900/90 dark:to-black/90 backdrop-blur-md shadow-lg sticky top-0 z-50 border-b border-gray-200/50 dark:border-gray-800/50">
@@ -63,7 +69,10 @@ export default function Navbar() {
                         >
                             {theme === "light" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
                         </button>
-                        <button className="flex items-center space-x-2 bg-linear-to-r from-red-600 to-red-700 text-white px-5 py-2.5 rounded-lg font-medium transition-all duration-300 hover:scale-105 hover:shadow-xl">
+                        <button
+                            onClick={handleLoginClick}
+                            className="flex items-center space-x-2 bg-linear-to-r from-red-600 to-red-700 text-white px-5 py-2.5 rounded-lg font-medium transition-all duration-300 hover:scale-105 hover:shadow-xl"
+                        >
                             <LogIn className="w-5 h-5" />
                             <span>{t("navbar.login")}</span>
                         </button>
