@@ -12,8 +12,9 @@ body {
 }
 
 :root {
-  --background: #f1faee;
-  --foreground: #2d2d2d;
+  --background: #ffffff;
+  /* Pure white for light mode page background */
+  --foreground: #333333;
 }
 
 .dark {
