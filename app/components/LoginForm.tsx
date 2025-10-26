@@ -45,12 +45,12 @@ export default function LoginForm() {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#f8f8f8]/80 via-white/50 to-[#f8f8f8]/80 dark:from-gray-900/80 dark:via-black/50 dark:to-gray-900/80">
+        <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-[#f8f8f8]/80 via-white/50 to-[#f8f8f8]/80 dark:from-gray-900/80 dark:via-black/50 dark:to-gray-900/80">
             <div className="w-full max-w-md px-4 sm:px-6 lg:px-8">
                 <div className="bg-white/80 dark:bg-black/80 backdrop-blur-xl rounded-2xl shadow-xl border border-white/20 dark:border-gray-800/50 p-8">
                     {/* Header */}
                     <div className="text-center mb-8">
-                        <div className="mx-auto w-16 h-16 bg-gradient-to-r from-[#600000] to-[#4b0000] rounded-full flex items-center justify-center mb-4 shadow-lg">
+                        <div className="mx-auto w-16 h-16 bg-linear-to-r from-[#600000] to-[#4b0000] rounded-full flex items-center justify-center mb-4 shadow-lg">
                             <LogIn className="w-8 h-8 text-white" />
                         </div>
                         <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
@@ -118,7 +118,7 @@ export default function LoginForm() {
                         <button
                             type="submit"
                             disabled={isLoading}
-                            className="w-full py-2 px-4 bg-gradient-to-r from-[#600000] to-[#4b0000] text-white rounded-lg hover:from-[#4b0000] hover:to-[#600000] transition-all duration-300"
+                            className="w-full py-2 px-4 bg-linear-to-r from-[#600000] to-[#4b0000] text-white rounded-lg hover:from-[#4b0000] hover:to-[#600000] transition-all duration-300"
                         >
                             {isLoading ? t("login.signingIn") : t("login.signIn")}
                         </button>

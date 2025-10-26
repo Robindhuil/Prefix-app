@@ -20,7 +20,7 @@ export default function Navbar() {
     };
 
     return (
-        <nav className="bg-gradient-to-r from-[#f8f8f8]/90 to-white/90 dark:from-gray-900/90 dark:to-black/90 backdrop-blur-md shadow-lg sticky top-0 z-50 border-b border-gray-200/50 dark:border-gray-800/50">
+        <nav className="bg-linear-to-r from-[#f8f8f8]/90 to-white/90 dark:from-gray-900/90 dark:to-black/90 backdrop-blur-md shadow-lg sticky top-0 z-50 border-b border-gray-200/50 dark:border-gray-800/50">
             <div className="w-full px-2 sm:px-4 lg:px-6">
                 <div className="flex items-center justify-between h-20 md:h-24">
                     {/* Logo - Very Left */}
@@ -69,7 +69,7 @@ export default function Navbar() {
                         >
                             {theme === "light" ? <Sun className="w-6 h-6" /> : <Moon className="w-6 h-6" />}
                         </button>
-                        <Link href="/login" className="flex items-center space-x-2 bg-gradient-to-r from-[#600000] to-[#4b0000] text-white px-6 py-3 rounded-lg text-lg font-semibold transition-all duration-300 hover:scale-105 hover:shadow-xl">
+                        <Link href="/login" className="flex items-center space-x-2 bg-linear-to-r from-[#600000] to-[#4b0000] text-white px-6 py-3 rounded-lg text-lg font-semibold transition-all duration-300 hover:scale-105 hover:shadow-xl">
                             <LogIn className="w-6 h-6" />
                             <span>{t("navbar.login")}</span>
                         </Link>
@@ -86,7 +86,7 @@ export default function Navbar() {
             </div>
 
             {/* Mobile Menu */}
-            <div className={`md:hidden bg-gradient-to-r from-[#f8f8f8]/95 to-white/95 dark:from-gray-900/95 dark:to-black/95 backdrop-blur-md shadow-lg border-t border-gray-200/50 dark:border-gray-800/50 overflow-hidden transition-all duration-300 ease-in-out ${isOpen ? 'max-h-96' : 'max-h-0'}`}>
+            <div className={`md:hidden bg-linear-to-r from-[#f8f8f8]/95 to-white/95 dark:from-gray-900/95 dark:to-black/95 backdrop-blur-md shadow-lg border-t border-gray-200/50 dark:border-gray-800/50 overflow-hidden transition-all duration-300 ease-in-out ${isOpen ? 'max-h-96' : 'max-h-0'}`}>
                 <div className="px-4 py-4 space-y-3">
                     <Link
                         href="/"
@@ -133,7 +133,7 @@ export default function Navbar() {
                             {theme === "light" ? <Sun className="w-6 h-6" /> : <Moon className="w-6 h-6" />}
                         </button>
                     </div>
-                    <Link href="/login" className="flex items-center space-x-2 w-full bg-gradient-to-r from-[#600000] to-[#4b0000] text-white px-6 py-3 rounded-lg text-lg font-semibold transition-all duration-300 hover:scale-105 hover:shadow-xl">
+                    <Link href="/login" className="flex items-center space-x-2 w-full bg-linear-to-r from-[#600000] to-[#4b0000] text-white px-6 py-3 rounded-lg text-lg font-semibold transition-all duration-300 hover:scale-105 hover:shadow-xl">
                         <LogIn className="w-6 h-6" />
                         <span>{t("navbar.login")}</span>
                     </Link>
