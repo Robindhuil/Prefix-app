@@ -3,9 +3,10 @@
         "home": "Domov",
         "about": "O nás",
         "contact": "Kontakt",
-        "news": "Aktuality",
+        "news": "Novinky",
         "gallery": "Galéria",
-        "login": "Prihlásiť sa"
+        "login": "Prihlásiť sa",
+        "signOut": "Odhlásiť sa"
     },
     "home": {
         "title": "Vitajte v MyApp",
@@ -33,13 +34,8 @@
         "passwordPlaceholder": "Zadajte heslo",
         "passwordRequired": "Heslo je povinné",
         "passwordMinLength": "Heslo musí mať aspoň 6 znakov",
-        "forgotPassword": "Zabudli ste heslo?",
         "signIn": "Prihlásiť sa",
         "signingIn": "Prihlasujem sa...",
-        "loginFailed": "Prihlásenie zlyhalo. Skúste to znovu.",
-        "or": "alebo",
-        "success": "Prihlásenie úspešné!",
-        "invalidCredentials": "Nesprávne prihlasovacie údaje",
-        "serverError": "Chyba servera. Skúste to znova neskôr."
+        "serverError": "Chyba servera. Skúste to znova."
     }
 }

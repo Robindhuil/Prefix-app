@@ -3,15 +3,21 @@ import { useState } from "react";
 import { LogIn, Eye, EyeOff, AlertCircle } from "lucide-react";
 import { useTranslation } from "@/app/i18n/I18nProvider";
 import { useTheme } from "@/app/theme/ThemeProvider";
+import { useRouter } from "next/navigation";
 
 interface LoginFormData {
     username: string;
     password: string;
 }
 
-export default function LoginForm() {
+interface LoginFormProps {
+    signInAction: (formData: FormData) => Promise<{ success?: boolean; error?: string }>;
+}
+
+export default function LoginForm({ signInAction }: LoginFormProps) {
     const { t } = useTranslation();
     const { theme } = useTheme();
+    const router = useRouter();
 
     const [formData, setFormData] = useState<LoginFormData>({
         username: "",
@@ -22,26 +28,52 @@ export default function LoginForm() {
     const [isLoading, setIsLoading] = useState(false);
     const [submitError, setSubmitError] = useState("");
 
+    const validateForm = () => {
+        const newErrors: Record<string, string> = {};
+
+        if (!formData.username.trim()) {
+            newErrors.username = t("login.usernameRequired");
+        } else if (formData.username.length < 3) {
+            newErrors.username = t("login.usernameMinLength");
+        }
+
+        if (!formData.password) {
+            newErrors.password = t("login.passwordRequired");
+        } else if (formData.password.length < 6) {
+            newErrors.password = t("login.passwordMinLength");
+        }
+
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
+
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
-        setFormData(prev => ({ ...prev, [name]: value }));
+        setFormData((prev) => ({ ...prev, [name]: value }));
         if (errors[name]) {
-            setErrors(prev => ({ ...prev, [name]: "" }));
+            setErrors((prev) => ({ ...prev, [name]: "" }));
         }
     };
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
+    const handleSubmit = async (formData: FormData) => {
         setIsLoading(true);
         setSubmitError("");
 
-        try {
-            console.log("Simulované prihlásenie:", formData);
-        } catch (error) {
-            setSubmitError(t("login.serverError"));
-        } finally {
+        if (!validateForm()) {
             setIsLoading(false);
+            return;
         }
+
+        const result = await signInAction(formData);
+
+        if (result.error) {
+            setSubmitError(t("login.serverError"));
+            setIsLoading(false);
+            return;
+        }
+
+        setIsLoading(false);
+        router.push("/dashboard");
     };
 
     return (
@@ -56,9 +88,7 @@ export default function LoginForm() {
                         <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
                             {t("login.title")}
                         </h2>
-                        <p className="text-gray-600 dark:text-gray-300">
-                            {t("login.subtitle")}
-                        </p>
+                        <p className="text-gray-600 dark:text-gray-300">{t("login.subtitle")}</p>
                     </div>
 
                     {/* Error Message */}
@@ -70,7 +100,7 @@ export default function LoginForm() {
                     )}
 
                     {/* Form */}
-                    <form onSubmit={handleSubmit} className="space-y-6">
+                    <form action={handleSubmit} className="space-y-6">
                         {/* Username */}
                         <div>
                             <label htmlFor="username" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
@@ -82,10 +112,19 @@ export default function LoginForm() {
                                 type="text"
                                 value={formData.username}
                                 onChange={handleInputChange}
-                                className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white/50 dark:bg-gray-900/50 focus:ring-2 focus:ring-[#600000] focus:border-[#600000]"
+                                className={`w-full px-4 py-2 rounded-lg border ${errors.username
+                                    ? "border-[#600000] focus:ring-[#600000] focus:border-[#600000]"
+                                    : "border-gray-300 dark:border-gray-700 focus:ring-[#600000] focus:border-[#600000]"
+                                    } bg-white/50 dark:bg-gray-900/50 focus:ring-2`}
                                 placeholder={t("login.usernamePlaceholder")}
                                 disabled={isLoading}
                             />
+                            {errors.username && (
+                                <p className="mt-1 text-sm text-[#600000] flex items-center gap-1">
+                                    <AlertCircle className="w-4 h-4" />
+                                    {errors.username}
+                                </p>
+                            )}
                         </div>
 
                         {/* Password */}
@@ -100,7 +139,10 @@ export default function LoginForm() {
                                     type={showPassword ? "text" : "password"}
                                     value={formData.password}
                                     onChange={handleInputChange}
-                                    className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white/50 dark:bg-gray-900/50 focus:ring-2 focus:ring-[#600000] focus:border-[#600000]"
+                                    className={`w-full px-4 py-2 rounded-lg border ${errors.password
+                                        ? "border-[#600000] focus:ring-[#600000] focus:border-[#600000]"
+                                        : "border-gray-300 dark:border-gray-700 focus:ring-[#600000] focus:border-[#600000]"
+                                        } bg-white/50 dark:bg-gray-900/50 focus:ring-2`}
                                     placeholder={t("login.passwordPlaceholder")}
                                     disabled={isLoading}
                                 />
@@ -112,6 +154,12 @@ export default function LoginForm() {
                                     {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                                 </button>
                             </div>
+                            {errors.password && (
+                                <p className="mt-1 text-sm text-[#600000] flex items-center gap-1">
+                                    <AlertCircle className="w-4 h-4" />
+                                    {errors.password}
+                                </p>
+                            )}
                         </div>
 
                         {/* Submit button */}

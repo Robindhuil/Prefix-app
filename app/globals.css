@@ -1,11 +1,11 @@
 @import "tailwindcss";
 
 html {
-  @apply h-full;
+  height: 100%;
 }
 
 body {
-  @apply h-full;
+  height: 100%;
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-open-sans), Arial, Helvetica, sans-serif;

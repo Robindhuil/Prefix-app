@@ -1,6 +1,6 @@
 import 'flag-icons/css/flag-icons.min.css';
-import Navbar from "@/app/components/Navbar";
-import Footer from "../components/Footer";
+import Navbar from "@/components/Navbar";
+import Footer from "../../components/Footer";
 import { I18nProvider } from "@/app/i18n/I18nProvider";
 import { ThemeProvider } from "@/app/theme/ThemeProvider";
 
