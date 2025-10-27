@@ -1,79 +1,64 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { LogIn, Eye, EyeOff, AlertCircle } from "lucide-react";
 import { useTranslation } from "@/app/i18n/I18nProvider";
 import { useTheme } from "@/app/theme/ThemeProvider";
 import { useRouter } from "next/navigation";
+import { signIn, useSession } from "next-auth/react";
 
-interface LoginFormData {
-    username: string;
-    password: string;
-}
-
-interface LoginFormProps {
-    signInAction: (formData: FormData) => Promise<{ success?: boolean; error?: string }>;
-}
-
-export default function LoginForm({ signInAction }: LoginFormProps) {
+export default function LoginForm() {
     const { t } = useTranslation();
     const { theme } = useTheme();
     const router = useRouter();
 
-    const [formData, setFormData] = useState<LoginFormData>({
-        username: "",
-        password: "",
-    });
-    const [errors, setErrors] = useState<Record<string, string>>({});
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-    const [submitError, setSubmitError] = useState("");
+    const [error, setError] = useState("");
 
-    const validateForm = () => {
-        const newErrors: Record<string, string> = {};
+    const { data: session, status } = useSession();
 
-        if (!formData.username.trim()) {
-            newErrors.username = t("login.usernameRequired");
-        } else if (formData.username.length < 3) {
-            newErrors.username = t("login.usernameMinLength");
+    useEffect(() => {
+        if (status === "authenticated") {
+            router.replace("/");
         }
+    }, [status, router]);
 
-        if (!formData.password) {
-            newErrors.password = t("login.passwordRequired");
-        } else if (formData.password.length < 6) {
-            newErrors.password = t("login.passwordMinLength");
-        }
+    if (status === "loading") {
+        return (
+            <div className="min-h-screen flex items-center justify-center">
+                {/* krátky placeholder/loader počas overovania session */}
+            </div>
+        );
+    }
+    if (status === "authenticated") {
+        return null;
+    }
 
-        setErrors(newErrors);
-        return Object.keys(newErrors).length === 0;
-    };
-
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
-        setFormData((prev) => ({ ...prev, [name]: value }));
-        if (errors[name]) {
-            setErrors((prev) => ({ ...prev, [name]: "" }));
-        }
-    };
-
-    const handleSubmit = async (formData: FormData) => {
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
         setIsLoading(true);
-        setSubmitError("");
+        setError("");
 
-        if (!validateForm()) {
+        if (!username.trim() || password.length < 6) {
+            setError(t("login.validationError"));
             setIsLoading(false);
             return;
         }
 
-        const result = await signInAction(formData);
+        const result = await signIn("credentials", {
+            username,
+            password,
+            redirect: false,
+        });
 
-        if (result.error) {
-            setSubmitError(t("login.serverError"));
+        if (result?.error) {
+            setError(t("login.serverError"));
             setIsLoading(false);
-            return;
+        } else {
+            router.push("/");
         }
-
-        setIsLoading(false);
-        router.push("/dashboard");
     };
 
     return (
@@ -92,15 +77,15 @@ export default function LoginForm({ signInAction }: LoginFormProps) {
                     </div>
 
                     {/* Error Message */}
-                    {submitError && (
+                    {error && (
                         <div className="mb-6 p-4 bg-[#600000]/10 dark:bg-[#600000]/10 border border-[#600000]/50 dark:border-[#600000]/50 rounded-lg flex items-center gap-3">
                             <AlertCircle className="w-5 h-5 text-[#600000]" />
-                            <span className="text-sm text-[#600000]">{submitError}</span>
+                            <span className="text-sm text-[#600000]">{error}</span>
                         </div>
                     )}
 
                     {/* Form */}
-                    <form action={handleSubmit} className="space-y-6">
+                    <form onSubmit={handleSubmit} className="space-y-6">
                         {/* Username */}
                         <div>
                             <label htmlFor="username" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
@@ -110,21 +95,12 @@ export default function LoginForm({ signInAction }: LoginFormProps) {
                                 id="username"
                                 name="username"
                                 type="text"
-                                value={formData.username}
-                                onChange={handleInputChange}
-                                className={`w-full px-4 py-2 rounded-lg border ${errors.username
-                                    ? "border-[#600000] focus:ring-[#600000] focus:border-[#600000]"
-                                    : "border-gray-300 dark:border-gray-700 focus:ring-[#600000] focus:border-[#600000]"
-                                    } bg-white/50 dark:bg-gray-900/50 focus:ring-2`}
+                                value={username}
+                                onChange={(e) => setUsername(e.target.value)}
+                                className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 focus:ring-[#600000] focus:border-[#600000] bg-white/50 dark:bg-gray-900/50 focus:ring-2"
                                 placeholder={t("login.usernamePlaceholder")}
                                 disabled={isLoading}
                             />
-                            {errors.username && (
-                                <p className="mt-1 text-sm text-[#600000] flex items-center gap-1">
-                                    <AlertCircle className="w-4 h-4" />
-                                    {errors.username}
-                                </p>
-                            )}
                         </div>
 
                         {/* Password */}
@@ -137,12 +113,9 @@ export default function LoginForm({ signInAction }: LoginFormProps) {
                                     id="password"
                                     name="password"
                                     type={showPassword ? "text" : "password"}
-                                    value={formData.password}
-                                    onChange={handleInputChange}
-                                    className={`w-full px-4 py-2 rounded-lg border ${errors.password
-                                        ? "border-[#600000] focus:ring-[#600000] focus:border-[#600000]"
-                                        : "border-gray-300 dark:border-gray-700 focus:ring-[#600000] focus:border-[#600000]"
-                                        } bg-white/50 dark:bg-gray-900/50 focus:ring-2`}
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 focus:ring-[#600000] focus:border-[#600000] bg-white/50 dark:bg-gray-900/50 focus:ring-2"
                                     placeholder={t("login.passwordPlaceholder")}
                                     disabled={isLoading}
                                 />
@@ -154,12 +127,6 @@ export default function LoginForm({ signInAction }: LoginFormProps) {
                                     {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                                 </button>
                             </div>
-                            {errors.password && (
-                                <p className="mt-1 text-sm text-[#600000] flex items-center gap-1">
-                                    <AlertCircle className="w-4 h-4" />
-                                    {errors.password}
-                                </p>
-                            )}
                         </div>
 
                         {/* Submit button */}
