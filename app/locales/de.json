@@ -37,5 +37,12 @@
         "signIn": "Anmelden",
         "signingIn": "Wird angemeldet...",
         "serverError": "Serverfehler. Bitte versuchen Sie es erneut."
+    },
+    "adminPanel": {
+        "title": "Admin-Panel",
+        "usersTab": "Benutzer",
+        "adminTab": "Admin",
+        "usersSection": "Hier wird die Benutzerliste angezeigt...",
+        "adminSection": "Hier werden die Administratoreinstellungen angezeigt..."
     }
 }

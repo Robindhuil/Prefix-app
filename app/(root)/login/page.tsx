@@ -16,5 +16,7 @@ export default function LoginPage() {
         });
     };
 
-    return <LoginForm signInAction={signInAction} />;
+    const LoginFormAny = LoginForm as any;
+
+    return <LoginFormAny signInAction={signInAction} />;
 }

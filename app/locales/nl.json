@@ -37,5 +37,12 @@
         "signIn": "Inloggen",
         "signingIn": "Bezig met inloggen...",
         "serverError": "Serverfout. Probeer het opnieuw."
+    },
+    "adminPanel": {
+        "title": "Beheerpaneel",
+        "usersTab": "Gebruikers",
+        "adminTab": "Beheer",
+        "usersSection": "Hier komt de lijst met gebruikers...",
+        "adminSection": "Hier komen de beheerinstellingen..."
     }
 }

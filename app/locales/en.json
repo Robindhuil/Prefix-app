@@ -37,5 +37,12 @@
         "signIn": "Sign In",
         "signingIn": "Signing in...",
         "serverError": "Server error. Please try again."
+    },
+    "adminPanel": {
+        "title": "Admin Panel",
+        "usersTab": "Users",
+        "adminTab": "Admin",
+        "usersSection": "User list will be here...",
+        "adminSection": "Administrative settings will be here..."
     }
 }
