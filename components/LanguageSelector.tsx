@@ -23,7 +23,7 @@ export default function LanguageSelector() {
         <div className="relative">
             <button
                 onClick={() => setIsOpen(!isOpen)}
-                className="flex items-center space-x-2 text-gray-800 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-500 transition-colors duration-300"
+                className="flex cursor-pointer items-center space-x-2 text-gray-800 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-500 transition-colors duration-300"
                 aria-haspopup="listbox"
                 aria-expanded={isOpen}
                 type="button"

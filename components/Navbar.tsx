@@ -29,7 +29,7 @@ export default function Navbar() {
     };
 
     return (
-        <nav className="bg-linear-to-r from-[#f8f8f8]/90 to-white/90 dark:from-gray-900/90 dark:to-black/90 backdrop-blur-md shadow-lg sticky top-0 z-50 border-b border-gray-200/50 dark:border-gray-800/50">
+        <nav className="bg-navbar backdrop-blur-md shadow-lg sticky top-0 z-50 border-b border-gray-300 dark:border-gray-800">
             <div className="w-full px-2 sm:px-4 lg:px-6">
                 <div className="flex items-center justify-between h-20 md:h-24">
                     {/* Logo - Very Left */}
@@ -40,7 +40,7 @@ export default function Navbar() {
                             width={220}
                             height={80}
                             priority
-                            className="h-20 w-auto transition-transform duration-300 hover:scale-105"
+                            className="h-15 w-auto transition-transform duration-300 hover:scale-105"
                         />
                     </Link>
 
@@ -84,7 +84,7 @@ export default function Navbar() {
                         <button
                             onClick={toggleTheme}
                             aria-label="Toggle theme"
-                            className="flex items-center justify-center w-12 h-12 rounded-full bg-gray-200/80 dark:bg-gray-800/80 text-gray-800 dark:text-gray-200 hover:bg-[#600000]/20 dark:hover:bg-[#600000]/20 transition-all duration-300 hover:scale-110"
+                            className="flex items-center justify-center w-12 h-12 cursor-pointer rounded-full bg-gray-200/80 dark:bg-gray-800/80 text-gray-800 dark:text-gray-200 hover:bg-[#600000]/20 dark:hover:bg-[#600000]/20 transition-all duration-300 hover:scale-110"
                         >
                             {theme === "light" ? <Sun className="w-6 h-6" /> : <Moon className="w-6 h-6" />}
                         </button>
@@ -101,7 +101,7 @@ export default function Navbar() {
                                 )}
                                 <button
                                     onClick={handleSignOut}
-                                    className="flex items-center space-x-2 bg-linear-to-r from-[#600000] to-[#4b0000] text-white px-6 py-3 rounded-lg text-lg font-semibold transition-all duration-300 hover:scale-105 hover:shadow-xl"
+                                    className="flex items-center space-x-2 bg-linear-to-r cl-decor cursor-pointer text-white px-6 py-3 rounded-lg text-lg font-semibold transition-all duration-300 hover:scale-105 hover:shadow-xl"
                                 >
                                     <LogOut className="w-6 h-6" />
                                     <span>{t("navbar.signOut")}</span>
@@ -110,7 +110,7 @@ export default function Navbar() {
                         ) : (
                             <Link
                                 href="/login"
-                                className="flex items-center space-x-2 bg-linear-to-r from-[#600000] to-[#4b0000] text-white px-6 py-3 rounded-lg text-lg font-semibold transition-all duration-300 hover:scale-105 hover:shadow-xl"
+                                className="flex items-center space-x-2 bg-linear-to-r cl-decor cursor-pointer text-white px-6 py-3 rounded-lg text-lg font-semibold transition-all duration-300 hover:scale-105 hover:shadow-xl"
                             >
                                 <LogIn className="w-6 h-6" />
                                 <span>{t("navbar.login")}</span>
@@ -130,7 +130,7 @@ export default function Navbar() {
 
             {/* Mobile Menu */}
             <div
-                className={`md:hidden bg-linear-to-r from-[#f8f8f8]/95 to-white/95 dark:from-gray-900/95 dark:to-black/95 backdrop-blur-md shadow-lg border-t border-gray-200/50 dark:border-gray-800/50 overflow-hidden transition-all duration-300 ease-in-out ${isOpen ? "max-h-96" : "max-h-0"
+                className={`md:hidden bg-linear-to-r from-[#f8f8f8]/95 to-white/95 bg-navbar backdrop-blur-md shadow-lg border-t border-gray-200/50 dark:border-gray-800/50 overflow-hidden transition-all duration-300 ease-in-out ${isOpen ? "max-h-96" : "max-h-0"
                     }`}
             >
                 <div className="px-4 py-4 space-y-3">

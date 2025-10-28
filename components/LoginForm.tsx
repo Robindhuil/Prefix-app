@@ -60,20 +60,19 @@ export default function LoginForm() {
             router.push("/");
         }
     };
-
     return (
-        <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-[#f8f8f8]/80 via-white/50 to-[#f8f8f8]/80 dark:from-gray-900/80 dark:via-black/50 dark:to-gray-900/80">
+        <div className="min-h-screen flex items-center justify-center bg-gradient-light dark:bg-gradient-dark">
             <div className="w-full max-w-md px-4 sm:px-6 lg:px-8">
-                <div className="bg-white/80 dark:bg-black/80 backdrop-blur-xl rounded-2xl shadow-xl border border-white/20 dark:border-gray-800/50 p-8">
+                <div className="bg-card backdrop-blur-xl rounded-2xl shadow-xl border border-gray-200 dark:border-gray-800 p-8">
                     {/* Header */}
                     <div className="text-center mb-8">
-                        <div className="mx-auto w-16 h-16 bg-linear-to-r from-[#600000] to-[#4b0000] rounded-full flex items-center justify-center mb-4 shadow-lg">
+                        <div className="mx-auto w-16 h-16 bg-linear-to-r cl-decor rounded-full flex items-center justify-center mb-4 shadow-lg">
                             <LogIn className="w-8 h-8 text-white" />
                         </div>
-                        <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+                        <h2 className="text-color text-3xl font-bold text-gray-900 dark:text-white mb-2">
                             {t("login.title")}
                         </h2>
-                        <p className="text-gray-600 dark:text-gray-300">{t("login.subtitle")}</p>
+                        <p className="text-color text-gray-600 dark:text-gray-300">{t("login.subtitle")}</p>
                     </div>
 
                     {/* Error Message */}
@@ -88,7 +87,7 @@ export default function LoginForm() {
                     <form onSubmit={handleSubmit} className="space-y-6">
                         {/* Username */}
                         <div>
-                            <label htmlFor="username" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                            <label htmlFor="username" className="text-color block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                                 {t("login.username")}
                             </label>
                             <input
@@ -105,7 +104,7 @@ export default function LoginForm() {
 
                         {/* Password */}
                         <div>
-                            <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                            <label htmlFor="password" className="text-color block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                                 {t("login.password")}
                             </label>
                             <div className="relative">
@@ -133,7 +132,7 @@ export default function LoginForm() {
                         <button
                             type="submit"
                             disabled={isLoading}
-                            className="w-full py-2 px-4 bg-linear-to-r from-[#600000] to-[#4b0000] text-white rounded-lg hover:from-[#4b0000] hover:to-[#600000] transition-all duration-300"
+                            className="w-full py-2 px-4 bg-linear-to-r cl-decor cursor-pointer text-white rounded-lg hover:from-[#4b0000] hover:to-[#600000] transition-all duration-300"
                         >
                             {isLoading ? t("login.signingIn") : t("login.signIn")}
                         </button>

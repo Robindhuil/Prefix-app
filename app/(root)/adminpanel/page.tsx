@@ -12,14 +12,10 @@ export default function AdminPanel() {
     const [activeTab, setActiveTab] = useState<Tab>("users");
 
     return (
-        <div className="min-h-screen bg-linear-to-br from-[#f8f8f8]/80 via-white/50 to-[#f8f8f8]/80 dark:from-gray-900/80 dark:via-black/50 dark:to-gray-900/80">
-            {/* Plná šírka s vnútorným paddingom */}
-            <div className="w-full px-4 sm:px-6 lg:px-8 py-8">
-                {/* Hlavicka */}
+        <div className="min-h-screen bg-gradient-light dark:bg-gradient-dark">
+            <div className="w-full px-4 sm:px-6 lg:px-8 py-8 ">
                 <AdminHeader activeTab={activeTab} onTabChange={setActiveTab} />
-
-                {/* Obsah */}
-                <div className="bg-white/80 dark:bg-black/80 backdrop-blur-xl rounded-2xl shadow-xl border border-white/20 dark:border-gray-800/50 p-8 min-h-96">
+                <div className="bg-card backdrop-blur-xl rounded-2xl shadow-xl border border-gray-200 dark:border-gray-800 p-8 min-h-96">
                     {activeTab === "users" && <UsersSection />}
                     {activeTab === "admin" && <AdminSection />}
                 </div>

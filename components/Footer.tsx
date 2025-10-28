@@ -7,7 +7,7 @@ export default function Footer() {
     const { t } = useTranslation();
 
     return (
-        <footer className="bg-linear-to-r from-[#f8f8f8]/95 to-white/95 dark:from-gray-900/95 dark:to-black/95 text-gray-700 dark:text-gray-200 border-t border-gray-200/50 dark:border-gray-800/50">
+        <footer className="bg-linear-to-r from-[#f8f8f8]/95 to-white/95 bg-navbar text-gray-700 dark:text-gray-200 border-t border-gray-200/50 dark:border-gray-800/50">
             <div className="w-full px-2 sm:px-4 lg:px-6 py-12">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                     <div className="flex-1">
