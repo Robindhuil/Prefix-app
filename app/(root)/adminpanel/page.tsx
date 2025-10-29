@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import AdminHeader from "@/components/adminpanel/AdminHeader";
-import UsersSection from "@/components/adminpanel/UsersSection";
+import UsersSection from "@/components/adminpanel/users/UsersSection";
 import AdminSection from "@/components/adminpanel/AdminSection";
 
 type Tab = "users" | "admin";

@@ -6,7 +6,7 @@ import { format } from "date-fns";
 import { User, Mail, Calendar, Edit, Shield } from "lucide-react";
 import type { User as UserType } from "@/types/user";
 
-export default function UsersTable() {
+export default function UsersTable() {  // 👈 už nie async
     const { t } = useTranslation();
     const [users, setUsers] = useState<UserType[]>([]);
     const [loading, setLoading] = useState(true);
