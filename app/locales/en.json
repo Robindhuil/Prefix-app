@@ -43,6 +43,20 @@
         "usersTab": "Users",
         "adminTab": "Admin",
         "usersSection": "User list will be here...",
-        "adminSection": "Administrative settings will be here..."
+        "adminSection": "Administrative settings will be here...",
+        "usersList": "List of users",
+        "totalUsers": "Count of users:",
+        "noUsers": "No users yet",
+        "table": {
+            "id": "ID",
+            "username": "Username",
+            "email": "Email",
+            "name": "Name",
+            "role": "Role",
+            "created": "Created",
+            "updated": "Updated",
+            "noEmail": "no email",
+            "noName": "no name"
+        }
     }
 }

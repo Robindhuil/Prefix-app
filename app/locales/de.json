@@ -43,6 +43,20 @@
         "usersTab": "Benutzer",
         "adminTab": "Admin",
         "usersSection": "Hier wird die Benutzerliste angezeigt...",
-        "adminSection": "Hier werden die Administratoreinstellungen angezeigt..."
+        "adminSection": "Hier werden die Administratoreinstellungen angezeigt...",
+        "usersList": "Benutzerliste",
+        "totalUsers": "Anzahl der Benutzer:",
+        "noUsers": "Noch keine Benutzer",
+        "table": {
+            "id": "ID",
+            "username": "Benutzername",
+            "email": "E-Mail",
+            "name": "Name",
+            "role": "Rolle",
+            "created": "Erstellt",
+            "updated": "Aktualisiert",
+            "noEmail": "keine E-Mail",
+            "noName": "kein Name"
+        }
     }
 }

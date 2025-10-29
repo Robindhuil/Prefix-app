@@ -43,6 +43,20 @@
         "usersTab": "Gebruikers",
         "adminTab": "Beheer",
         "usersSection": "Hier komt de lijst met gebruikers...",
-        "adminSection": "Hier komen de beheerinstellingen..."
+        "adminSection": "Hier komen de beheerinstellingen...",
+        "usersList": "Gebruikerslijst",
+        "totalUsers": "Gebruikers:",
+        "noUsers": "Nog geen gebruikers",
+        "table": {
+            "id": "ID",
+            "username": "Gebruikersnaam",
+            "email": "E-mail",
+            "name": "Naam",
+            "role": "Rol",
+            "created": "Aangemaakt",
+            "updated": "Bijgewerkt",
+            "noEmail": "geen e-mail",
+            "noName": "geen naam"
+        }
     }
 }
