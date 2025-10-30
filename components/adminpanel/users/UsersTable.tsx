@@ -3,14 +3,15 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "@/app/i18n/I18nProvider";
 import { format } from "date-fns";
-import { User, Mail, Calendar, Edit, Shield, Pencil } from "lucide-react";
+import { User, Mail, Calendar, Edit, Shield, Pencil, Trash2 } from "lucide-react";
 import type { UserModel } from "./UsersSection";
 
 type UsersTableProps = {
     onEdit: (user: UserModel) => void;
+    onDelete: (user: { id: number; username: string }) => void;
 };
 
-export default function UsersTable({ onEdit }: UsersTableProps) {
+export default function UsersTable({ onEdit, onDelete }: UsersTableProps) {
     const { t } = useTranslation();
     const [users, setUsers] = useState<UserModel[]>([]);
     const [loading, setLoading] = useState(true);
@@ -143,13 +144,22 @@ export default function UsersTable({ onEdit }: UsersTableProps) {
                                         {format(new Date(user.updatedAt), "dd.MM.yyyy HH:mm")}
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap text-center">
-                                        <button
-                                            onClick={() => onEdit(user)}
-                                            className="text-[#0996e2] hover:text-[#00659b] cursor-pointer dark:text-[#0073b1] hover:dark:text-[#00659b] transition-colors"
-                                            title={t("adminPanel.edit")}
-                                        >
-                                            <Pencil className="w-5 h-5" />
-                                        </button>
+                                        <div className="flex items-center justify-center gap-3">
+                                            <button
+                                                onClick={() => onEdit(user)}
+                                                className="text-[#0996e2] hover:text-[#00659b] cursor-pointer dark:text-[#0073b1] hover:dark:text-[#00659b] transition-colors"
+                                                title={t("adminPanel.edit")}
+                                            >
+                                                <Pencil className="w-5 h-5" />
+                                            </button>
+                                            <button
+                                                onClick={() => onDelete({ id: user.id, username: user.username })}
+                                                className="text-red-600 hover:text-red-800 cursor-pointer dark:text-red-500 dark:hover:text-red-400 transition-colors"
+                                                title={t("adminPanel.delete")}
+                                            >
+                                                <Trash2 className="w-5 h-5" />
+                                            </button>
+                                        </div>
                                     </td>
                                 </tr>
                             ))}

@@ -4,6 +4,7 @@ import { useState } from "react";
 import UsersTable from "./UsersTable";
 import CreateUserModal from "./CreateUserModal";
 import EditUserModal from "./EditUserModal";
+import DeleteUserModal from "./DeleteUserModal";
 import { Plus } from "lucide-react";
 import { useTranslation } from "@/app/i18n/I18nProvider";
 
@@ -21,7 +22,9 @@ export default function UsersSection() {
     const { t } = useTranslation();
     const [isCreateOpen, setIsCreateOpen] = useState(false);
     const [isEditOpen, setIsEditOpen] = useState(false);
+    const [isDeleteOpen, setIsDeleteOpen] = useState(false);
     const [editingUser, setEditingUser] = useState<UserModel | null>(null);
+    const [deletingUser, setDeletingUser] = useState<{ id: number; username: string } | null>(null);
     const [refreshKey, setRefreshKey] = useState(0);
 
     const handleSuccess = () => {
@@ -31,6 +34,11 @@ export default function UsersSection() {
     const openEdit = (user: UserModel) => {
         setEditingUser(user);
         setIsEditOpen(true);
+    };
+
+    const openDelete = (user: { id: number; username: string }) => {
+        setDeletingUser(user);
+        setIsDeleteOpen(true);
     };
 
     return (
@@ -48,7 +56,7 @@ export default function UsersSection() {
                 </button>
             </div>
 
-            <UsersTable key={refreshKey} onEdit={openEdit} />
+            <UsersTable key={refreshKey} onEdit={openEdit} onDelete={openDelete} />
 
             <CreateUserModal
                 isOpen={isCreateOpen}
@@ -63,6 +71,18 @@ export default function UsersSection() {
                     onClose={() => {
                         setIsEditOpen(false);
                         setEditingUser(null);
+                    }}
+                    onSuccess={handleSuccess}
+                />
+            )}
+
+            {deletingUser && (
+                <DeleteUserModal
+                    user={deletingUser}
+                    isOpen={isDeleteOpen}
+                    onClose={() => {
+                        setIsDeleteOpen(false);
+                        setDeletingUser(null);
                     }}
                     onSuccess={handleSuccess}
                 />

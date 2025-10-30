@@ -66,6 +66,11 @@
         "updating": "Bijwerken...",
         "passwordPlaceholderEdit": "nieuw wachtwoord (optioneel)",
         "passwordLeaveBlank": "Leeg laten om huidig wachtwoord te behouden",
+        "deleteUser": "Gebruiker verwijderen",
+        "deleteConfirm": "Weet je zeker dat je gebruiker <strong>{username}</strong> wilt verwijderen?",
+        "deleteIrreversible": "Deze actie is onomkeerbaar!",
+        "delete": "Verwijderen",
+        "deleting": "Verwijderen...",
         "table": {
             "id": "ID",
             "username": "Gebruikersnaam",

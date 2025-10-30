@@ -67,6 +67,11 @@
         "updating": "Upravujem...",
         "passwordPlaceholderEdit": "nové heslo (voliteľné)",
         "passwordLeaveBlank": "Nechajte prázdne, ak nechcete zmeniť heslo",
+        "deleteUser": "Odstrániť používateľa",
+        "deleteConfirm": "Naozaj chcete odstrániť používateľa <strong>{username}</strong>?",
+        "deleteIrreversible": "Táto akcia je nevratná!",
+        "delete": "Odstrániť",
+        "deleting": "Odstraňujem...",
         "table": {
             "id": "ID",
             "username": "Používateľské meno",

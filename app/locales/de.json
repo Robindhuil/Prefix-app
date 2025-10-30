@@ -66,6 +66,11 @@
         "updating": "Wird aktualisiert...",
         "passwordPlaceholderEdit": "neues Passwort (optional)",
         "passwordLeaveBlank": "Leer lassen, um aktuelles Passwort zu behalten",
+        "deleteUser": "Benutzer löschen",
+        "deleteConfirm": "Möchten Sie den Benutzer <strong>{username}</strong>",
+        "deleteIrreversible": "Diese Aktion ist irreversibel!",
+        "delete": "Löschen",
+        "deleting": "Wird gelöscht...",
         "table": {
             "id": "ID",
             "username": "Benutzername",

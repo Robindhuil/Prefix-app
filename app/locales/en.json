@@ -66,6 +66,11 @@
         "updating": "Updating...",
         "passwordPlaceholderEdit": "new password (optional)",
         "passwordLeaveBlank": "Leave blank to keep current password",
+        "deleteUser": "Delete User",
+        "deleteConfirm": "Are you sure you want to delete user <strong>{username}</strong>?",
+        "deleteIrreversible": "This action is irreversible!",
+        "delete": "Delete",
+        "deleting": "Deleting...",
         "table": {
             "id": "ID",
             "username": "Username",
