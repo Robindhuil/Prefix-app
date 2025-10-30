@@ -82,7 +82,8 @@
             "updated": "Upravené",
             "noEmail": "žiadny email",
             "noName": "žiadne meno",
-            "actions": "Akcie"
+            "actions": "Akcie",
+            "isActive": "Aktívny"
         }
     }
 }

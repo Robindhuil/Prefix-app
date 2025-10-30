@@ -14,6 +14,7 @@ export type UserModel = {
     email: string | null;
     name: string | null;
     role: "USER" | "ADMIN";
+    isActive: boolean;
     createdAt: string;
     updatedAt: string;
 };

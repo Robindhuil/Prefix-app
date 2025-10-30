@@ -81,7 +81,8 @@
             "updated": "Bijgewerkt",
             "noEmail": "geen e-mail",
             "noName": "geen naam",
-            "actions": "Acties"
+            "actions": "Acties",
+            "isActive": "Actief"
         }
     }
 }

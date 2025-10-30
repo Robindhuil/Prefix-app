@@ -3,8 +3,9 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "@/app/i18n/I18nProvider";
 import { format } from "date-fns";
-import { User, Mail, Calendar, Edit, Shield, Pencil, Trash2 } from "lucide-react";
+import { User, Mail, Calendar, Edit, Shield, Pencil, Trash2, Check, X } from "lucide-react";
 import type { UserModel } from "./UsersSection";
+import { getUsersAction } from "@/app/(root)/adminpanel/actions/getUsersAction";
 
 type UsersTableProps = {
     onEdit: (user: UserModel) => void;
@@ -17,20 +18,24 @@ export default function UsersTable({ onEdit, onDelete }: UsersTableProps) {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
-    useEffect(() => {
-        const fetchUsers = async () => {
-            try {
-                const response = await fetch('/api/users');
-                if (!response.ok) throw new Error('Failed to fetch users');
-                const data = await response.json();
-                setUsers(data);
-            } catch (err) {
-                setError(err instanceof Error ? err.message : 'Failed to fetch users');
-            } finally {
-                setLoading(false);
-            }
-        };
+    const fetchUsers = async () => {
+        setLoading(true);
+        setError(null);
 
+        const result = await getUsersAction();
+
+        if (result.success) {
+            // TypeScript vie: result je SuccessResponse
+            setUsers(result.data);
+        } else {
+            // TypeScript vie: result je ErrorResponse
+            setError(result.error);
+        }
+
+        setLoading(false);
+    };
+
+    useEffect(() => {
         fetchUsers();
     }, []);
 
@@ -89,6 +94,10 @@ export default function UsersTable({ onEdit, onDelete }: UsersTableProps) {
                                     {t("adminPanel.table.role")}
                                 </th>
                                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                    <Shield className="w-4 h-4 inline mr-1" />
+                                    {t("adminPanel.table.isActive")}
+                                </th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                                     <Calendar className="w-4 h-4 inline mr-1" />
                                     {t("adminPanel.table.created")}
                                 </th>
@@ -136,6 +145,15 @@ export default function UsersTable({ onEdit, onDelete }: UsersTableProps) {
                                         >
                                             {user.role}
                                         </span>
+                                    </td>
+                                    <td className="px-6 py-4 text-sm text-gray-700 dark:text-gray-300">
+                                        <div className="flex justify-center items-center h-full">
+                                            {user.isActive ? (
+                                                <Check className="text-green-500 w-5 h-5" />
+                                            ) : (
+                                                <X className="text-red-500 w-5 h-5" />
+                                            )}
+                                        </div>
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-400">
                                         {format(new Date(user.createdAt), "dd.MM.yyyy HH:mm")}

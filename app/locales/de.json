@@ -81,7 +81,8 @@
             "updated": "Aktualisiert",
             "noEmail": "keine E-Mail",
             "noName": "kein Name",
-            "actions": "Aktionen"
+            "actions": "Aktionen",
+            "isActive": "Ist aktiv"
         }
     }
 }
