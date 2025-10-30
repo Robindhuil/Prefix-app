@@ -54,7 +54,11 @@ export default function LoginForm() {
         });
 
         if (result?.error) {
-            setError(t("login.serverError"));
+            if (result.error === "ACCOUNT_DEACTIVATED") {
+                setError(t("login.accountDeactivated"));
+            } else {
+                setError(t("login.serverError"));
+            }
             setIsLoading(false);
         } else {
             router.push("/");

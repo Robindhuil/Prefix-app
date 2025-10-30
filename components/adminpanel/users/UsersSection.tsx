@@ -1,12 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import UsersTable from "./UsersTable";
 import CreateUserModal from "./CreateUserModal";
 import EditUserModal from "./EditUserModal";
 import DeleteUserModal from "./DeleteUserModal";
 import { Plus } from "lucide-react";
 import { useTranslation } from "@/app/i18n/I18nProvider";
+import ToggleActiveModal from "./ToggleActiveModal";
 
 export type UserModel = {
     id: number;
@@ -24,13 +25,15 @@ export default function UsersSection() {
     const [isCreateOpen, setIsCreateOpen] = useState(false);
     const [isEditOpen, setIsEditOpen] = useState(false);
     const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+    const [isBanOpen, setIsBanOpen] = useState(false);
     const [editingUser, setEditingUser] = useState<UserModel | null>(null);
     const [deletingUser, setDeletingUser] = useState<{ id: number; username: string } | null>(null);
-    const [refreshKey, setRefreshKey] = useState(0);
+    const [refreshTrigger, setRefreshTrigger] = useState(0);
+    const [banningUser, setBanningUser] = useState<{ id: number; username: string; isActive: boolean } | null>(null);
 
-    const handleSuccess = () => {
-        setRefreshKey((prev) => prev + 1);
-    };
+    const handleSuccess = useCallback(() => {
+        setRefreshTrigger((prev) => prev + 1);
+    }, []);
 
     const openEdit = (user: UserModel) => {
         setEditingUser(user);
@@ -40,6 +43,11 @@ export default function UsersSection() {
     const openDelete = (user: { id: number; username: string }) => {
         setDeletingUser(user);
         setIsDeleteOpen(true);
+    };
+
+    const openToggleActive = (user: { id: number; username: string; isActive: boolean }) => {
+        setBanningUser(user);
+        setIsBanOpen(true);
     };
 
     return (
@@ -56,8 +64,12 @@ export default function UsersSection() {
                     {t("adminPanel.createUser")}
                 </button>
             </div>
-
-            <UsersTable key={refreshKey} onEdit={openEdit} onDelete={openDelete} />
+            <UsersTable
+                key={refreshTrigger}
+                onEdit={openEdit}
+                onDelete={openDelete}
+                onToggleActive={openToggleActive}
+            />
 
             <CreateUserModal
                 isOpen={isCreateOpen}
@@ -84,6 +96,18 @@ export default function UsersSection() {
                     onClose={() => {
                         setIsDeleteOpen(false);
                         setDeletingUser(null);
+                    }}
+                    onSuccess={handleSuccess}
+                />
+            )}
+
+            {banningUser && (
+                <ToggleActiveModal
+                    user={banningUser}
+                    isOpen={isBanOpen}
+                    onClose={() => {
+                        setIsBanOpen(false);
+                        setBanningUser(null);
                     }}
                     onSuccess={handleSuccess}
                 />

@@ -36,7 +36,9 @@
         "passwordMinLength": "Heslo musí mať aspoň 6 znakov",
         "signIn": "Prihlásiť sa",
         "signingIn": "Prihlasujem sa...",
-        "serverError": "Chyba servera. Skúste to znova."
+        "serverError": "Chyba servera. Skúste to znova.",
+        "accountDeactivated": "Tvoj účet je deaktivovaný. Kontaktuj administrátora.",
+        "validationError": "Vyplň meno a heslo (min. 6 znakov)."
     },
     "adminPanel": {
         "title": "Admin Panel",
@@ -63,6 +65,7 @@
         "create": "Vytvoriť",
         "creating": "Vytváram...",
         "editUser": "Upraviť používateľa",
+        "edit": "Upraviť",
         "update": "Upraviť",
         "updating": "Upravujem...",
         "passwordPlaceholderEdit": "nové heslo (voliteľné)",
@@ -72,6 +75,16 @@
         "deleteIrreversible": "Táto akcia je nevratná!",
         "delete": "Odstrániť",
         "deleting": "Odstraňujem...",
+        "banUser": "Deaktivovať používateľa",
+        "activateUser": "Aktivovať používateľa",
+        "banConfirm": "Naozaj chcete deaktivovať používateľa <strong>{username}</strong>?",
+        "activateConfirm": "Naozaj chcete aktivovať používateľa <strong>{username}</strong>?",
+        "banReversible": "Táto akcia je vratná – používateľ sa môže neskôr aktivovať.",
+        "activateReversible": "Táto akcia je vratná – používateľ sa môže neskôr deaktivovať.",
+        "ban": "Deaktivovať",
+        "activate": "Aktivovať",
+        "banning": "Deaktivujem...",
+        "activating": "Aktivujem...",
         "table": {
             "id": "ID",
             "username": "Používateľské meno",

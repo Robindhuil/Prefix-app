@@ -3,16 +3,17 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "@/app/i18n/I18nProvider";
 import { format } from "date-fns";
-import { User, Mail, Calendar, Edit, Shield, Pencil, Trash2, Check, X } from "lucide-react";
+import { User, Mail, Calendar, Edit, Shield, Pencil, Trash2, Check, X, Ban, CheckCircle } from "lucide-react";
 import type { UserModel } from "./UsersSection";
 import { getUsersAction } from "@/app/(root)/adminpanel/actions/getUsersAction";
 
 type UsersTableProps = {
     onEdit: (user: UserModel) => void;
     onDelete: (user: { id: number; username: string }) => void;
+    onToggleActive: (user: { id: number; username: string; isActive: boolean }) => void;
 };
 
-export default function UsersTable({ onEdit, onDelete }: UsersTableProps) {
+export default function UsersTable({ onEdit, onDelete, onToggleActive }: UsersTableProps) {
     const { t } = useTranslation();
     const [users, setUsers] = useState<UserModel[]>([]);
     const [loading, setLoading] = useState(true);
@@ -25,10 +26,8 @@ export default function UsersTable({ onEdit, onDelete }: UsersTableProps) {
         const result = await getUsersAction();
 
         if (result.success) {
-            // TypeScript vie: result je SuccessResponse
             setUsers(result.data);
         } else {
-            // TypeScript vie: result je ErrorResponse
             setError(result.error);
         }
 
@@ -169,6 +168,16 @@ export default function UsersTable({ onEdit, onDelete }: UsersTableProps) {
                                                 title={t("adminPanel.edit")}
                                             >
                                                 <Pencil className="w-5 h-5" />
+                                            </button>
+                                            <button
+                                                onClick={() => onToggleActive({ id: user.id, username: user.username, isActive: user.isActive })}
+                                                className={`transition-colors cursor-pointer ${user.isActive
+                                                    ? "text-orange-600 hover:text-orange-800 dark:text-orange-500 dark:hover:text-orange-400"
+                                                    : "text-green-600 hover:text-green-800 dark:text-green-500 dark:hover:text-green-400"
+                                                    }`}
+                                                title={user.isActive ? t("adminPanel.banUser") : t("adminPanel.activateUser")}
+                                            >
+                                                {user.isActive ? <Ban className="w-5 h-5" /> : <CheckCircle className="w-5 h-5" />}
                                             </button>
                                             <button
                                                 onClick={() => onDelete({ id: user.id, username: user.username })}
