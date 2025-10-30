@@ -39,7 +39,6 @@
         "serverError": "Serverfehler. Bitte versuchen Sie es erneut."
     },
     "adminPanel": {
-        "title": "Admin-Panel",
         "usersTab": "Benutzer",
         "adminTab": "Admin",
         "usersSection": "Hier wird die Benutzerliste angezeigt...",
@@ -94,6 +93,23 @@
             "noName": "kein Name",
             "actions": "Aktionen",
             "isActive": "Ist aktiv"
+        },
+        "adminInfo": {
+            "title": "Firmeninformationen",
+            "basicInfo": "Grundinformationen",
+            "companyName": "Firmenname",
+            "companyId": "Firmen-ID (IČO)",
+            "legalForm": "Rechtsform",
+            "foundingDate": "Gründungsdatum",
+            "registeredOffice": "Sitz",
+            "representative": "Gesetzlicher Vertreter",
+            "representativeName": "Name des Vertreters",
+            "representativeAddress": "Adresse des Vertreters",
+            "functionStartDate": "Funktionsbeginn",
+            "saveChanges": "Änderungen speichern",
+            "savedAlert": "Änderungen gespeichert (Frontend-Demo).",
+            "contact": "Kontakt",
+            "contactEmail": "Kontakt E-Mail"
         }
     }
 }

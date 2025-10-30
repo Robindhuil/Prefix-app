@@ -39,7 +39,6 @@
         "serverError": "Serverfout. Probeer het opnieuw."
     },
     "adminPanel": {
-        "title": "Beheerpaneel",
         "usersTab": "Gebruikers",
         "adminTab": "Beheer",
         "usersSection": "Hier komt de lijst met gebruikers...",
@@ -94,6 +93,23 @@
             "noName": "geen naam",
             "actions": "Acties",
             "isActive": "Actief"
+        },
+        "adminInfo": {
+            "title": "Bedrijfsgegevens",
+            "basicInfo": "Basisinformatie",
+            "companyName": "Bedrijfsnaam",
+            "companyId": "Bedrijfs-ID (KvK)",
+            "legalForm": "Rechtsvorm",
+            "foundingDate": "Oprichtingsdatum",
+            "registeredOffice": "Vestigingsadres",
+            "representative": "Wettelijke vertegenwoordiger",
+            "representativeName": "Naam vertegenwoordiger",
+            "representativeAddress": "Adres vertegenwoordiger",
+            "functionStartDate": "Startdatum functie",
+            "saveChanges": "Wijzigingen opslaan",
+            "savedAlert": "Wijzigingen opgeslagen (frontend demo).",
+            "contact": "Contact",
+            "contactEmail": "Contact e-mail"
         }
     }
 }

@@ -14,10 +14,6 @@ export default function AdminHeader({ activeTab, onTabChange }: AdminHeaderProps
 
     return (
         <div className="bg-card bg-white/80 dark:bg-black/80 backdrop-blur-xl rounded-2xl shadow-xl border border-white/20 dark:border-gray-800/50 p-6 mb-8">
-            <h1 className="text-color text-3xl font-bold text-gray-900 dark:text-white mb-6 text-center">
-                {t("adminPanel.title")}
-            </h1>
-
             <div className="flex justify-center gap-4 flex-wrap">
                 <button
                     onClick={() => onTabChange("users")}
