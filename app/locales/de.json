@@ -61,6 +61,11 @@
         "cancel": "Abbrechen",
         "create": "Erstellen",
         "creating": "Wird erstellt...",
+        "editUser": "Benutzer bearbeiten",
+        "update": "Aktualisieren",
+        "updating": "Wird aktualisiert...",
+        "passwordPlaceholderEdit": "neues Passwort (optional)",
+        "passwordLeaveBlank": "Leer lassen, um aktuelles Passwort zu behalten",
         "table": {
             "id": "ID",
             "username": "Benutzername",
@@ -70,7 +75,8 @@
             "created": "Erstellt",
             "updated": "Aktualisiert",
             "noEmail": "keine E-Mail",
-            "noName": "kein Name"
+            "noName": "kein Name",
+            "actions": "Aktionen"
         }
     }
 }

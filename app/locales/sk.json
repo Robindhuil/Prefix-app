@@ -62,6 +62,11 @@
         "cancel": "Zrušiť",
         "create": "Vytvoriť",
         "creating": "Vytváram...",
+        "editUser": "Upraviť používateľa",
+        "update": "Upraviť",
+        "updating": "Upravujem...",
+        "passwordPlaceholderEdit": "nové heslo (voliteľné)",
+        "passwordLeaveBlank": "Nechajte prázdne, ak nechcete zmeniť heslo",
         "table": {
             "id": "ID",
             "username": "Používateľské meno",
@@ -71,7 +76,8 @@
             "created": "Vytvorené",
             "updated": "Upravené",
             "noEmail": "žiadny email",
-            "noName": "žiadne meno"
+            "noName": "žiadne meno",
+            "actions": "Akcie"
         }
     }
 }

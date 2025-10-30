@@ -3,16 +3,34 @@
 import { useState } from "react";
 import UsersTable from "./UsersTable";
 import CreateUserModal from "./CreateUserModal";
+import EditUserModal from "./EditUserModal";
 import { Plus } from "lucide-react";
 import { useTranslation } from "@/app/i18n/I18nProvider";
 
+export type UserModel = {
+    id: number;
+    username: string;
+    email: string | null;
+    name: string | null;
+    role: "USER" | "ADMIN";
+    createdAt: string;
+    updatedAt: string;
+};
+
 export default function UsersSection() {
     const { t } = useTranslation();
-    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isCreateOpen, setIsCreateOpen] = useState(false);
+    const [isEditOpen, setIsEditOpen] = useState(false);
+    const [editingUser, setEditingUser] = useState<UserModel | null>(null);
     const [refreshKey, setRefreshKey] = useState(0);
 
     const handleSuccess = () => {
-        setRefreshKey((prev) => prev + 1); // Re-render UsersTable
+        setRefreshKey((prev) => prev + 1);
+    };
+
+    const openEdit = (user: UserModel) => {
+        setEditingUser(user);
+        setIsEditOpen(true);
     };
 
     return (
@@ -22,7 +40,7 @@ export default function UsersSection() {
                     {t("adminPanel.usersTab")}
                 </h2>
                 <button
-                    onClick={() => setIsModalOpen(true)}
+                    onClick={() => setIsCreateOpen(true)}
                     className="cursor-pointer flex items-center gap-2 px-4 py-2 bg-linear-to-r from-[#600000] to-[#4b0000] text-white rounded-lg font-medium hover:from-[#4b0000] hover:to-[#600000] transition-all hover:scale-105 hover:shadow-lg"
                 >
                     <Plus className="w-5 h-5" />
@@ -30,13 +48,25 @@ export default function UsersSection() {
                 </button>
             </div>
 
-            <UsersTable key={refreshKey} />
+            <UsersTable key={refreshKey} onEdit={openEdit} />
 
             <CreateUserModal
-                isOpen={isModalOpen}
-                onClose={() => setIsModalOpen(false)}
+                isOpen={isCreateOpen}
+                onClose={() => setIsCreateOpen(false)}
                 onSuccess={handleSuccess}
             />
+
+            {editingUser && (
+                <EditUserModal
+                    user={editingUser}
+                    isOpen={isEditOpen}
+                    onClose={() => {
+                        setIsEditOpen(false);
+                        setEditingUser(null);
+                    }}
+                    onSuccess={handleSuccess}
+                />
+            )}
         </>
     );
 }

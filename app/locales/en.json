@@ -61,6 +61,11 @@
         "cancel": "Cancel",
         "create": "Create",
         "creating": "Creating...",
+        "editUser": "Edit user",
+        "update": "Update",
+        "updating": "Updating...",
+        "passwordPlaceholderEdit": "new password (optional)",
+        "passwordLeaveBlank": "Leave blank to keep current password",
         "table": {
             "id": "ID",
             "username": "Username",
@@ -70,7 +75,8 @@
             "created": "Created",
             "updated": "Updated",
             "noEmail": "no email",
-            "noName": "no name"
+            "noName": "no name",
+            "actions": "Actions"
         }
     }
 }

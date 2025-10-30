@@ -61,6 +61,11 @@
         "cancel": "Annuleren",
         "create": "Aanmaken",
         "creating": "Aanmaken...",
+        "editUser": "Gebruiker bewerken",
+        "update": "Bijwerken",
+        "updating": "Bijwerken...",
+        "passwordPlaceholderEdit": "nieuw wachtwoord (optioneel)",
+        "passwordLeaveBlank": "Leeg laten om huidig wachtwoord te behouden",
         "table": {
             "id": "ID",
             "username": "Gebruikersnaam",
@@ -70,7 +75,8 @@
             "created": "Aangemaakt",
             "updated": "Bijgewerkt",
             "noEmail": "geen e-mail",
-            "noName": "geen naam"
+            "noName": "geen naam",
+            "actions": "Acties"
         }
     }
 }

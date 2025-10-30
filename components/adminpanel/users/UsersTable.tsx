@@ -3,12 +3,16 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "@/app/i18n/I18nProvider";
 import { format } from "date-fns";
-import { User, Mail, Calendar, Edit, Shield } from "lucide-react";
-import type { User as UserType } from "@/types/user";
+import { User, Mail, Calendar, Edit, Shield, Pencil } from "lucide-react";
+import type { UserModel } from "./UsersSection";
 
-export default function UsersTable() {  // 👈 už nie async
+type UsersTableProps = {
+    onEdit: (user: UserModel) => void;
+};
+
+export default function UsersTable({ onEdit }: UsersTableProps) {
     const { t } = useTranslation();
-    const [users, setUsers] = useState<UserType[]>([]);
+    const [users, setUsers] = useState<UserModel[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
@@ -91,6 +95,9 @@ export default function UsersTable() {  // 👈 už nie async
                                     <Edit className="w-4 h-4 inline mr-1" />
                                     {t("adminPanel.table.updated")}
                                 </th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                    {t("adminPanel.table.actions")}
+                                </th>
                             </tr>
                         </thead>
                         <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-800">
@@ -134,6 +141,15 @@ export default function UsersTable() {  // 👈 už nie async
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-400">
                                         {format(new Date(user.updatedAt), "dd.MM.yyyy HH:mm")}
+                                    </td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-center">
+                                        <button
+                                            onClick={() => onEdit(user)}
+                                            className="text-[#0996e2] hover:text-[#00659b] cursor-pointer dark:text-[#0073b1] hover:dark:text-[#00659b] transition-colors"
+                                            title={t("adminPanel.edit")}
+                                        >
+                                            <Pencil className="w-5 h-5" />
+                                        </button>
                                     </td>
                                 </tr>
                             ))}
