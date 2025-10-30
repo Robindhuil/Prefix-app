@@ -98,7 +98,7 @@
             "title": "Bedrijfsgegevens",
             "basicInfo": "Basisinformatie",
             "companyName": "Bedrijfsnaam",
-            "companyId": "Bedrijfs-ID (KvK)",
+            "companyIdNumber": "Bedrijfs-ID (KvK)",
             "legalForm": "Rechtsvorm",
             "foundingDate": "Oprichtingsdatum",
             "registeredOffice": "Vestigingsadres",
@@ -107,9 +107,10 @@
             "representativeAddress": "Adres vertegenwoordiger",
             "functionStartDate": "Startdatum functie",
             "saveChanges": "Wijzigingen opslaan",
-            "savedAlert": "Wijzigingen opgeslagen (frontend demo).",
+            "savedAlert": "Wijzigingen opgeslagen.",
             "contact": "Contact",
-            "contactEmail": "Contact e-mail"
+            "contactEmail": "Contact e-mail",
+            "saving": "Bezig met opslaan..."
         }
     }
 }

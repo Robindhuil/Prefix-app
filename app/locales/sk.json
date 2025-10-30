@@ -101,7 +101,7 @@
             "title": "Informácie o firme",
             "basicInfo": "Základné informácie",
             "companyName": "Obchodné meno",
-            "companyId": "IČO",
+            "companyIdNumber": "IČO",
             "legalForm": "Právna forma",
             "foundingDate": "Dátum založenia",
             "registeredOffice": "Sídlo",
@@ -110,9 +110,10 @@
             "representativeAddress": "Adresa konateľa",
             "functionStartDate": "Dátum vzniku funkcie",
             "saveChanges": "Uložiť zmeny",
-            "savedAlert": "Zmeny boli uložené (frontend demo).",
+            "savedAlert": "Zmeny boli uložené.",
             "contact": "Kontakt",
-            "contactEmail": "Kontaktný email"
+            "contactEmail": "Kontaktný email",
+            "saving": "Ukladám..."
         }
     }
 }

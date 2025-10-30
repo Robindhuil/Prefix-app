@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { X, UserPlus, Mail, Lock, User, Shield } from "lucide-react";
 import { useTranslation } from "@/app/i18n/I18nProvider";
-import { createUserAction } from "@/app/(root)/adminpanel/actions/createUserAction";
+import { createUserAction } from "@/app/(root)/adminpanel/users/actions/createUserAction";
 
 type CreateUserModalProps = {
     isOpen: boolean;

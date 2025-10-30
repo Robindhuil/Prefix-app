@@ -98,7 +98,7 @@
             "title": "Firmeninformationen",
             "basicInfo": "Grundinformationen",
             "companyName": "Firmenname",
-            "companyId": "Firmen-ID (IČO)",
+            "companyIdNumber": "Firmen-ID (IČO)",
             "legalForm": "Rechtsform",
             "foundingDate": "Gründungsdatum",
             "registeredOffice": "Sitz",
@@ -107,9 +107,10 @@
             "representativeAddress": "Adresse des Vertreters",
             "functionStartDate": "Funktionsbeginn",
             "saveChanges": "Änderungen speichern",
-            "savedAlert": "Änderungen gespeichert (Frontend-Demo).",
+            "savedAlert": "Änderungen gespeichert.",
             "contact": "Kontakt",
-            "contactEmail": "Kontakt E-Mail"
+            "contactEmail": "Kontakt E-Mail",
+            "saving": "Wird gespeichert..."
         }
     }
 }

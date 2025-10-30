@@ -5,7 +5,7 @@ import { useTranslation } from "@/app/i18n/I18nProvider";
 import { format } from "date-fns";
 import { User, Mail, Calendar, Edit, Shield, Pencil, Trash2, Check, X, Ban, CheckCircle } from "lucide-react";
 import type { UserModel } from "./UsersSection";
-import { getUsersAction } from "@/app/(root)/adminpanel/actions/getUsersAction";
+import { getUsersAction } from "@/app/(root)/adminpanel/users/actions/getUsersAction";
 
 type UsersTableProps = {
     onEdit: (user: UserModel) => void;

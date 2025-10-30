@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { X, Ban, CheckCircle, AlertCircle } from "lucide-react";
 import { useTranslation } from "@/app/i18n/I18nProvider";
-import { toggleUserActiveAction } from "@/app/(root)/adminpanel/actions/toggleUserActiveAction";
+import { toggleUserActiveAction } from "@/app/(root)/adminpanel/users/actions/toggleUserActiveAction";
 
 type ToggleActiveModalProps = {
     user: { id: number; username: string; isActive: boolean };

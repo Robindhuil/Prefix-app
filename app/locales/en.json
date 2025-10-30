@@ -98,7 +98,7 @@
             "title": "Company Information",
             "basicInfo": "Basic Information",
             "companyName": "Company Name",
-            "companyId": "Company ID (IČO)",
+            "companyIdNumber": "Company ID (IČO)",
             "legalForm": "Legal Form",
             "foundingDate": "Founding Date",
             "registeredOffice": "Registered Office",
@@ -107,9 +107,10 @@
             "representativeAddress": "Representative Address",
             "functionStartDate": "Function Start Date",
             "saveChanges": "Save Changes",
-            "savedAlert": "Changes have been saved (frontend demo).",
+            "savedAlert": "Changes have been saved.",
             "contact": "Contact",
-            "contactEmail": "Contact Email"
+            "contactEmail": "Contact Email",
+            "saving": "Saving..."
         }
     }
 }

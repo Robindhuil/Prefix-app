@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { X, Edit, Mail, Lock, User, Shield } from "lucide-react";
 import { useTranslation } from "@/app/i18n/I18nProvider";
-import { updateUserAction } from "@/app/(root)/adminpanel/actions/updateUserAction";
+import { updateUserAction } from "@/app/(root)/adminpanel/users/actions/updateUserAction";
 type User = {
     id: number;
     username: string;

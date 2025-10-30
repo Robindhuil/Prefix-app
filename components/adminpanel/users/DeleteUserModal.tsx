@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { X, Trash2, AlertCircle } from "lucide-react";
 import { useTranslation } from "@/app/i18n/I18nProvider";
-import { deleteUserAction } from "@/app/(root)/adminpanel/actions/deleteUserAction";
+import { deleteUserAction } from "@/app/(root)/adminpanel/users/actions/deleteUserAction";
 
 type DeleteUserModalProps = {
     user: { id: number; username: string };
