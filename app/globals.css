@@ -1,28 +1,6 @@
 @import "tailwindcss";
 
-@layer base {
-  :root {
-    --background: #ffffff;
-    --foreground: #282828;
-    --navbar-bg: linear-gradient(to right, rgba(15, 26, 45, 0.95), rgba(0, 0, 0, 0.95));
-    --card-bg: #d0cece;
-    --text-color: #000000;
-    --colored-decor: #9e0a0a;
-    --colored-decor-hover: #7a0808;
-
-  }
-
-  .dark {
-    --background: #12131b;
-    --foreground: #b3b3b3;
-    --navbar-bg: linear-gradient(to right, rgba(15, 26, 45, 0.95), rgba(0, 0, 0, 0.95));
-    --card-bg: rgba(7, 10, 21, 0.8);
-    --text-color: #ffffff;
-    --colored-decor: #600000;
-    --colored-decor-hover: #4b0000;
-  }
-}
-
+/* Premenné sa nastavujú na <html> – tu už nie sú potrebné */
 html,
 body {
   @apply min-h-screen;
@@ -30,14 +8,7 @@ body {
   color: var(--foreground);
 }
 
-.bg-gradient-light {
-  background: var(--background);
-}
-
-.bg-gradient-dark {
-  background: linear-gradient(to right, rgba(15, 26, 45, 0.95), rgba(0, 0, 0, 0.95));
-}
-
+/* Zvyšok tvojich tried */
 .bg-navbar {
   background: var(--navbar-bg);
 }
@@ -56,4 +27,22 @@ body {
 
 .cl-decor:hover {
   background: var(--colored-decor-hover);
+}
+
+/* Skry obsah do hydratácie */
+body {
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+body.hydrated {
+  opacity: 1;
+}
+
+html {
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.dark {
+  color-scheme: dark;
 }
