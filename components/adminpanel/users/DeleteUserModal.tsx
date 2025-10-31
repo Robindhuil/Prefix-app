@@ -4,6 +4,7 @@ import { useState } from "react";
 import { X, Trash2, AlertCircle } from "lucide-react";
 import { useTranslation } from "@/app/i18n/I18nProvider";
 import { deleteUserAction } from "@/app/(root)/adminpanel/users/actions/deleteUserAction";
+import { useToast } from "@/components/ui/ToastProvider";
 
 type DeleteUserModalProps = {
     user: { id: number; username: string };
@@ -16,6 +17,7 @@ export default function DeleteUserModal({ user, isOpen, onClose, onSuccess }: De
     const { t } = useTranslation();
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState("");
+    const { addToast } = useToast();
 
     if (!isOpen) return null;
 
@@ -33,6 +35,12 @@ export default function DeleteUserModal({ user, isOpen, onClose, onSuccess }: De
         } else {
             onSuccess();
             onClose();
+        }
+
+        if (result.success) {
+            addToast(t("toast.userDeleted"), "success");
+        } else {
+            addToast(t("toast.userErrorDelete"), "error");
         }
 
         setIsLoading(false);

@@ -14,6 +14,21 @@
         "getStarted": "Beginnen",
         "learnMore": "Meer lezen"
     },
+    "toast": {
+        "savedAlert": "Wijzigingen zijn succesvol opgeslagen.",
+        "saveError": "Er is een fout opgetreden bij het opslaan van de wijzigingen. Probeer het opnieuw.",
+        "userCreated": "Gebruiker is succesvol aangemaakt.",
+        "userErrorCreate": "Er is een fout opgetreden bij het aanmaken van de gebruiker. Probeer het opnieuw.",
+        "userUpdated": "Gebruiker is succesvol bijgewerkt.",
+        "userErrorUpdate": "Er is een fout opgetreden bij het bijwerken van de gebruiker. Probeer het opnieuw.",
+        "userDeleted": "Gebruiker is succesvol verwijderd.",
+        "userErrorDelete": "Er is een fout opgetreden bij het verwijderen van de gebruiker. Probeer het opnieuw.",
+        "userActivated": "Gebruiker is succesvol geactiveerd.",
+        "userDeactived": "Gebruiker is succesvol gedeactiveerd.",
+        "userToggleActivateError": "Er is een fout opgetreden bij het wijzigen van de activatiestatus van de gebruiker. Probeer het opnieuw.",
+        "userLogged": "Succesvol ingelogd.",
+        "UserLoginError": "Fout bij het inloggen van de gebruiker. Probeer het opnieuw."
+    },
     "footer": {
         "newsletter": "Nieuwsbrief",
         "getUpdates": "Ontvang updates",
@@ -107,7 +122,6 @@
             "representativeAddress": "Adres vertegenwoordiger",
             "functionStartDate": "Startdatum functie",
             "saveChanges": "Wijzigingen opslaan",
-            "savedAlert": "Wijzigingen opgeslagen.",
             "contact": "Contact",
             "contactEmail": "Contact e-mail",
             "saving": "Bezig met opslaan..."

@@ -4,6 +4,8 @@ import { useState } from "react";
 import { X, Edit, Mail, Lock, User, Shield } from "lucide-react";
 import { useTranslation } from "@/app/i18n/I18nProvider";
 import { updateUserAction } from "@/app/(root)/adminpanel/users/actions/updateUserAction";
+import { useToast } from "@/components/ui/ToastProvider";
+
 type User = {
     id: number;
     username: string;
@@ -23,6 +25,7 @@ export default function EditUserModal({ user, isOpen, onClose, onSuccess }: Edit
     const { t } = useTranslation();
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState("");
+    const { addToast } = useToast();
 
     if (!isOpen) return null;
 
@@ -41,6 +44,12 @@ export default function EditUserModal({ user, isOpen, onClose, onSuccess }: Edit
         } else {
             onSuccess();
             onClose();
+        }
+
+        if (result.success) {
+            addToast(t("toast.userUpdated"), "success");
+        } else {
+            addToast(t("toast.userErrorUpdate"), "error");
         }
 
         setIsLoading(false);

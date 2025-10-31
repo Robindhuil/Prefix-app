@@ -14,6 +14,21 @@
         "getStarted": "Začať",
         "learnMore": "Viac informácií"
     },
+    "toast": {
+        "savedAlert": "Zmeny boli úspešne uložené.",
+        "saveError": "Nastala chyba pri ukladaní zmien. Skúste to znova.",
+        "userCreated": "Používateľ bol úspešne vytvorený.",
+        "userErrorCreate": "Nastala chyba pri vytváraní používateľa. Skúste to znova.",
+        "userUpdated": "Používateľ bol úspešne upravený.",
+        "userErrorUpdate": "Nastala chyba pri upravování používateľa. Skúste to znova.",
+        "userDeleted": "Používateľ bol úspešne odstránený.",
+        "userErrorDelete": "Nastala chyba pri odstranovaniu používateľa. Skúste to znova.",
+        "userActivated": "Používateľ bol úspešne aktivovaný.",
+        "userDeactived": "Používateľ bol úspešne deaktivovaný.",
+        "userToggleActivateError": "Nastala chyba pri zmene stavu aktivácie používateľa. Skúste to znova.",
+        "userLogged": "Úspešne prihlásený.",
+        "UserLoginError": "Chyba pri prihlásení používateľa. Skúste to znova."
+    },
     "footer": {
         "newsletter": "Newsletter",
         "getUpdates": "Získaj novinky",
@@ -110,7 +125,6 @@
             "representativeAddress": "Adresa konateľa",
             "functionStartDate": "Dátum vzniku funkcie",
             "saveChanges": "Uložiť zmeny",
-            "savedAlert": "Zmeny boli uložené.",
             "contact": "Kontakt",
             "contactEmail": "Kontaktný email",
             "saving": "Ukladám..."

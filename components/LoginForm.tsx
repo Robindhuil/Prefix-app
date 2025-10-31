@@ -5,6 +5,8 @@ import { useTranslation } from "@/app/i18n/I18nProvider";
 import { useTheme } from "@/app/theme/ThemeProvider";
 import { useRouter } from "next/navigation";
 import { signIn, useSession } from "next-auth/react";
+import { useToast } from "@/components/ui/ToastProvider";
+
 
 export default function LoginForm() {
     const { t } = useTranslation();
@@ -16,6 +18,7 @@ export default function LoginForm() {
     const [showPassword, setShowPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState("");
+    const { addToast } = useToast();
 
     const { data: session, status } = useSession();
 
@@ -62,6 +65,12 @@ export default function LoginForm() {
             setIsLoading(false);
         } else {
             router.push("/");
+        }
+
+        if (result?.ok) {
+            addToast(t("toast.userLogged"), "success");
+        } else {
+            addToast(t("toast.UserLoginError"), "error");
         }
     };
     return (

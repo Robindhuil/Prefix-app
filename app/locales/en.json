@@ -14,6 +14,21 @@
         "getStarted": "Get Started",
         "learnMore": "Learn More"
     },
+    "toast": {
+        "savedAlert": "Changes have been saved successfully.",
+        "saveError": "An error occurred while saving changes. Please try again.",
+        "userCreated": "User has been created successfully.",
+        "userErrorCreate": "An error occurred while creating the user. Please try again.",
+        "userUpdated": "User has been updated successfully.",
+        "userErrorUpdate": "An error occurred while updating the user. Please try again.",
+        "userDeleted": "User has been deleted successfully.",
+        "userErrorDelete": "An error occurred while deleting the user. Please try again.",
+        "userActivated": "User has been activated successfully.",
+        "userDeactived": "User has been deactivated successfully.",
+        "userToggleActivateError": "An error occurred while changing the user's activation status. Please try again.",
+        "userLogged": "Successfully logged in.",
+        "UserLoginError": "Error logging in user. Please try again."
+    },
     "footer": {
         "newsletter": "Newsletter",
         "getUpdates": "Get updates",
@@ -107,7 +122,6 @@
             "representativeAddress": "Representative Address",
             "functionStartDate": "Function Start Date",
             "saveChanges": "Save Changes",
-            "savedAlert": "Changes have been saved.",
             "contact": "Contact",
             "contactEmail": "Contact Email",
             "saving": "Saving..."

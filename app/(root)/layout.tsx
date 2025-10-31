@@ -3,6 +3,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "../../components/Footer";
 import { I18nProvider } from "@/app/i18n/I18nProvider";
 import { ThemeProvider } from "@/app/theme/ThemeProvider";
+import { ToastProvider } from '@/components/ui/ToastProvider';
 
 export default function RootLayout({
     children,
@@ -12,11 +13,13 @@ export default function RootLayout({
             <body className="h-full flex flex-col">
                 <ThemeProvider>
                     <I18nProvider initial="sk">
-                        <div className="min-h-screen flex flex-col">
-                            <Navbar />
-                            <main className="flex-1">{children}</main>
-                            <Footer />
-                        </div>
+                        <ToastProvider>
+                            <div className="min-h-screen flex flex-col">
+                                <Navbar />
+                                <main className="flex-1">{children}</main>
+                                <Footer />
+                            </div>
+                        </ToastProvider>
                     </I18nProvider>
                 </ThemeProvider>
             </body>

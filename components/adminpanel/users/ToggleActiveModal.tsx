@@ -4,6 +4,7 @@ import { useState } from "react";
 import { X, Ban, CheckCircle, AlertCircle } from "lucide-react";
 import { useTranslation } from "@/app/i18n/I18nProvider";
 import { toggleUserActiveAction } from "@/app/(root)/adminpanel/users/actions/toggleUserActiveAction";
+import { useToast } from "@/components/ui/ToastProvider";
 
 type ToggleActiveModalProps = {
     user: { id: number; username: string; isActive: boolean };
@@ -16,6 +17,7 @@ export default function ToggleActiveModal({ user, isOpen, onClose, onSuccess }: 
     const { t } = useTranslation();
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState("");
+    const { addToast } = useToast();
 
     if (!isOpen) return null;
 
@@ -37,6 +39,16 @@ export default function ToggleActiveModal({ user, isOpen, onClose, onSuccess }: 
         } else {
             onSuccess();
             onClose();
+        }
+
+        if (result.success) {
+            if (action === "activate") {
+                addToast(t("toast.userActivated"), "success");
+            } else if (action === "ban") {
+                addToast(t("toast.userDeactived"), "success");
+            } else {
+                addToast(t("toast.userToggleActivateError"), "error");
+            }
         }
 
         setIsLoading(false);

@@ -4,6 +4,7 @@ import { useState } from "react";
 import { X, UserPlus, Mail, Lock, User, Shield } from "lucide-react";
 import { useTranslation } from "@/app/i18n/I18nProvider";
 import { createUserAction } from "@/app/(root)/adminpanel/users/actions/createUserAction";
+import { useToast } from "@/components/ui/ToastProvider";
 
 type CreateUserModalProps = {
     isOpen: boolean;
@@ -15,6 +16,7 @@ export default function CreateUserModal({ isOpen, onClose, onSuccess }: CreateUs
     const { t } = useTranslation();
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState("");
+    const { addToast } = useToast();
 
     if (!isOpen) return null;
 
@@ -31,6 +33,12 @@ export default function CreateUserModal({ isOpen, onClose, onSuccess }: CreateUs
         } else {
             onSuccess();
             onClose();
+        }
+
+        if (result.success) {
+            addToast(t("toast.userCreated"), "success");
+        } else {
+            addToast(t("toast.userErrorCreate"), "error");
         }
 
         setIsLoading(false);

@@ -6,7 +6,7 @@ import { Save, Building2, Loader2, CheckCircle, XCircle, X } from "lucide-react"
 import { format } from "date-fns";
 import { getCompanyInfoAction } from "@/app/(root)/adminpanel/adminInfo/actions/getCompanyInfoAction";
 import { updateCompanyInfoAction } from "@/app/(root)/adminpanel/adminInfo/actions/updateCompanyInfoAction";
-
+import { useToast } from "@/components/ui/ToastProvider";
 
 type FormData = {
     companyId: string;
@@ -29,7 +29,7 @@ export default function AdminInfo() {
     const [isLoading, setIsLoading] = useState(true);
     const [isSaving, setIsSaving] = useState(false);
     const [error, setError] = useState("");
-    const [toast, setToast] = useState<{ message: string; type: "success" | "error" } | null>(null);
+    const { addToast } = useToast();
 
     useEffect(() => {
         const loadData = async () => {
@@ -46,13 +46,6 @@ export default function AdminInfo() {
 
         loadData();
     }, [t]);
-
-    useEffect(() => {
-        if (toast) {
-            const timer = setTimeout(() => setToast(null), 4000);
-            return () => clearTimeout(timer);
-        }
-    }, [toast]);
 
 
     const handleChange = (key: keyof FormData, value: string) => {
@@ -74,9 +67,9 @@ export default function AdminInfo() {
         const result = await updateCompanyInfoAction(formDataToSend);
 
         if (result.success) {
-            setToast({ message: t("adminPanel.adminInfo.savedAlert"), type: "success" });
+            addToast(t("toast.savedAlert"), "success");
         } else {
-            setToast({ message: t("adminPanel.adminInfo.saveError"), type: "error" });
+            addToast(t("toast.saveError"), "error");
         }
 
         setIsSaving(false);
@@ -196,7 +189,7 @@ export default function AdminInfo() {
                 <button
                     onClick={handleSave}
                     disabled={isSaving}
-                    className="flex items-center gap-2 px-8 py-3 bg-linear-to-r cl-decor text-white rounded-lg font-medium hover:from-[#4b0000] hover:to-[#600000] transition-all duration-300 hover:scale-105 hover:shadow-lg text-lg disabled:opacity-50"
+                    className="cursor-pointer flex items-center gap-2 px-8 py-3 bg-linear-to-r cl-decor text-white rounded-lg font-medium hover:from-[#4b0000] hover:to-[#600000] transition-all duration-300 hover:scale-105 hover:shadow-lg text-lg disabled:opacity-50"
                 >
                     {isSaving ? (
                         <Loader2 className="w-6 h-6 animate-spin" />
@@ -206,30 +199,6 @@ export default function AdminInfo() {
                     {isSaving ? t("adminPanel.adminInfo.saving") : t("adminPanel.adminInfo.saveChanges")}
                 </button>
             </div>
-            {/* Toast Notification */}
-            {toast && (
-                <div className="fixed bottom-6 right-6 z-50 animate-in slide-in-from-bottom-5 duration-300">
-                    <div
-                        className={`flex items-center gap-3 px-6 py-4 rounded-xl shadow-2xl backdrop-blur-md border ${toast.type === "success"
-                            ? "bg-green-50 dark:bg-green-900/30 border-green-200 dark:border-green-800 text-green-700 dark:text-green-300"
-                            : "bg-red-50 dark:bg-red-900/30 border-red-200 dark:border-red-800 text-red-700 dark:text-red-300"
-                            }`}
-                    >
-                        {toast.type === "success" ? (
-                            <CheckCircle className="w-6 h-6" />
-                        ) : (
-                            <XCircle className="w-6 h-6" />
-                        )}
-                        <span className="font-medium">{toast.message}</span>
-                        <button
-                            onClick={() => setToast(null)}
-                            className="ml-4 text-current opacity-70 hover:opacity-100 transition-opacity"
-                        >
-                            <X className="w-5 h-5" />
-                        </button>
-                    </div>
-                </div>
-            )}
         </div>
     );
 }
