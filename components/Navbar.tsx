@@ -1,4 +1,4 @@
-"use client";
+"use client"
 import { useState } from "react";
 import Link from "next/link";
 import { Menu, X, LogIn, LogOut, Sun, Moon, Shield } from "lucide-react";
@@ -8,7 +8,6 @@ import LanguageSelector from "./LanguageSelector";
 import { useTheme } from "@/app/theme/ThemeProvider";
 import { useRouter } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
-import { isAdmin } from "@/utils/auth";
 
 export default function Navbar() {
     const [isOpen, setIsOpen] = useState(false);
@@ -16,7 +15,7 @@ export default function Navbar() {
     const { theme, toggleTheme } = useTheme();
     const router = useRouter();
     const { data: session } = useSession();
-    const admin = isAdmin(session);
+    const isAdmin = session?.user?.role === "ADMIN"
     const toggleMenu = () => setIsOpen(!isOpen);
 
     const handleLoginClick = () => {
@@ -90,7 +89,7 @@ export default function Navbar() {
                         </button>
                         {session ? (
                             <>
-                                {admin && (
+                                {isAdmin && (
                                     <Link
                                         href="/adminpanel"
                                         className="flex items-center space-x-2 bg-gray-100/60 dark:bg-gray-800/60 text-gray-800 dark:text-gray-200 px-4 py-2 rounded-lg text-lg font-medium transition-all duration-200 hover:scale-105"
@@ -135,7 +134,7 @@ export default function Navbar() {
             >
                 <div className="px-4 py-4 space-y-3">
                     {/* mobile admin link */}
-                    {session && admin && (
+                    {session && isAdmin && (
                         <Link
                             href="/adminpanel"
                             className="block text-gray-800 dark:text-gray-200 hover:text-[#600000] dark:hover:text-[#600000] transition-all duration-300 hover:pl-2 text-lg font-semibold"
