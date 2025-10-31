@@ -1,4 +1,7 @@
 {
+    "common": {
+        "loading": "Bezig met laden..."
+    },
     "navbar": {
         "home": "Home",
         "about": "Over ons",
@@ -107,7 +110,12 @@
             "noEmail": "geen e-mail",
             "noName": "geen naam",
             "actions": "Acties",
-            "isActive": "Actief"
+            "isActive": "Actief",
+            "filter": {
+                "searchPlaceholder": "Zoeken in gebruikers...",
+                "noResults": "Geen resultaten voor zoekopdracht",
+                "filtered": "gefilterd"
+            }
         },
         "adminInfo": {
             "title": "Bedrijfsgegevens",

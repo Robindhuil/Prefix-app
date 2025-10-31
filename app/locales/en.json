@@ -1,4 +1,7 @@
 {
+    "common": {
+        "loading": "Loading..."
+    },
     "navbar": {
         "home": "Home",
         "about": "About",
@@ -107,7 +110,12 @@
             "noEmail": "no email",
             "noName": "no name",
             "actions": "Actions",
-            "isActive": "Is Active"
+            "isActive": "Is Active",
+            "filter": {
+                "searchPlaceholder": "Search in users...",
+                "noResults": "No results for search",
+                "filtered": "filtered"
+            }
         },
         "adminInfo": {
             "title": "Company Information",

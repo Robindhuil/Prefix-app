@@ -1,4 +1,7 @@
 {
+    "common": {
+        "loading": "Načítavam..."
+    },
     "navbar": {
         "home": "Domov",
         "about": "O nás",
@@ -110,7 +113,12 @@
             "noEmail": "žiadny email",
             "noName": "žiadne meno",
             "actions": "Akcie",
-            "isActive": "Aktívny"
+            "isActive": "Aktívny",
+            "filter": {
+                "searchPlaceholder": "Hľadať v používateľoch...",
+                "noResults": "Žiadne výsledky pre vyhľadávanie",
+                "filtered": "filtrované"
+            }
         },
         "adminInfo": {
             "title": "Informácie o firme",

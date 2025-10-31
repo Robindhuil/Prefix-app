@@ -1,11 +1,17 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useTranslation } from "@/app/i18n/I18nProvider";
 import { format } from "date-fns";
-import { User, Mail, Calendar, Edit, Shield, Pencil, Trash2, Check, X, Ban, CheckCircle } from "lucide-react";
+import {
+    User, Mail, Calendar, Edit, Shield, Pencil, Trash2, Check, X, Ban, CheckCircle,
+    ArrowUpDown, ArrowUp, ArrowDown, Search
+} from "lucide-react";
 import type { UserModel } from "./UsersSection";
 import { getUsersAction } from "@/app/(root)/adminpanel/users/actions/getUsersAction";
+
+type SortKey = "id" | "username" | "email" | "name" | "role" | "isActive" | "createdAt" | "updatedAt";
+type SortOrder = "asc" | "desc";
 
 type UsersTableProps = {
     onEdit: (user: UserModel) => void;
@@ -18,25 +24,90 @@ export default function UsersTable({ onEdit, onDelete, onToggleActive }: UsersTa
     const [users, setUsers] = useState<UserModel[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [sortKey, setSortKey] = useState<SortKey>("id");
+    const [sortOrder, setSortOrder] = useState<SortOrder>("asc");
+    const [searchQuery, setSearchQuery] = useState("");
 
     const fetchUsers = async () => {
         setLoading(true);
         setError(null);
-
         const result = await getUsersAction();
-
         if (result.success) {
             setUsers(result.data);
         } else {
             setError(result.error);
         }
-
         setLoading(false);
     };
 
     useEffect(() => {
         fetchUsers();
     }, []);
+
+    // Live filter + sort (useMemo pre výkon)
+    const filteredAndSortedUsers = useMemo(() => {
+        let filtered = users;
+
+        // === VYHĽADÁVANIE ===
+        if (searchQuery.trim()) {
+            const query = searchQuery.toLowerCase().trim();
+            filtered = users.filter(user =>
+                user.id.toString().includes(query) ||
+                user.username.toLowerCase().includes(query) ||
+                (user.email && user.email.toLowerCase().includes(query)) ||
+                (user.name && user.name.toLowerCase().includes(query)) ||
+                user.role.toLowerCase().includes(query)
+            );
+        }
+
+        // === ZORADENIE ===
+        return [...filtered].sort((a, b) => {
+            let aValue: any = a[sortKey];
+            let bValue: any = b[sortKey];
+
+            if (sortKey === "isActive") {
+                aValue = a.isActive ? 1 : 0;
+                bValue = b.isActive ? 1 : 0;
+            }
+
+            if (typeof aValue === "string" || typeof bValue === "string") {
+                const aStr = (aValue || "").toString().toLowerCase();
+                const bStr = (bValue || "").toString().toLowerCase();
+
+                if (aStr === "" && bStr !== "") return 1;
+                if (bStr === "" && aStr !== "") return -1;
+                if (aStr === "" && bStr === "") return 0;
+
+                if (aStr < bStr) return sortOrder === "asc" ? -1 : 1;
+                if (aStr > bStr) return sortOrder === "asc" ? 1 : -1;
+                return 0;
+            }
+
+            if (aValue == null && bValue != null) return 1;
+            if (bValue == null && aValue != null) return -1;
+            if (aValue == null && bValue == null) return 0;
+
+            if (aValue < bValue) return sortOrder === "asc" ? -1 : 1;
+            if (aValue > bValue) return sortOrder === "asc" ? 1 : -1;
+            return 0;
+        });
+    }, [users, searchQuery, sortKey, sortOrder]);
+
+    const handleSort = (key: SortKey) => {
+        if (sortKey === key) {
+            setSortOrder(prev => prev === "asc" ? "desc" : "asc");
+        } else {
+            setSortKey(key);
+            setSortOrder("asc");
+        }
+    };
+
+    const getSortIcon = (key: SortKey) => {
+        if (sortKey !== key) return <ArrowUpDown className="w-4 h-4 opacity-40 ml-1" />;
+        return sortOrder === "asc"
+            ? <ArrowUp className="w-4 h-4 ml-1 text-[#600000]" />
+            : <ArrowDown className="w-4 h-4 ml-1 text-[#600000]" />;
+    };
 
     if (loading) {
         return (
@@ -56,19 +127,43 @@ export default function UsersTable({ onEdit, onDelete, onToggleActive }: UsersTa
 
     return (
         <div className="w-full overflow-x-auto">
-            <div className="mb-6 flex items-center justify-between">
+            <div className="mb-6 flex flex-col sm:flex-row items-center justify-between gap-4">
                 <h3 className="text-2xl font-bold text-[#600000] dark:text-[#600000] flex items-center gap-2">
                     <User className="w-6 h-6" />
                     {t("adminPanel.usersList")}
                 </h3>
+
+                {/* VYHĽADÁVACÍ INPUT */}
+                <div className="relative w-full sm:w-80">
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                    <input
+                        type="text"
+                        placeholder={t("adminPanel.table.filter.searchPlaceholder") || "Hľadať v používateľoch..."}
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className="w-full pl-10 pr-4 py-2.5 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-gray-300 dark:border-gray-700 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#600000]/50 focus:border-[#600000] transition-all"
+                    />
+                    {searchQuery && (
+                        <button
+                            onClick={() => setSearchQuery("")}
+                            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                        >
+                            <X className="w-4 h-4" />
+                        </button>
+                    )}
+                </div>
+
                 <span className="text-sm text-gray-600 dark:text-gray-400">
-                    {t("adminPanel.totalUsers")} {users.length}
+                    {t("adminPanel.totalUsers")} {filteredAndSortedUsers.length}
+                    {searchQuery && ` (${t("adminPanel.table.filter.filtered")})`}
                 </span>
             </div>
 
-            {users.length === 0 ? (
+            {filteredAndSortedUsers.length === 0 ? (
                 <div className="text-center py-12">
-                    <p className="text-gray-500 dark:text-gray-400">{t("adminPanel.noUsers")}</p>
+                    <p className="text-gray-500 dark:text-gray-400">
+                        {searchQuery ? t("adminPanel.table.filter.noResults") : t("adminPanel.noUsers")}
+                    </p>
                 </div>
             ) : (
                 <div className="bg-white/50 dark:bg-gray-900/50 backdrop-blur-sm rounded-xl shadow-lg border border-gray-200 dark:border-gray-800 overflow-hidden">
@@ -76,33 +171,81 @@ export default function UsersTable({ onEdit, onDelete, onToggleActive }: UsersTa
                         <thead className="bg-gray-50 dark:bg-gray-800/50">
                             <tr>
                                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                                    {t("adminPanel.table.id")}
+                                    <button
+                                        onClick={() => handleSort("id")}
+                                        className="flex items-center gap-1 hover:text-[#600000] dark:hover:text-[#600000] transition-colors font-semibold"
+                                    >
+                                        {t("adminPanel.table.id")}
+                                        {getSortIcon("id")}
+                                    </button>
                                 </th>
                                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                                    {t("adminPanel.table.username")}
+                                    <button
+                                        onClick={() => handleSort("username")}
+                                        className="flex items-center gap-1 hover:text-[#600000] dark:hover:text-[#600000] transition-colors font-semibold"
+                                    >
+                                        {t("adminPanel.table.username")}
+                                        {getSortIcon("username")}
+                                    </button>
                                 </th>
                                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                                    <Mail className="w-4 h-4 inline mr-1" />
-                                    {t("adminPanel.table.email")}
+                                    <button
+                                        onClick={() => handleSort("email")}
+                                        className="flex items-center gap-1 hover:text-[#600000] dark:hover:text-[#600000] transition-colors font-semibold"
+                                    >
+                                        <Mail className="w-4 h-4 inline mr-1" />
+                                        {t("adminPanel.table.email")}
+                                        {getSortIcon("email")}
+                                    </button>
                                 </th>
                                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                                    {t("adminPanel.table.name")}
+                                    <button
+                                        onClick={() => handleSort("name")}
+                                        className="flex items-center gap-1 hover:text-[#600000] dark:hover:text-[#600000] transition-colors font-semibold"
+                                    >
+                                        {t("adminPanel.table.name")}
+                                        {getSortIcon("name")}
+                                    </button>
                                 </th>
                                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                                    <Shield className="w-4 h-4 inline mr-1" />
-                                    {t("adminPanel.table.role")}
+                                    <button
+                                        onClick={() => handleSort("role")}
+                                        className="flex items-center gap-1 hover:text-[#600000] dark:hover:text-[#600000] transition-colors font-semibold"
+                                    >
+                                        <Shield className="w-4 h-4 inline mr-1" />
+                                        {t("adminPanel.table.role")}
+                                        {getSortIcon("role")}
+                                    </button>
                                 </th>
                                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                                    <Shield className="w-4 h-4 inline mr-1" />
-                                    {t("adminPanel.table.isActive")}
+                                    <button
+                                        onClick={() => handleSort("isActive")}
+                                        className="flex items-center gap-1 hover:text-[#600000] dark:hover:text-[#600000] transition-colors font-semibold"
+                                    >
+                                        <Shield className="w-4 h-4 inline mr-1" />
+                                        {t("adminPanel.table.isActive")}
+                                        {getSortIcon("isActive")}
+                                    </button>
                                 </th>
                                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                                    <Calendar className="w-4 h-4 inline mr-1" />
-                                    {t("adminPanel.table.created")}
+                                    <button
+                                        onClick={() => handleSort("createdAt")}
+                                        className="flex items-center gap-1 hover:text-[#600000] dark:hover:text-[#600000] transition-colors font-semibold"
+                                    >
+                                        <Calendar className="w-4 h-4 inline mr-1" />
+                                        {t("adminPanel.table.created")}
+                                        {getSortIcon("createdAt")}
+                                    </button>
                                 </th>
                                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                                    <Edit className="w-4 h-4 inline mr-1" />
-                                    {t("adminPanel.table.updated")}
+                                    <button
+                                        onClick={() => handleSort("updatedAt")}
+                                        className="flex items-center gap-1 hover:text-[#600000] dark:hover:text-[#600000] transition-colors font-semibold"
+                                    >
+                                        <Edit className="w-4 h-4 inline mr-1" />
+                                        {t("adminPanel.table.updated")}
+                                        {getSortIcon("updatedAt")}
+                                    </button>
                                 </th>
                                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                                     {t("adminPanel.table.actions")}
@@ -110,7 +253,7 @@ export default function UsersTable({ onEdit, onDelete, onToggleActive }: UsersTa
                             </tr>
                         </thead>
                         <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-800">
-                            {users.map((user) => (
+                            {filteredAndSortedUsers.map((user) => (
                                 <tr
                                     key={user.id}
                                     className="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-200"
@@ -145,15 +288,16 @@ export default function UsersTable({ onEdit, onDelete, onToggleActive }: UsersTa
                                             {user.role}
                                         </span>
                                     </td>
-                                    <td className="px-6 py-4 text-sm text-gray-700 dark:text-gray-300">
-                                        <div className="flex justify-center items-center h-full">
+                                    <td className="px-6 py-4 text-sm text-gray-700 dark:text-gray-300 text-center align-middle">
+                                        <div className="w-6 flex justify-center">
                                             {user.isActive ? (
-                                                <Check className="text-green-500 w-5 h-5" />
+                                                <Check className="text-green-500 w-5 h-5 -translate-x-[0.5px]" />
                                             ) : (
-                                                <X className="text-red-500 w-5 h-5" />
+                                                <X className="text-red-500 w-5 h-5 -translate-x-[0.5px]" />
                                             )}
                                         </div>
                                     </td>
+
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-400">
                                         {format(new Date(user.createdAt), "dd.MM.yyyy HH:mm")}
                                     </td>
