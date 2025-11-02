@@ -18,6 +18,12 @@ model User {
   isActive       Boolean  @default(true)
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
+
+  // Dokumenty, ktoré patria užívateľovi
+  documents Document[] @relation("UserDocuments")
+
+  // Dokumenty, ktoré nahral
+  uploaded Document[] @relation("DocumentCreator")
 }
 
 enum Role {
@@ -40,4 +46,61 @@ model CompanyInfo {
   contactEmail          String
   createdAt             DateTime @default(now())
   updatedAt             DateTime @updatedAt
+}
+
+// ========================================
+// DOKUMENTY
+// ========================================
+// ========================================
+// DOKUMENTY
+// ========================================
+// ========================================
+// DOKUMENTY (pre MEGA / GCS / S3)
+// ========================================
+model Document {
+  id Int @id @default(autoincrement())
+
+  // Vlastník
+  userId Int
+  user   User @relation("UserDocuments", fields: [userId], references: [id], onDelete: Cascade)
+
+  // Kto nahral
+  createdBy Int
+  creator   User @relation("DocumentCreator", fields: [createdBy], references: [id])
+
+  // Súbor
+  fileName String
+  gcsPath  String @unique // MEGA: "https://mega.nz/file/abc#key" alebo GCS: "documents/user-123/file.enc"
+  mimeType String // "application/pdf"
+  size     Int? // v bytoch
+
+  // Šifrovanie (voliteľné – ak šifruješ TY)
+  iv         String? // base64
+  tag        String? // base64 (AES-GCM)
+  keyVersion Int? // rotácia kľúčov
+
+  // Integrita
+  hash String? // SHA256 base64
+
+  // Metadáta
+  documentType DocumentType
+  description  String?
+
+  // Audity
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime? // soft delete
+
+  @@index([userId])
+  @@index([createdBy])
+  @@index([documentType])
+  @@index([createdAt])
+  @@index([gcsPath])
+}
+
+enum DocumentType {
+  INVOICE
+  ORDER
+  CONTRACT
+  OTHER
 }

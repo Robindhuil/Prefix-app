@@ -1,3 +1,4 @@
+// lib/auth.config.ts
 import { PrismaClient } from '../app/generated/prisma/client';
 import { compare } from 'bcryptjs';
 import CredentialsProvider from 'next-auth/providers/credentials';
@@ -32,10 +33,7 @@ export const authConfig: NextAuthConfig = {
                 });
 
                 if (!user) return null;
-
-                if (!user.isActive) {
-                    throw new Error('ACCOUNT_DEACTIVATED');
-                }
+                if (!user.isActive) throw new Error('ACCOUNT_DEACTIVATED');
 
                 const isValid = await compare(password, user.hashedpassword);
                 if (!isValid) return null;
@@ -50,30 +48,26 @@ export const authConfig: NextAuthConfig = {
             },
         }),
     ],
-    pages: {
-        signIn: '/login',
-    },
-    session: {
-        strategy: 'jwt',
-        maxAge: 30 * 60,
-    },
+    pages: { signIn: '/login' },
+    session: { strategy: 'jwt', maxAge: 30 * 60 },
     callbacks: {
+        // PRIDAJ ID DO JWT + SESSION
         async jwt({ token, user }) {
-            // pri prihlásení
             if (user) {
+                token.id = user.id;           // ← PRIDAJ!
                 token.role = user.role;
                 token.isActive = user.isActive;
             }
 
-            // pri každom requeste
-            if (token?.name) {
+            // Overenie aktivity pri každom requeste
+            if (token?.name && !token.id) {
                 const dbUser = await prisma.user.findUnique({
                     where: { username: token.name as string },
-                    select: { isActive: true },
+                    select: { id: true, isActive: true },
                 });
-
-                if (!dbUser || !dbUser.isActive) {
-                    token.isActive = false;
+                if (dbUser) {
+                    token.id = dbUser.id.toString();
+                    token.isActive = dbUser.isActive;
                 }
             }
 
@@ -81,14 +75,12 @@ export const authConfig: NextAuthConfig = {
         },
 
         async session({ session, token }) {
-            if (session.user) {
-                if (token.role === 'ADMIN' || token.role === 'USER') {
-                    session.user.role = token.role;
-                }
+            if (session.user && token.id) {
+                session.user.id = token.id as string;  // ← PRIDAJ!
+                session.user.role = token.role as "USER" | "ADMIN";
                 session.user.isActive = token.isActive as boolean;
             }
 
-            // ❗ ak je zabanovaný, vráť prázdnu session (typovo validnú)
             if (token.isActive === false) {
                 session.user = {
                     name: 'Deactivated',
