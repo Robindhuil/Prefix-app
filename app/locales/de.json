@@ -30,7 +30,9 @@
         "userDeactived": "Benutzer wurde erfolgreich deaktiviert.",
         "userToggleActivateError": "Beim Ändern des Aktivierungsstatus des Benutzers ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.",
         "userLogged": "Erfolgreich angemeldet.",
-        "UserLoginError": "Fehler beim Anmelden des Benutzers. Bitte versuchen Sie es erneut."
+        "userLoginError": "Fehler beim Anmelden des Benutzers. Bitte versuchen Sie es erneut.",
+        "documentUploaded": "Dokument wurde erfolgreich hochgeladen.",
+        "documentUploadError": "Beim Hochladen des Dokuments ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut."
     },
     "footer": {
         "newsletter": "Newsletter",

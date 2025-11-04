@@ -30,7 +30,9 @@
         "userDeactived": "Gebruiker is succesvol gedeactiveerd.",
         "userToggleActivateError": "Er is een fout opgetreden bij het wijzigen van de activatiestatus van de gebruiker. Probeer het opnieuw.",
         "userLogged": "Succesvol ingelogd.",
-        "UserLoginError": "Fout bij het inloggen van de gebruiker. Probeer het opnieuw."
+        "userLoginError": "Fout bij het inloggen van de gebruiker. Probeer het opnieuw.",
+        "documentUploaded": "Document is succesvol geüpload.",
+        "documentUploadError": "Er is een fout opgetreden bij het uploaden van het document. Probeer het opnieuw."
     },
     "footer": {
         "newsletter": "Nieuwsbrief",

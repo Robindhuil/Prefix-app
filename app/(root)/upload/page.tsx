@@ -5,6 +5,7 @@ import { useDropzone } from "react-dropzone";
 import { Upload, FileText, X, CheckCircle, AlertCircle } from "lucide-react";
 import { useTranslation } from "@/app/i18n/I18nProvider";
 import { megaUploadAction } from "./actions/megaUploadAction";
+import { useToast } from "@/components/ui/ToastProvider";
 
 
 export default function UploadPage() {
@@ -14,6 +15,8 @@ export default function UploadPage() {
     const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
     const [message, setMessage] = useState("");
     const [dragActive, setDragActive] = useState(false);
+    const { addToast } = useToast();
+
 
     const onDrop = (acceptedFiles: File[]) => {
         if (acceptedFiles.length > 0) {
@@ -56,6 +59,11 @@ export default function UploadPage() {
                 setStatus("success");
                 setMessage(t("upload.success") || "Dokument bol úspešne nahraný!");
                 setFile(null);
+                if (result.success) {
+                    addToast(t("toast.documentUploaded"), "success");
+                } else {
+                    addToast(t("toast.documentUploadError"), "error");
+                }
             } else {
                 setStatus("error");
                 setMessage(result.error || t("upload.error") || "Chyba pri nahrávaní");

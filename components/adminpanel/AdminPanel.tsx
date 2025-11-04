@@ -1,24 +1,22 @@
+// app/(root)/adminpanel/page.tsx
 "use client";
 
 import { useState, useEffect } from "react";
 import AdminHeader from "@/components/adminpanel/AdminHeader";
 import UsersSection from "@/components/adminpanel/users/UsersSection";
 import AdminSection from "@/components/adminpanel/AdminSection";
+import WorkPeriodsSection from "@/components/adminpanel/workperiods/WorkPeriodsSection";
 
-type Tab = "users" | "admin";
+type Tab = "users" | "admin" | "workperiods";
 
 export default function AdminPanel() {
     const [activeTab, setActiveTab] = useState<Tab>("users");
 
-    // 🔹 Načítaj uložený tab z localStorage pri načítaní stránky
     useEffect(() => {
-        const savedTab = localStorage.getItem("activeAdminTab") as Tab | null;
-        if (savedTab === "users" || savedTab === "admin") {
-            setActiveTab(savedTab);
-        }
+        const saved = localStorage.getItem("activeAdminTab") as Tab | null;
+        if (saved) setActiveTab(saved);
     }, []);
 
-    // 🔹 Ulož tab vždy, keď sa zmení
     useEffect(() => {
         localStorage.setItem("activeAdminTab", activeTab);
     }, [activeTab]);
@@ -30,6 +28,7 @@ export default function AdminPanel() {
                 <div className="bg-card backdrop-blur-xl rounded-2xl shadow-xl border border-gray-200 dark:border-gray-800 p-8 min-h-96">
                     {activeTab === "users" && <UsersSection />}
                     {activeTab === "admin" && <AdminSection />}
+                    {activeTab === "workperiods" && <WorkPeriodsSection />}
                 </div>
             </div>
         </div>

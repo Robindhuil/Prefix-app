@@ -19,11 +19,14 @@ model User {
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 
-  // Dokumenty, ktoré patria užívateľovi
+  // Dokumenty patriace používateľovi
   documents Document[] @relation("UserDocuments")
 
   // Dokumenty, ktoré nahral
   uploaded Document[] @relation("DocumentCreator")
+
+  // 🔹 Priradenia do pracovných období
+  assignments UserAssignment[]
 }
 
 enum Role {
@@ -48,12 +51,6 @@ model CompanyInfo {
   updatedAt             DateTime @updatedAt
 }
 
-// ========================================
-// DOKUMENTY
-// ========================================
-// ========================================
-// DOKUMENTY
-// ========================================
 // ========================================
 // DOKUMENTY (pre MEGA / GCS / S3)
 // ========================================
@@ -87,9 +84,10 @@ model Document {
   description  String?
 
   // Audity
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  deletedAt DateTime? // soft delete
+  createdAt       DateTime             @default(now())
+  updatedAt       DateTime             @updatedAt
+  deletedAt       DateTime? // soft delete
+  assignmentLinks AssignmentDocument[]
 
   @@index([userId])
   @@index([createdBy])
@@ -103,4 +101,80 @@ enum DocumentType {
   ORDER
   CONTRACT
   OTHER
+}
+
+// ========================================
+// PRACOVNÉ OBDOBIA / PROJEKTY / KARTY
+// ========================================
+model WorkPeriod {
+  id          Int      @id @default(autoincrement())
+  title       String // napr. "Stavba A – marec 2025"
+  startDate   DateTime
+  endDate     DateTime
+  description String?
+
+  // Požiadavka – koľko ľudí a akých profesií je treba
+  requirements WorkRequirement[]
+
+  // Priradení pracovníci
+  assignments UserAssignment[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ========================================
+// POŽIADAVKY NA PROFESIE V DANOM OBDOBÍ
+// ========================================
+model WorkRequirement {
+  id           Int        @id @default(autoincrement())
+  profession   Profession
+  countNeeded  Int
+  workPeriod   WorkPeriod @relation(fields: [workPeriodId], references: [id])
+  workPeriodId Int
+}
+
+enum Profession {
+  WELDER
+  BRICKLAYER
+  OTHER
+}
+
+// ========================================
+// PRIRADENIE UŽÍVATEĽA K OBDOBIU
+// ========================================
+model UserAssignment {
+  id           Int @id @default(autoincrement())
+  userId       Int
+  workPeriodId Int
+
+  // flexibilné obdobie
+  fromDate DateTime
+  toDate   DateTime
+
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  workPeriod WorkPeriod @relation(fields: [workPeriodId], references: [id], onDelete: Cascade)
+
+  // Dokumenty špecifické pre daného užívateľa v tomto období
+  documents AssignmentDocument[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([workPeriodId])
+}
+
+// ========================================
+// DOKUMENTY NAVIAZANÉ NA ASSIGNMENT
+// ========================================
+model AssignmentDocument {
+  id               Int @id @default(autoincrement())
+  userAssignmentId Int
+  documentId       Int
+
+  userAssignment UserAssignment @relation(fields: [userAssignmentId], references: [id], onDelete: Cascade)
+  document       Document       @relation(fields: [documentId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
 }

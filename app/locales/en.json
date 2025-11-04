@@ -30,7 +30,9 @@
         "userDeactived": "User has been deactivated successfully.",
         "userToggleActivateError": "An error occurred while changing the user's activation status. Please try again.",
         "userLogged": "Successfully logged in.",
-        "UserLoginError": "Error logging in user. Please try again."
+        "userLoginError": "Error logging in user. Please try again.",
+        "documentUploaded": "Document has been uploaded successfully.",
+        "documentUploadError": "An error occurred while uploading the document. Please try again."
     },
     "footer": {
         "newsletter": "Newsletter",

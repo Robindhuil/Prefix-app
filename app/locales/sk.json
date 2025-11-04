@@ -30,7 +30,9 @@
         "userDeactived": "Používateľ bol úspešne deaktivovaný.",
         "userToggleActivateError": "Nastala chyba pri zmene stavu aktivácie používateľa. Skúste to znova.",
         "userLogged": "Úspešne prihlásený.",
-        "UserLoginError": "Chyba pri prihlásení používateľa. Skúste to znova."
+        "userLoginError": "Chyba pri prihlásení používateľa. Skúste to znova.",
+        "documentUploaded": "Dokument bol úspešne nahraný.",
+        "documentUploadError": "Nastala chyba pri nahrávaní dokumentu. Skúste to znova."
     },
     "footer": {
         "newsletter": "Newsletter",
