@@ -35,14 +35,25 @@ export default function CreateWorkPeriodForm({ onSuccess }: { onSuccess: () => v
         });
 
         if (result.success) {
-            setMessage("✅ Karta bola úspešne vytvorená!");
-            setTimeout(onSuccess, 1500);
+            setMessage("Karta vytvorená!");
+
+            // RESET + AJAX REFRESH
+            setTitle("");
+            setDescription("");
+            setStartDate("");
+            setEndDate("");
+            setRequirements({ WELDER: 0, BRICKLAYER: 0, OTHER: 0 });
+
+            // IHNEĎ REFRESH KARIET
+            window.dispatchEvent(new Event("workperiod:created"));
+
+            // Zatvor form po 1s
+            setTimeout(onSuccess, 1000);
         } else {
-            setMessage(`❌ Chyba: ${result.error}`);
+            setMessage(`Chyba: ${result.error}`);
         }
         setLoading(false);
     };
-
     return (
         <form onSubmit={handleSubmit} className="space-y-6 bg-white/90 dark:bg-gray-900/90 p-8 rounded-xl shadow-lg">
             <div>

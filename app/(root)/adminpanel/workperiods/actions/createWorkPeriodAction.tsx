@@ -18,7 +18,7 @@ export async function createWorkPeriodAction(data: {
   }
 
   try {
-    await prisma.workPeriod.create({
+    const period = await prisma.workPeriod.create({
       data: {
         title: data.title,
         description: data.description,
@@ -31,10 +31,13 @@ export async function createWorkPeriodAction(data: {
           })),
         },
       },
+      select: { id: true }, // ← vraciame ID
     });
 
     revalidatePath("/admin");
-    return { success: true };
+    revalidatePath("/admin/workperiods");
+
+    return { success: true, id: period.id };
   } catch (err: any) {
     console.error("CREATE WORKPERIOD ERROR:", err);
     return { success: false, error: err.message || "Chyba servera" };
