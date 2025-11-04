@@ -13,51 +13,47 @@ type WorkPeriod = {
     description: string | null;
 };
 
+type Props = {
+    onSelect?: (id: number) => void;
+    selectedId?: number | null;
+    sidebarOpen: boolean;   // ← NOVÉ
+};
+
 const TODAY = new Date();
 TODAY.setHours(0, 0, 0, 0);
 
-export default function WorkPeriodsDashboard() {
+export default function WorkPeriodsDashboard({ onSelect, selectedId: externalSelectedId, sidebarOpen }: Props) {
     const { t } = useTranslation();
     const [periods, setPeriods] = useState<WorkPeriod[]>([]);
     const [loading, setLoading] = useState(true);
-    const [selectedId, setSelectedId] = useState<number | null>(null);
-    const [justAddedId, setJustAddedId] = useState<number | null>(null); // ← NOVÉ
+    const [highlightId, setHighlightId] = useState<number | null>(null);
 
     const loadPeriods = async () => {
         setLoading(true);
         const data = await getWorkPeriods();
         setPeriods(data);
-
-        // Ak bola nová karta pridaná, označ ju na 2s
-        const urlParams = new URLSearchParams(window.location.search);
-        const newId = urlParams.get("new");
-        if (newId) {
-            setJustAddedId(parseInt(newId));
-            setTimeout(() => setJustAddedId(null), 2000);
-            // Odstráň parameter z URL
-            window.history.replaceState({}, "", window.location.pathname);
-        }
-
         setLoading(false);
     };
 
-    useEffect(() => {
-        loadPeriods();
-    }, []);
+    useEffect(() => { loadPeriods(); }, []);
 
     useEffect(() => {
-        const handler = () => loadPeriods();
+        const handler = (e: Event) => {
+            const id = (e as CustomEvent).detail;
+            setHighlightId(id);
+            loadPeriods();
+            setTimeout(() => setHighlightId(null), 3000);
+        };
         window.addEventListener("workperiod:created", handler);
         return () => window.removeEventListener("workperiod:created", handler);
     }, []);
 
-    const formatDate = (date: string) =>
-        new Date(date).toLocaleDateString("sk-SK", { day: "2-digit", month: "2-digit", year: "numeric" });
-
     const isActive = (s: string, e: string) => new Date(s) <= TODAY && TODAY <= new Date(e);
+    const formatDate = (d: string) => new Date(d).toLocaleDateString("sk-SK", { day: "2-digit", month: "2-digit", year: "numeric" });
 
     return (
-        <div className="w-full space-y-4">
+        // ← JEDINÁ ZMENA: pridaj triedu pre slide
+        <div className={`w-full space-y-4 transition-transform duration-300 ${sidebarOpen ? "translate-x-0" : "-translate-x-64"} lg:translate-x-0`}>
             <h3 className="text-xl font-bold text-[#600000] dark:text-[#600000] flex items-center gap-2">
                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M4 4h12v2H4V4zm0 4h12v8H4V8zm2 2v4h4v-4H6z" />
@@ -77,27 +73,23 @@ export default function WorkPeriodsDashboard() {
                 <div className="space-y-3">
                     {periods.map(period => {
                         const active = isActive(period.startDate, period.endDate);
-                        const isNew = justAddedId === period.id;
+                        const isNew = highlightId === period.id;
+                        const isSelected = externalSelectedId === period.id;
 
                         return (
                             <div
                                 key={period.id}
-                                onClick={() => setSelectedId(period.id)}
+                                onClick={() => onSelect?.(period.id)}
                                 className={`
-                  p-4 rounded-lg border cursor-pointer transition-all relative overflow-hidden
-                  bg-white dark:bg-gray-800
-                  ${active
-                                        ? "border-green-600 ring-2 ring-green-500 ring-offset-2 shadow-lg"
-                                        : "border-gray-300 dark:border-gray-600 hover:border-[#600000]"
-                                    }
-                  hover:shadow-md hover:-translate-y-0.5
-                  ${isNew ? "animate-in slide-in-from-left-4 duration-500" : ""}
-                `}
+                                    p-4 rounded-lg border cursor-pointer transition-all relative overflow-hidden
+                                    bg-white dark:bg-gray-800
+                                    ${active ? "border-green-600 ring-2 ring-green-500" : "border-gray-300 dark:border-gray-600"}
+                                    ${isSelected ? "ring-2 ring-[#600000] ring-offset-2" : ""}
+                                    hover:shadow-md hover:-translate-y-0.5
+                                    ${isNew ? "animate-in slide-in-from-left-8" : ""}
+                                `}
                             >
-                                {/* NOVÁ KARTA → ZELENÝ PRUH */}
-                                {isNew && (
-                                    <div className="absolute left-0 top-0 bottom-0 w-1 bg-green-500 animate-pulse" />
-                                )}
+                                {isNew && <div className="absolute inset-y-0 left-0 w-1.5 bg-green-500 animate-pulse" />}
 
                                 <div className="flex justify-between items-start">
                                     <h4 className={`font-semibold line-clamp-2 ${active ? "text-green-700 dark:text-green-400" : "text-[#600000]"}`}>
@@ -123,24 +115,6 @@ export default function WorkPeriodsDashboard() {
                                     {formatDate(period.startDate)} – {formatDate(period.endDate)}
                                     {active && <span className="ml-2 text-xs font-bold text-green-600">→ AKTÍVNE</span>}
                                 </p>
-
-                                {selectedId === period.id && (
-                                    <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
-                                        {period.description ? (
-                                            <p className="text-sm text-gray-600 dark:text-gray-400">{period.description}</p>
-                                        ) : (
-                                            <p className="text-sm italic text-gray-500">{t("noDescription")}</p>
-                                        )}
-                                        <div className="mt-3 flex gap-2">
-                                            <button className={`text-xs px-3 py-1.5 rounded transition ${active ? "bg-green-600 hover:bg-green-700 text-white" : "bg-[#600000] hover:bg-[#4b0000] text-white"}`}>
-                                                {t("viewDocuments")}
-                                            </button>
-                                            <button className="text-xs border border-[#600000] text-[#600000] px-3 py-1.5 rounded hover:bg-[#600000]/5 transition">
-                                                {t("edit")}
-                                            </button>
-                                        </div>
-                                    </div>
-                                )}
                             </div>
                         );
                     })}
