@@ -130,7 +130,7 @@ model WorkRequirement {
   id           Int        @id @default(autoincrement())
   profession   Profession
   countNeeded  Int
-  workPeriod   WorkPeriod @relation(fields: [workPeriodId], references: [id])
+  workPeriod   WorkPeriod @relation(fields: [workPeriodId], references: [id], onDelete: Cascade)
   workPeriodId Int
 }
 
