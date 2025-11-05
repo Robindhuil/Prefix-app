@@ -2,9 +2,12 @@
 
 import { useState, useEffect } from "react";
 import { assignUserToWorkPeriodAction } from "@/app/(root)/adminpanel/workperiods/actions/assignUserToWorkPeriodAction";
+import { updateAssignmentAction } from "@/app/(root)/adminpanel/workperiods/actions/updateAssignmentAction";
 import { searchUsersAction } from "@/app/(root)/adminpanel/workperiods/actions/searchUsersAction";
 import { removeAssignmentAction } from "@/app/(root)/adminpanel/workperiods/actions/removeAssignmentAction";
 import { Profession } from "@/app/generated/prisma/client";
+import RemoveAssignmentModal from "./RemoveAssignmentModal";
+
 export default function AssignedUsersTable({
     periodId,
     assignments,
@@ -22,6 +25,13 @@ export default function AssignedUsersTable({
     }[];
 }) {
     const [adding, setAdding] = useState(false);
+    const [editingAssignment, setEditingAssignment] = useState<null | {
+        userId: number;
+        profession: Profession;
+        fromDate: string;
+        toDate: string;
+    }>(null);
+
     const [search, setSearch] = useState("");
     const [searchResults, setSearchResults] = useState<
         { id: number; username: string; name: string | null }[]
@@ -31,8 +41,11 @@ export default function AssignedUsersTable({
     const [toDate, setToDate] = useState(endDate);
     const [profession, setProfession] = useState<Profession>(Profession.OTHER);
     const [message, setMessage] = useState("");
+    const [showRemoveModal, setShowRemoveModal] = useState(false);
+    const [selectedUser, setSelectedUser] = useState<{ id: number; username: string; name?: string | null } | null>(null);
 
-    // 🔍 Dynamické vyhľadávanie používateľov
+
+    // 🔍 Vyhľadávanie používateľov
     useEffect(() => {
         const fetchUsers = async () => {
             if (search.trim().length < 2) {
@@ -40,14 +53,19 @@ export default function AssignedUsersTable({
                 return;
             }
             const res = await searchUsersAction(search);
-            if (res.success) setSearchResults(res.users);
+            if (res.success) {
+                // ❌ odfiltrujeme už priradených
+                const assignedIds = assignments.map((a) => a.user.id);
+                const filtered = res.users.filter((u) => !assignedIds.includes(u.id));
+                setSearchResults(filtered);
+            }
         };
         const delay = setTimeout(fetchUsers, 300);
         return () => clearTimeout(delay);
-    }, [search]);
+    }, [search, assignments]);
 
-    // ➕ Pridanie používateľa
-    const handleAdd = async (e: React.FormEvent) => {
+    // ➕ Pridanie alebo ✏️ úprava
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!userId) {
             setMessage("Vyber používateľa.");
@@ -56,22 +74,34 @@ export default function AssignedUsersTable({
         setAdding(true);
         setMessage("");
 
-        const res = await assignUserToWorkPeriodAction({
-            userId,
-            workPeriodId: periodId,
-            fromDate,
-            toDate,
-            profession,
-        });
+        let res;
+        if (editingAssignment) {
+            res = await updateAssignmentAction({
+                userId,
+                workPeriodId: periodId,
+                fromDate,
+                toDate,
+                profession,
+            });
+        } else {
+            res = await assignUserToWorkPeriodAction({
+                userId,
+                workPeriodId: periodId,
+                fromDate,
+                toDate,
+                profession,
+            });
+        }
 
         if (res.success) {
-            setMessage("✅ Pracovník pridaný.");
+            setMessage(editingAssignment ? "✅ Údaje upravené." : "✅ Pracovník pridaný.");
             setSearch("");
             setSearchResults([]);
             setUserId(null);
             setProfession(Profession.OTHER);
             setFromDate(startDate);
             setToDate(endDate);
+            setEditingAssignment(null);
             window.dispatchEvent(new Event("assignment:changed"));
         } else {
             setMessage(`❌ ${res.error}`);
@@ -91,7 +121,23 @@ export default function AssignedUsersTable({
         }
     };
 
-    // 🗓️ Formátovanie dátumu
+    // 🖊️ Spustenie editácie
+    const handleEdit = (a: any) => {
+        setEditingAssignment({
+            userId: a.user.id,
+            profession: a.profession,
+            fromDate: a.fromDate.split("T")[0],
+            toDate: a.toDate.split("T")[0],
+        });
+        setUserId(a.user.id);
+        setSearch(`${a.user.name || "noname"} (${a.user.username})`);
+        setProfession(a.profession);
+        setFromDate(a.fromDate.split("T")[0]);
+        setToDate(a.toDate.split("T")[0]);
+        setSearchResults([]);
+        window.scrollTo({ top: 0, behavior: "smooth" });
+    };
+
     const formatDate = (d: string) =>
         new Date(d).toLocaleDateString("sk-SK", {
             day: "2-digit",
@@ -103,7 +149,7 @@ export default function AssignedUsersTable({
         <div className="bg-gray-50 dark:bg-gray-800 p-6 rounded-xl mt-6 mb-6 space-y-6">
             {/* FORMULÁR */}
             <form
-                onSubmit={handleAdd}
+                onSubmit={handleSubmit}
                 className="grid grid-cols-1 md:grid-cols-6 gap-4 relative"
             >
                 {/* Vyhľadávanie */}
@@ -113,6 +159,7 @@ export default function AssignedUsersTable({
                         placeholder="Vyhľadaj používateľa (meno alebo @username)"
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
+                        disabled={!!editingAssignment}
                         className="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-600"
                     />
                     {searchResults.length > 0 && (
@@ -170,59 +217,94 @@ export default function AssignedUsersTable({
                     disabled={adding}
                     className="bg-[#600000] text-white rounded-lg font-bold hover:bg-[#4b0000] transition px-4 py-3 disabled:opacity-50"
                 >
-                    {adding ? "Pridávam..." : "Pridať"}
+                    {adding
+                        ? "Ukladám..."
+                        : editingAssignment
+                            ? "Uložiť zmeny"
+                            : "Pridať"}
                 </button>
+
+                {/* Reset editácie */}
+                {editingAssignment && (
+                    <button
+                        type="button"
+                        onClick={() => {
+                            setEditingAssignment(null);
+                            setSearch("");
+                            setUserId(null);
+                            setFromDate(startDate);
+                            setToDate(endDate);
+                            setProfession(Profession.OTHER);
+                        }}
+                        className="bg-gray-300 text-gray-900 rounded-lg font-medium hover:bg-gray-400 transition px-4 py-3"
+                    >
+                        Zrušiť
+                    </button>
+                )}
             </form>
 
-            {/* Správa */}
             {message && (
                 <p
                     className={`text-center text-sm font-medium ${message.includes("✅")
-                            ? "text-green-600"
-                            : "text-red-600"
+                        ? "text-green-600"
+                        : "text-red-600"
                         }`}
                 >
                     {message}
                 </p>
             )}
 
-            {/* ZOZNAM PRIRADENÝCH */}
-            <div className="mt-8">
+            {/* ZOZNAM */}
+            <div className="mt-8 space-y-3">
                 {assignments.length === 0 ? (
                     <p className="text-gray-500 italic">
                         Zatiaľ nikto nie je priradený
                     </p>
                 ) : (
-                    <div className="space-y-3">
-                        {assignments.map((a) => (
-                            <div
-                                key={a.user.id}
-                                className="flex items-center justify-between bg-white dark:bg-gray-900 p-4 rounded-lg border border-gray-200 dark:border-gray-700"
-                            >
-                                <div>
-                                    <p className="font-medium">
-                                        {a.user.name || a.user.username} (@
-                                        {a.user.username})
-                                    </p>
-                                    <p className="text-sm text-gray-600">
-                                        {a.profession === "WELDER"
-                                            ? "Zvárač"
-                                            : a.profession === "BRICKLAYER"
-                                                ? "Murár"
-                                                : "Ostatné"}{" "}
-                                        • {formatDate(a.fromDate)} –{" "}
-                                        {formatDate(a.toDate)}
-                                    </p>
-                                </div>
+                    assignments.map((a) => (
+                        <div
+                            key={a.user.id}
+                            className="flex items-center justify-between bg-white dark:bg-gray-900 p-4 rounded-lg border border-gray-200 dark:border-gray-700"
+                        >
+                            <div>
+                                <p className="font-medium">
+                                    {a.user.name || "noname"} (@{a.user.username})
+                                </p>
+                                <p className="text-sm text-gray-600">
+                                    {a.profession === "WELDER"
+                                        ? "Zvárač"
+                                        : a.profession === "BRICKLAYER"
+                                            ? "Murár"
+                                            : "Ostatné"}{" "}
+                                    • {formatDate(a.fromDate)} – {formatDate(a.toDate)}
+                                </p>
+                            </div>
+                            <div className="flex gap-2">
                                 <button
-                                    onClick={() => handleRemove(a.user.id)}
+                                    onClick={() => handleEdit(a)}
+                                    className="text-xs bg-blue-600 text-white px-3 py-1.5 rounded hover:bg-blue-700"
+                                >
+                                    Upraviť
+                                </button>
+                                <button
+                                    onClick={() => {
+                                        setSelectedUser(a.user);
+                                        setShowRemoveModal(true);
+                                    }}
                                     className="text-xs bg-red-600 text-white px-3 py-1.5 rounded hover:bg-red-700"
                                 >
                                     Odstrániť
                                 </button>
+                                <RemoveAssignmentModal
+                                    isOpen={showRemoveModal}
+                                    onClose={() => setShowRemoveModal(false)}
+                                    user={selectedUser}
+                                    workPeriodId={periodId}
+                                    onSuccess={() => window.dispatchEvent(new Event("assignment:changed"))}
+                                />
                             </div>
-                        ))}
-                    </div>
+                        </div>
+                    ))
                 )}
             </div>
         </div>
