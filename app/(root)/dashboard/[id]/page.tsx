@@ -3,11 +3,13 @@ import { redirect } from "next/navigation";
 import prisma from "@/lib/prisma";
 import DashboardContent from "@/components/dashboard/DashboardContent";
 
-export default async function DashboardPage({ params }: { params: { id: string } }) {
+// app/dashboard/[id]/page.tsx
+export default async function DashboardPage({ params }: { params: Promise<{ id: string }> }) {
+    const { id } = await params;
+    const userId = Number(id);
     const session = await auth();
     if (!session?.user) redirect("/login");
 
-    const userId = Number(params.id);
     if (session.user.role !== "ADMIN" && Number(session.user.id) !== userId) {
         redirect("/unauthorized");
     }

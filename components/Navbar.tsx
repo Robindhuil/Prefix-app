@@ -79,7 +79,14 @@ export default function Navbar() {
 
                     {/* Right Controls - Very Right */}
                     <div className="hidden md:flex items-center space-x-4 pr-2 sm:pr-4">
-
+                        <LanguageSelector />
+                        <button
+                            onClick={toggleTheme}
+                            aria-label="Toggle theme"
+                            className="flex items-center justify-center w-12 h-12 cursor-pointer rounded-full bg-gray-200/80 dark:bg-gray-800/80 text-gray-800 dark:text-gray-200 hover:bg-[#600000]/20 dark:hover:bg-[#600000]/20 transition-all duration-300 hover:scale-110"
+                        >
+                            {theme === "light" ? <Sun className="w-6 h-6" /> : <Moon className="w-6 h-6" />}
+                        </button>
                         {session ? (
                             <div className="flex items-center gap-4">
                                 {/* 2. ADMIN PANEL (ak je admin) */}
@@ -100,14 +107,7 @@ export default function Navbar() {
                                     <Home className="w-6 h-6" />
                                     <span>Dashboard</span>
                                 </Link>
-                                <LanguageSelector />
-                                <button
-                                    onClick={toggleTheme}
-                                    aria-label="Toggle theme"
-                                    className="flex items-center justify-center w-12 h-12 cursor-pointer rounded-full bg-gray-200/80 dark:bg-gray-800/80 text-gray-800 dark:text-gray-200 hover:bg-[#600000]/20 dark:hover:bg-[#600000]/20 transition-all duration-300 hover:scale-110"
-                                >
-                                    {theme === "light" ? <Sun className="w-6 h-6" /> : <Moon className="w-6 h-6" />}
-                                </button>
+
 
                                 {/* 3. ODHLÁSIŤ SA */}
                                 <button

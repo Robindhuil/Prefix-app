@@ -35,8 +35,8 @@ export default function DashboardContent({ user }: { user: any }) {
                 <button
                     onClick={() => switchTab("profil")}
                     className={`px-8 py-4 font-bold text-lg border-b-4 transition ${activeTab === "profil"
-                            ? "border-[#600000] text-[#600000]"
-                            : "border-transparent text-gray-500 hover:text-[#600000]"
+                        ? "border-[#600000] text-[#600000]"
+                        : "border-transparent text-gray-500 hover:text-[#600000]"
                         }`}
                 >
                     Profil
@@ -44,8 +44,8 @@ export default function DashboardContent({ user }: { user: any }) {
                 <button
                     onClick={() => switchTab("priradenia")}
                     className={`px-8 py-4 font-bold text-lg border-b-4 transition ${activeTab === "priradenia"
-                            ? "border-[#600000] text-[#600000]"
-                            : "border-transparent text-gray-500 hover:text-[#600000]"
+                        ? "border-[#600000] text-[#600000]"
+                        : "border-transparent text-gray-500 hover:text-[#600000]"
                         }`}
                 >
                     Priradenia
@@ -59,8 +59,7 @@ export default function DashboardContent({ user }: { user: any }) {
                         <PasswordForm />
                     </div>
                 ) : (
-                    <AssignmentsList assignments={user.assignments} />
-                )}
+                    <AssignmentsList assignments={user.assignments} userId={user.id} />)}
             </div>
         </div>
     );

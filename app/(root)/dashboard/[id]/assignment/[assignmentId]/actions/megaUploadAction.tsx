@@ -1,4 +1,4 @@
-// app/(root)/upload/actions/megaUploadAction.ts
+// app/(root)/dashboard/[id]/assignment/[assignmentId]/actions/megaUploadAction.ts
 "use server";
 
 import { auth } from "@/lib/auth";
@@ -8,7 +8,11 @@ import { Storage } from "megajs";
 const MEGA_EMAIL = process.env.MEGA_EMAIL!;
 const MEGA_PASSWORD = process.env.MEGA_PASSWORD!;
 
-export async function megaUploadAction(file: File) {
+export async function megaUploadAction(
+    file: File,
+    assignmentId: number,
+    documentType: "INVOICE" | "ORDER" | "CONTRACT" | "OTHER"
+) {
     const session = await auth();
     if (!session?.user?.id) return { success: false, error: "Neautorizovaný" };
 
@@ -18,25 +22,19 @@ export async function megaUploadAction(file: File) {
     try {
         const buffer = Buffer.from(await file.arrayBuffer());
 
-        // Prihlásenie
         const storage = await new Storage({
             email: MEGA_EMAIL,
             password: MEGA_PASSWORD,
         }).ready;
 
-        // Nahraj súbor
-        const uploadStream = storage.upload({
-            name: `${userId}_${file.name}`,
+        const uploadedFile = await storage.upload({
+            name: `${assignmentId}_${userId}_${file.name}`,
             size: file.size,
-        }, buffer);
+        }, buffer).complete;
 
-        // Počkaj na dokončenie
-        const uploadedFile = await uploadStream.complete;
+        const link: string = await uploadedFile.link({});
 
-        // Získaj link – volaj funkciu s prázdnym objektom
-        const link: string = await uploadedFile.link({}); // ← OPRavené! (s {})
-
-        // Ulož do DB
+        // 1. Vytvor dokument
         const doc = await prisma.document.create({
             data: {
                 userId,
@@ -45,14 +43,22 @@ export async function megaUploadAction(file: File) {
                 gcsPath: link,
                 mimeType: file.type || "application/octet-stream",
                 size: file.size,
-                documentType: "OTHER",
-                description: `Nahrané do MEGA: ${new Date().toLocaleString()}`,
+                documentType,
+                description: `Nahrané pre assignment #${assignmentId}`,
+            },
+        });
+
+        // 2. Prepoj s assignmentom
+        await prisma.assignmentDocument.create({
+            data: {
+                userAssignmentId: assignmentId,
+                documentId: doc.id,
             },
         });
 
         return { success: true, url: link, documentId: doc.id };
     } catch (err: any) {
         console.error("MEGA UPLOAD ERROR:", err);
-        return { success: false, error: err.message || "Chyba pri nahrávaní do MEGA" };
+        return { success: false, error: err.message || "Chyba servera" };
     }
 }
