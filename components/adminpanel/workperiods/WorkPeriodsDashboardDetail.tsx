@@ -4,6 +4,8 @@
 import { useTranslation } from "@/app/i18n/I18nProvider";
 import { useEffect, useState } from "react";
 import { getWorkPeriodDetail } from "@/app/(root)/adminpanel/workperiods/actions/getWorkPeriodDetailAction";
+import AssignedUsersTable from "./AssignedUsersTable";
+import { Profession } from "@/app/generated/prisma/client";
 
 type Detail = {
     id: number;
@@ -15,6 +17,7 @@ type Detail = {
     requirements: { profession: string; countNeeded: number }[];
     assignments: {
         user: { id: number; username: string; name: string | null };
+        profession: Profession;
         fromDate: string;
         toDate: string;
     }[];
@@ -36,7 +39,7 @@ export default function WorkPeriodsDashboardDetail({ periodId }: { periodId: num
         }
         setLoading(true);
         const data = await getWorkPeriodDetail(periodId);
-        setDetail(data); // ← string dátumy → OK
+        setDetail(data);
         setLoading(false);
     };
 
@@ -159,35 +162,12 @@ export default function WorkPeriodsDashboardDetail({ periodId }: { periodId: num
                         {totalAssigned} / {totalNeeded}
                     </span>
                 </h3>
-                {detail.assignments.length === 0 ? (
-                    <p className="text-gray-500 italic">Zatiaľ nikto nie je priradený</p>
-                ) : (
-                    <div className="space-y-3">
-                        {detail.assignments.map(a => (
-                            <div key={a.user.id} className="flex items-center justify-between bg-gray-50 dark:bg-gray-800 p-4 rounded-lg">
-                                <div>
-                                    <p className="font-medium">{a.user.name || a.user.username}</p>
-                                    <p className="text-sm text-gray-600">
-                                        @{a.user.username} • {formatDate(a.fromDate)} – {formatDate(a.toDate)}
-                                    </p>
-                                </div>
-                                <button className="text-xs bg-red-600 text-white px-3 py-1.5 rounded hover:bg-red-700">
-                                    Odstrániť
-                                </button>
-                            </div>
-                        ))}
-                    </div>
-                )}
-            </div>
-
-            {/* AKCIE */}
-            <div className="flex gap-4 pt-6">
-                <button className="flex-1 bg-[#600000] text-white py-3 rounded-lg font-bold hover:bg-[#4b0000]">
-                    Upraviť obdobie
-                </button>
-                <button className="flex-1 border-2 border-[#600000] text-[#600000] py-3 rounded-lg font-bold hover:bg-[#600000]/5">
-                    Pridať pracovníka
-                </button>
+                <AssignedUsersTable
+                    periodId={detail.id}
+                    startDate={detail.startDate}
+                    endDate={detail.endDate}
+                    assignments={detail.assignments}
+                />
             </div>
         </div>
     );

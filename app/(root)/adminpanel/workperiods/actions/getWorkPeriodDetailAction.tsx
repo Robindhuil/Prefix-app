@@ -18,7 +18,14 @@ export async function getWorkPeriodDetail(id: number) {
             },
             assignments: {
                 select: {
-                    user: { select: { id: true, username: true, name: true } },
+                    user: {
+                        select: {
+                            id: true,
+                            username: true,
+                            name: true,
+                        },
+                    },
+                    profession: true, // ⬅️ pridali sme profesiu z UserAssignment
                     fromDate: true,
                     toDate: true,
                 },

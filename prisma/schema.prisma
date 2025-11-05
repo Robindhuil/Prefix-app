@@ -152,6 +152,9 @@ model UserAssignment {
   fromDate DateTime
   toDate   DateTime
 
+  // 👇 pridané pole s default hodnotou
+  profession Profession @default(OTHER)
+
   user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
   workPeriod WorkPeriod @relation(fields: [workPeriodId], references: [id], onDelete: Cascade)
 
