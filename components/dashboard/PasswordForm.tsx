@@ -4,6 +4,8 @@
 import { useState } from "react";
 import { Lock } from "lucide-react";
 import { changePasswordAction } from "@/app/(root)/dashboard/[id]/actions/changePasswordAction";
+import { useTranslation } from "@/app/i18n/I18nProvider";
+import { useToast } from "../ui/ToastProvider";
 
 
 export default function PasswordForm() {
@@ -13,6 +15,9 @@ export default function PasswordForm() {
     const [message, setMessage] = useState("");
     const [loading, setLoading] = useState(false);
 
+    const { addToast } = useToast();
+    const { t } = useTranslation();
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (newPass !== confirmPass) return setMessage("❌ Nové heslá sa nezhodujú");
@@ -20,12 +25,16 @@ export default function PasswordForm() {
 
         setLoading(true);
         const result = await changePasswordAction(oldPass, newPass);
-        setMessage(result.success ? "✅ Heslo zmenené!" : "❌ " + (result.error || "Chyba"));
         setLoading(false);
         if (result.success) {
             setOldPass("");
             setNewPass("");
             setConfirmPass("");
+        }
+        if (result.success) {
+            addToast(t("toast.userPasswordChanged"), "success");
+        } else {
+            addToast(t("toast.userPasswordError"), "error");
         }
     };
 

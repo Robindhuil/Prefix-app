@@ -1,11 +1,7 @@
-// app/dashboard/[id]/page.tsx
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import prisma from "@/lib/prisma";
-import ProfileHeader from "@/components/dashboard/ProfileHeader";
-import ProfileForm from "@/components/dashboard/ProfileForm";
-import PasswordForm from "@/components/dashboard/PasswordForm";
-import AssignmentsList from "@/components/dashboard/AssignmentsList";
+import DashboardContent from "@/components/dashboard/DashboardContent";
 
 export default async function DashboardPage({ params }: { params: { id: string } }) {
     const session = await auth();
@@ -36,19 +32,5 @@ export default async function DashboardPage({ params }: { params: { id: string }
 
     if (!user) redirect("/not-found");
 
-    return (
-        <div className="space-y-10 py-8">
-            {/* 1. HEADER */}
-            <ProfileHeader user={user} />
-
-            {/* 2. DVE KARTY VEĽKOSŤOU 50/50 */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <ProfileForm user={user} />
-                <PasswordForm />
-            </div>
-
-            {/* 3. PRIRADENIA – CELÁ ŠÍRKA */}
-            <AssignmentsList assignments={user.assignments} />
-        </div>
-    );
+    return <DashboardContent user={user} />;
 }

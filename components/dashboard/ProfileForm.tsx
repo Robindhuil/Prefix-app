@@ -4,6 +4,8 @@
 import { useState } from "react";
 import { Edit, Save, X } from "lucide-react";
 import { updateProfileAction } from "@/app/(root)/dashboard/[id]/actions/updateProfileAction";
+import { useToast } from "../ui/ToastProvider";
+import { useTranslation } from "@/app/i18n/I18nProvider";
 
 
 export default function ProfileForm({ user }: any) {
@@ -11,13 +13,16 @@ export default function ProfileForm({ user }: any) {
     const [name, setName] = useState(user.name || "");
     const [email, setEmail] = useState(user.email || "");
     const [message, setMessage] = useState("");
+    const { addToast } = useToast();
+    const { t } = useTranslation();
 
     const handleSave = async () => {
         const result = await updateProfileAction(user.id, { name, email });
         if (result?.error) {
-            setMessage("❌ " + result.error);
+            addToast(t("toast.userProfileError"), "error");
+
         } else {
-            setMessage("✅ Údaje uložené!");
+            addToast(t("toast.userProfileUpdated"), "success");
             setIsEditing(false);
         }
     };

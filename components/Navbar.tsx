@@ -1,7 +1,7 @@
 "use client"
 import { useState } from "react";
 import Link from "next/link";
-import { Menu, X, LogIn, LogOut, Sun, Moon, Shield } from "lucide-react";
+import { Menu, X, LogIn, LogOut, Sun, Moon, Shield, Home } from "lucide-react";
 import Image from "next/image";
 import { useTranslation } from "@/app/i18n/I18nProvider";
 import LanguageSelector from "./LanguageSelector";
@@ -79,16 +79,10 @@ export default function Navbar() {
 
                     {/* Right Controls - Very Right */}
                     <div className="hidden md:flex items-center space-x-4 pr-2 sm:pr-4">
-                        <LanguageSelector />
-                        <button
-                            onClick={toggleTheme}
-                            aria-label="Toggle theme"
-                            className="flex items-center justify-center w-12 h-12 cursor-pointer rounded-full bg-gray-200/80 dark:bg-gray-800/80 text-gray-800 dark:text-gray-200 hover:bg-[#600000]/20 dark:hover:bg-[#600000]/20 transition-all duration-300 hover:scale-110"
-                        >
-                            {theme === "light" ? <Sun className="w-6 h-6" /> : <Moon className="w-6 h-6" />}
-                        </button>
+
                         {session ? (
-                            <>
+                            <div className="flex items-center gap-4">
+                                {/* 2. ADMIN PANEL (ak je admin) */}
                                 {isAdmin && (
                                     <Link
                                         href="/adminpanel"
@@ -98,23 +92,41 @@ export default function Navbar() {
                                         <span>Admin</span>
                                     </Link>
                                 )}
+                                {/* 1. DASHBOARD TLAČÍTKO – NOVÉ! */}
+                                <Link
+                                    href={`/dashboard/${session.user.id}`}
+                                    className="flex items-center space-x-2 bg-[#600000] text-white px-5 py-3 rounded-lg text-lg font-bold transition-all duration-300 hover:scale-105 hover:shadow-xl hover:bg-[#4b0000]"
+                                >
+                                    <Home className="w-6 h-6" />
+                                    <span>Dashboard</span>
+                                </Link>
+                                <LanguageSelector />
+                                <button
+                                    onClick={toggleTheme}
+                                    aria-label="Toggle theme"
+                                    className="flex items-center justify-center w-12 h-12 cursor-pointer rounded-full bg-gray-200/80 dark:bg-gray-800/80 text-gray-800 dark:text-gray-200 hover:bg-[#600000]/20 dark:hover:bg-[#600000]/20 transition-all duration-300 hover:scale-110"
+                                >
+                                    {theme === "light" ? <Sun className="w-6 h-6" /> : <Moon className="w-6 h-6" />}
+                                </button>
+
+                                {/* 3. ODHLÁSIŤ SA */}
                                 <button
                                     onClick={handleSignOut}
-                                    className="flex items-center space-x-2 bg-linear-to-r cl-decor cursor-pointer text-white px-6 py-3 rounded-lg text-lg font-semibold transition-all duration-300 hover:scale-105 hover:shadow-xl"
+                                    className="cursor-pointer flex items-center space-x-2 bg-red-600 hover:bg-red-700 text-white px-5 py-3 rounded-lg text-lg font-bold transition-all duration-300 hover:scale-105 hover:shadow-xl"
                                 >
                                     <LogOut className="w-6 h-6" />
-                                    <span>{t("navbar.signOut")}</span>
                                 </button>
-                            </>
+                            </div>
                         ) : (
                             <Link
                                 href="/login"
-                                className="flex items-center space-x-2 bg-linear-to-r cl-decor cursor-pointer text-white px-6 py-3 rounded-lg text-lg font-semibold transition-all duration-300 hover:scale-105 hover:shadow-xl"
+                                className="flex items-center space-x-2 bg-[#600000] hover:bg-[#4b0000] text-white px-6 py-3 rounded-lg text-lg font-bold transition-all duration-300 hover:scale-105 hover:shadow-xl"
                             >
                                 <LogIn className="w-6 h-6" />
                                 <span>{t("navbar.login")}</span>
                             </Link>
                         )}
+
                     </div>
 
                     {/* Mobile Menu Button */}
@@ -133,18 +145,35 @@ export default function Navbar() {
                     }`}
             >
                 <div className="px-4 py-4 space-y-3">
-                    {/* mobile admin link */}
-                    {session && isAdmin && (
-                        <Link
-                            href="/adminpanel"
-                            className="block text-gray-800 dark:text-gray-200 hover:text-[#600000] dark:hover:text-[#600000] transition-all duration-300 hover:pl-2 text-lg font-semibold"
-                            onClick={() => setIsOpen(false)}
-                        >
-                            <div className="flex items-center gap-2">
-                                <Shield className="w-5 h-5" />
-                                <span>Admin</span>
-                            </div>
-                        </Link>
+                    {/* MOBILNÉ MENU – PRIDANÉ DASHBOARD TLAČÍTKO */}
+                    {session && (
+                        <>
+                            {/* 1. DASHBOARD – NOVÉ! */}
+                            <Link
+                                href={`/dashboard/${session.user.id}`}
+                                className="block text-gray-800 dark:text-gray-200 hover:text-[#600000] dark:hover:text-[#600000] transition-all duration-300 hover:pl-2 text-lg font-semibold"
+                                onClick={() => setIsOpen(false)}
+                            >
+                                <div className="flex items-center gap-2">
+                                    <Home className="w-5 h-5" />
+                                    <span>Dashboard</span>
+                                </div>
+                            </Link>
+
+                            {/* 2. ADMIN PANEL (len pre admina) */}
+                            {isAdmin && (
+                                <Link
+                                    href="/adminpanel"
+                                    className="block text-gray-800 dark:text-gray-200 hover:text-[#600000] dark:hover:text-[#600000] transition-all duration-300 hover:pl-2 text-lg font-semibold"
+                                    onClick={() => setIsOpen(false)}
+                                >
+                                    <div className="flex items-center gap-2">
+                                        <Shield className="w-5 h-5" />
+                                        <span>Admin</span>
+                                    </div>
+                                </Link>
+                            )}
+                        </>
                     )}
                     <Link
                         href="/"
