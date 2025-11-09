@@ -19,24 +19,28 @@ const sectionConfig = [
         label: "Faktúry",
         icon: <FileSpreadsheet className="w-6 h-6" />,
         color: "from-blue-500/20 to-blue-400/10 border-blue-500 hover:border-blue-600",
+        bg: "bg-blue-50 dark:bg-blue-900/20",
     },
     {
         type: "ORDER" as DocumentType,
         label: "Objednávky",
         icon: <FileArchive className="w-6 h-6" />,
         color: "from-amber-500/20 to-amber-400/10 border-amber-500 hover:border-amber-600",
+        bg: "bg-amber-50 dark:bg-amber-900/20",
     },
     {
         type: "CONTRACT" as DocumentType,
         label: "Zmluvy",
         icon: <FileSignature className="w-6 h-6" />,
         color: "from-emerald-500/20 to-emerald-400/10 border-emerald-500 hover:border-emerald-600",
+        bg: "bg-emerald-50 dark:bg-emerald-900/20",
     },
     {
         type: "OTHER" as DocumentType,
         label: "Ostatné",
         icon: <FileText className="w-6 h-6" />,
         color: "from-gray-500/20 to-gray-400/10 border-gray-500 hover:border-gray-600",
+        bg: "bg-gray-50 dark:bg-gray-700/20",
     },
 ];
 
@@ -64,93 +68,98 @@ export default function SharedDocuments({
 
     return (
         <>
-            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 lg:p-10">
+            <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-8 lg:p-12">
                 {/* HLAVIČKA */}
-                <div className="flex items-center justify-between mb-8">
-                    <div className="flex items-center gap-3">
-                        <FileText className="w-8 h-8 text-[#600000]" />
-                        <h2 className="text-2xl font-bold text-[#600000]">
+                <div className="flex items-center justify-between mb-10">
+                    <div className="flex items-center gap-4">
+                        <div className="bg-[#600000]/10 p-3 rounded-2xl">
+                            <FileText className="w-10 h-10 text-[#600000]" />
+                        </div>
+                        <h2 className="text-3xl font-black text-[#600000]">
                             Zdieľané dokumenty
                         </h2>
                     </div>
-                    <div className="bg-[#600000] text-white px-4 py-2 rounded-full text-lg font-semibold shadow-md">
+                    <div className="bg-[#600000] text-white px-6 py-3 rounded-full text-xl font-bold shadow-xl">
                         {documents.length}
                     </div>
                 </div>
 
                 {/* SEKCIE POD SEBOU */}
-                <div className="flex flex-col gap-6">
+                <div className="space-y-8">
                     {sectionConfig.map((sec) => {
                         const docs = grouped[sec.type] || [];
                         return (
                             <div
                                 key={sec.type}
-                                className={`relative rounded-2xl border-2 ${sec.color} bg-gradient-to-br p-6 transition-all duration-300 shadow-md hover:shadow-lg`}
+                                className={`rounded-3xl border-4 ${sec.color} bg-linear-to-br p-8 transition-all duration-300 hover:shadow-2xl hover:scale-[1.005] ${sec.bg}`}
                             >
                                 {/* HORNÁ LIŠTA */}
-                                <div className="flex justify-between items-center mb-5">
-                                    <div className="flex items-center gap-3">
-                                        <div className="bg-white/80 dark:bg-gray-900/80 p-3 rounded-xl shadow">
+                                <div className="flex justify-between items-center mb-6">
+                                    <div className="flex items-center gap-4">
+                                        <div className="bg-white/80 dark:bg-gray-900/80 p-4 rounded-2xl shadow-lg">
                                             {sec.icon}
                                         </div>
-                                        <h3 className="text-xl font-semibold text-[#600000]">
+                                        <h3 className="text-2xl font-bold text-[#600000]">
                                             {sec.label}
                                         </h3>
                                     </div>
 
-                                    <div className="flex items-center gap-3">
-                                        <div className="bg-[#600000] text-white w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold shadow">
+                                    <div className="flex items-center gap-4">
+                                        <div className="bg-[#600000] text-white w-14 h-14 rounded-full flex items-center justify-center text-xl font-bold shadow-lg">
                                             {docs.length}
                                         </div>
 
                                         <button
                                             onClick={() => openModal(sec.type)}
-                                            className="bg-[#600000] hover:bg-[#900000] text-white p-2.5 rounded-full shadow-md hover:shadow-lg transition-all duration-300"
+                                            className="bg-[#600000] hover:bg-[#900000] text-white p-3.5 rounded-full shadow-xl hover:shadow-2xl hover:scale-110 transition-all duration-300"
                                             title={`Nahrať do ${sec.label}`}
                                         >
-                                            <PlusCircle className="w-5 h-5" />
+                                            <PlusCircle className="w-7 h-7" />
                                         </button>
                                     </div>
                                 </div>
 
                                 {/* DOKUMENTY */}
-                                <div className="space-y-3 min-h-32">
+                                <div className="space-y-4 min-h-40">
                                     {docs.length > 0 ? (
                                         docs.map((ad: any) => {
                                             const doc = ad.document;
                                             return (
                                                 <a
                                                     key={ad.id}
-                                                    href={doc.gcsPath}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    className="group flex items-center justify-between p-4 bg-white/90 dark:bg-gray-900/90 rounded-xl border border-[#600000]/10 hover:border-[#600000]/60 hover:shadow-md transition-all"
+                                                    href={`/api/documents/${doc.id}`}
+                                                    download={doc.fileName}
+                                                    className="group flex items-center justify-between p-6 bg-white/90 dark:bg-gray-900/90 rounded-2xl border-2 border-[#600000]/10 hover:border-[#600000]/40 hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
                                                 >
-                                                    <div className="flex items-center gap-4">
-                                                        <div className="bg-[#600000]/10 p-3 rounded-xl group-hover:scale-110 transition">
-                                                            <FileText className="w-6 h-6 text-[#600000]" />
+                                                    <div className="flex items-center gap-5">
+                                                        <div className="bg-[#600000]/10 p-4 rounded-xl group-hover:scale-110 transition">
+                                                            <FileText className="w-10 h-10 text-[#600000]" />
                                                         </div>
                                                         <div>
-                                                            <p className="font-semibold text-base text-[#600000] group-hover:underline">
+                                                            <p className="font-bold text-lg text-[#600000] group-hover:underline">
                                                                 {doc.fileName}
                                                             </p>
-                                                            <p className="text-xs text-gray-600">
+                                                            <p className="text-sm text-gray-600 dark:text-gray-400">
                                                                 {(doc.size / 1024 / 1024).toFixed(1)} MB
                                                             </p>
                                                         </div>
                                                     </div>
-                                                    <Download className="w-5 h-5 text-[#600000] group-hover:translate-y-0.5 transition" />
+
+                                                    {/* DOWNLOAD TLAČIDLO */}
+                                                    <div className="bg-[#600000]/10 group-hover:bg-[#600000]/20 p-3 rounded-xl transition-all duration-300 group-hover:scale-110">
+                                                        <Download className="w-7 h-7 text-[#600000] group-hover:text-[#900000] group-hover:translate-y-1 transition" />
+                                                    </div>
                                                 </a>
                                             );
                                         })
                                     ) : (
-                                        <div className="flex flex-col items-center justify-center h-32 text-center text-gray-400">
-                                            <FileText className="w-10 h-10 mb-2 opacity-20" />
-                                            <p className="text-base italic">
+                                        <div className="flex flex-col items-center justify-center h-40 text-center text-gray-400">
+                                            <FileText className="w-16 h-16 mb-4 opacity-20" />
+                                            <p className="text-lg font-medium italic">
                                                 Žiadne {sec.label.toLowerCase()} zatiaľ
                                             </p>
-                                            <p className="text-xs mt-1">
-                                                Klikni na [+] a pridaj prvý!
+                                            <p className="text-sm mt-2">
+                                                Klikni na <span className="text-[#600000] font-bold">[+]</span> a pridaj prvý!
                                             </p>
                                         </div>
                                     )}

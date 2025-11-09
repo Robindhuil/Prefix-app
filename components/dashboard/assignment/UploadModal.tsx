@@ -3,8 +3,8 @@
 
 import { useState } from "react";
 import { useDropzone } from "react-dropzone";
-import { Upload, FileText, X, CheckCircle, AlertCircle } from "lucide-react";
-import { megaUploadAction } from "@/app/(root)/dashboard/[id]/assignment/[assignmentId]/actions/megaUploadAction";
+import { Upload, FileText, X, CheckCircle } from "lucide-react";
+import { uploadDocumentAction } from "@/app/(root)/dashboard/[id]/assignment/[assignmentId]/actions/uploadDocumentAction";
 import { useToast } from "@/components/ui/ToastProvider";
 
 type DocumentType = "INVOICE" | "ORDER" | "CONTRACT" | "OTHER";
@@ -19,7 +19,6 @@ interface UploadModalProps {
 export default function UploadModal({ open, onClose, assignmentId, selectedType }: UploadModalProps) {
     const [file, setFile] = useState<File | null>(null);
     const [uploading, setUploading] = useState(false);
-    const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
     const [message, setMessage] = useState("");
     const [dragActive, setDragActive] = useState(false);
     const { addToast } = useToast();
@@ -27,7 +26,6 @@ export default function UploadModal({ open, onClose, assignmentId, selectedType 
     const onDrop = (acceptedFiles: File[]) => {
         if (acceptedFiles[0]) {
             setFile(acceptedFiles[0]);
-            setStatus("idle");
             setMessage("");
         }
     };
@@ -42,36 +40,22 @@ export default function UploadModal({ open, onClose, assignmentId, selectedType 
     const handleUpload = async () => {
         if (!file) return;
         setUploading(true);
-        setMessage("Nahrávam... 0%");
-
-        let progress = 0;
-        const interval = setInterval(() => {
-            progress += 15;
-            if (progress <= 90) setMessage(`Nahrávam... ${progress}%`);
-        }, 400);
+        setMessage("Nahrávam...");
 
         try {
-            const result = await megaUploadAction(file, assignmentId, selectedType);
-            clearInterval(interval);
-            setMessage("Finalizujem... 100%");
-
+            const result = await uploadDocumentAction(file, assignmentId, selectedType);
             if (result.success) {
-                setStatus("success");
-                setMessage("Dokument nahraný!");
-                addToast("Dokument bol pridaný do " + selectedType, "success");
+                addToast("Dokument bol nahraný!", "success");
                 setTimeout(() => {
                     setFile(null);
-                    setUploading(false);
                     onClose();
-                    window.location.reload(); // alebo revalidate
-                }, 1200);
+                    window.location.reload(); // alebo revalidatePath
+                }, 800);
             } else {
                 throw new Error(result.error);
             }
         } catch (err: any) {
-            clearInterval(interval);
-            setStatus("error");
-            setMessage(err.message || "Chyba servera");
+            setMessage("Chyba: " + err.message);
             addToast("Nahrávanie zlyhalo", "error");
         } finally {
             setUploading(false);
@@ -82,8 +66,8 @@ export default function UploadModal({ open, onClose, assignmentId, selectedType 
 
     return (
         <>
-            <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-[9998]" onClick={onClose} />
-            <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
+            <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-9998" onClick={onClose} />
+            <div className="fixed inset-0 z-9999 flex items-center justify-center p-4">
                 <div
                     className="bg-white dark:bg-gray-900 rounded-3xl shadow-3xl w-full max-w-2xl max-h-[90vh] overflow-y-auto"
                     onClick={e => e.stopPropagation()}
@@ -110,7 +94,7 @@ export default function UploadModal({ open, onClose, assignmentId, selectedType 
                             </div>
                         ) : (
                             <div className="space-y-8">
-                                <div className="flex items-center justify-between bg-gradient-to-r from-[#600000]/10 p-6 rounded-2xl">
+                                <div className="flex items-center justify-between bg-linear-to-r from-[#600000]/10 p-6 rounded-2xl">
                                     <div className="flex items-center gap-5">
                                         <FileText className="w-14 h-14 text-[#600000]" />
                                         <div>
@@ -135,19 +119,12 @@ export default function UploadModal({ open, onClose, assignmentId, selectedType 
                                     onClick={handleUpload}
                                     disabled={uploading}
                                     className={`w-full py-5 rounded-2xl font-bold text-xl text-white transition-all ${uploading
-                                            ? "bg-gray-500"
-                                            : "bg-[#600000] hover:bg-[#800000] hover:scale-105 shadow-2xl"
+                                        ? "bg-gray-500 cursor-not-allowed"
+                                        : "bg-[#600000] hover:bg-[#800000] hover:scale-105 shadow-2xl"
                                         }`}
                                 >
-                                    {uploading ? "Čakaj..." : "Nahrať do " + getLabel(selectedType)}
+                                    {uploading ? "Nahrávam..." : "Nahrať do " + getLabel(selectedType)}
                                 </button>
-
-                                {status === "success" && (
-                                    <div className="bg-green-100 text-green-800 p-6 rounded-2xl flex items-center gap-4">
-                                        <CheckCircle className="w-10 h-10" />
-                                        <p className="text-xl font-bold">Hotovo!</p>
-                                    </div>
-                                )}
                             </div>
                         )}
                     </div>

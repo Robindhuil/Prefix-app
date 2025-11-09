@@ -21,24 +21,30 @@ export default async function AssignmentPage({
     redirect("/unauthorized");
   }
 
-  // 🔹 Načítaj aj používateľa (relation `user`)
   const assignment = await prisma.userAssignment.findUnique({
     where: { id: assignmentId },
     include: {
-      user: true, // ✅ pridané
+      user: true,
       workPeriod: true,
       documents: {
         include: {
-          document: true,
+          document: {
+            select: {
+              id: true,
+              fileName: true,
+              mimeType: true,
+              size: true,
+              documentType: true,
+              createdAt: true,
+              hash: true,
+            },
+          },
         },
       },
     },
   });
 
   if (!assignment || assignment.userId !== userId) redirect("/not-found");
-
-  // ✅ extrahujeme používateľa
-  const user = assignment.user;
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
@@ -51,8 +57,7 @@ export default async function AssignmentPage({
           Späť na dashboard
         </Link>
 
-        {/* ✅ teraz je `user` reálne definovaný */}
-        <AssignmentDetail assignment={assignment} user={user} />
+        <AssignmentDetail assignment={assignment} user={assignment.user} />
       </div>
     </div>
   );

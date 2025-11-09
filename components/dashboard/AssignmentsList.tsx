@@ -39,7 +39,7 @@ export default function AssignmentsList({ assignments, userId }: { assignments: 
                                 href={`/dashboard/${userId}/assignment/${a.id}`}
                                 className="block group"
                             >
-                                <div className="p-6 pr-10 rounded-2xl border-2 border-[#600000]/10 hover:border-[#600000]/40 hover:shadow-2xl transition-all duration-300 bg-gradient-to-r from-[#600000]/5 to-transparent">
+                                <div className="p-6 pr-10 rounded-2xl border-2 border-[#600000]/10 hover:border-[#600000]/40 hover:shadow-2xl transition-all duration-300 bg-linear-to-r from-[#600000]/5 to-transparent">
                                     <div className="flex justify-between items-start">
                                         <h4 className={`font-bold text-xl line-clamp-2 pr-8 transition-colors ${active ? "text-green-700 dark:text-green-400" : "text-[#600000]"}`}>
                                             {a.workPeriod.title}

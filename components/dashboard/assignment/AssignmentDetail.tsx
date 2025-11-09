@@ -62,7 +62,7 @@ export default function AssignmentDetail({
     <div className="space-y-8">
       {/* HLAVNÁ KARTA – FAREBNÁ PODĽA STAVU */}
       <div
-        className={`relative overflow-hidden rounded-3xl p-10 shadow-2xl border-4 ${config.color} bg-gradient-to-br`}
+        className={`relative overflow-hidden rounded-3xl p-10 shadow-2xl border-4 ${config.color} bg-linear-to-br`}
       >
         <div className="absolute inset-0 bg-white/70 dark:bg-gray-900/70 backdrop-blur-sm" />
 

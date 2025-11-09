@@ -55,45 +55,34 @@ model CompanyInfo {
 // DOKUMENTY (pre MEGA / GCS / S3)
 // ========================================
 model Document {
-  id Int @id @default(autoincrement())
-
-  // Vlastník
-  userId Int
-  user   User @relation("UserDocuments", fields: [userId], references: [id], onDelete: Cascade)
-
-  // Kto nahral
+  id        Int  @id @default(autoincrement())
+  userId    Int
+  user      User @relation("UserDocuments", fields: [userId], references: [id], onDelete: Cascade)
   createdBy Int
   creator   User @relation("DocumentCreator", fields: [createdBy], references: [id])
 
-  // Súbor
   fileName String
-  gcsPath  String @unique // MEGA: "https://mega.nz/file/abc#key" alebo GCS: "documents/user-123/file.enc"
-  mimeType String // "application/pdf"
-  size     Int? // v bytoch
+  mimeType String
+  size     Int?
+  data     Bytes // ← tu sa uloží obsah súboru
 
-  // Šifrovanie (voliteľné – ak šifruješ TY)
-  iv         String? // base64
-  tag        String? // base64 (AES-GCM)
-  keyVersion Int? // rotácia kľúčov
+  iv         String?
+  tag        String?
+  keyVersion Int?
+  hash       String?
 
-  // Integrita
-  hash String? // SHA256 base64
-
-  // Metadáta
   documentType DocumentType
   description  String?
 
-  // Audity
   createdAt       DateTime             @default(now())
   updatedAt       DateTime             @updatedAt
-  deletedAt       DateTime? // soft delete
+  deletedAt       DateTime?
   assignmentLinks AssignmentDocument[]
 
   @@index([userId])
   @@index([createdBy])
   @@index([documentType])
   @@index([createdAt])
-  @@index([gcsPath])
 }
 
 enum DocumentType {
