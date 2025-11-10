@@ -64,7 +64,7 @@ export default function AssignmentDetail({
       <div
         className={`relative overflow-hidden rounded-3xl p-10 shadow-2xl border-4 ${config.color} bg-linear-to-br`}
       >
-        <div className="absolute inset-0 bg-white/70 dark:bg-gray-900/70 backdrop-blur-sm" />
+        <div className="absolute inset-0 backdrop-blur-sm" />
 
         <div className="relative z-10">
           {/* STATUS BADGE */}

@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { useState } from "react";
 import Link from "next/link";
 import { Menu, X, LogIn, LogOut, Sun, Moon, Shield, Home } from "lucide-react";
@@ -15,23 +15,21 @@ export default function Navbar() {
     const { theme, toggleTheme } = useTheme();
     const router = useRouter();
     const { data: session } = useSession();
-    const isAdmin = session?.user?.role === "ADMIN"
+    const isAdmin = session?.user?.role === "ADMIN";
     const toggleMenu = () => setIsOpen(!isOpen);
 
-    const handleLoginClick = () => {
-        router.push("/login");
-    };
-
+    const handleLoginClick = () => router.push("/login");
     const handleSignOut = async () => {
         await signOut({ redirect: false });
         router.push("/");
     };
 
     return (
-        <nav className="bg-navbar backdrop-blur-md shadow-lg sticky top-0 z-50 border-b border-gray-300 dark:border-gray-800">
+        <nav className="bg-navbar backdrop-blur-md shadow-lg sticky top-0 z-50 border-b border-custom">
             <div className="w-full px-2 sm:px-4 lg:px-6">
                 <div className="flex items-center justify-between h-20 md:h-24">
-                    {/* Logo - Very Left */}
+
+                    {/* Logo */}
                     <Link href="/" className="flex items-center pl-2 sm:pl-4">
                         <Image
                             src={theme === "light" ? "/logos/light/logo_name.svg" : "/logos/dark/logo_name.svg"}
@@ -43,73 +41,57 @@ export default function Navbar() {
                         />
                     </Link>
 
-                    {/* Desktop Links - Centered */}
+                    {/* Desktop Links */}
                     <div className="hidden md:flex flex-1 items-center justify-center space-x-12 text-xl font-semibold">
-                        <Link href="/" className="relative group">
-                            <span className="text-gray-800 dark:text-gray-200 group-hover:text-[#600000] dark:group-hover:text-[#600000] transition-colors duration-300">
-                                {t("navbar.home")}
-                            </span>
-                            <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#600000] group-hover:w-full transition-all duration-300 ease-out"></span>
-                        </Link>
-                        <Link href="/about" className="relative group">
-                            <span className="text-gray-800 dark:text-gray-200 group-hover:text-[#600000] dark:group-hover:text-[#600000] transition-colors duration-300">
-                                {t("navbar.about")}
-                            </span>
-                            <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#600000] group-hover:w-full transition-all duration-300 ease-out"></span>
-                        </Link>
-                        <Link href="/contact" className="relative group">
-                            <span className="text-gray-800 dark:text-gray-200 group-hover:text-[#600000] dark:group-hover:text-[#600000] transition-colors duration-300">
-                                {t("navbar.contact")}
-                            </span>
-                            <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#600000] group-hover:w-full transition-all duration-300 ease-out"></span>
-                        </Link>
-                        <Link href="/news" className="relative group">
-                            <span className="text-gray-800 dark:text-gray-200 group-hover:text-[#600000] dark:group-hover:text-[#600000] transition-colors duration-300">
-                                {t("navbar.news")}
-                            </span>
-                            <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#600000] group-hover:w-full transition-all duration-300 ease-out"></span>
-                        </Link>
-                        <Link href="/gallery" className="relative group">
-                            <span className="text-gray-800 dark:text-gray-200 group-hover:text-[#600000] dark:group-hover:text-[#600000] transition-colors duration-300">
-                                {t("navbar.gallery")}
-                            </span>
-                            <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#600000] group-hover:w-full transition-all duration-300 ease-out"></span>
-                        </Link>
+                        {["home", "about", "contact", "news", "gallery"].map((key) => (
+                            <Link
+                                key={key}
+                                href={`/${key === "home" ? "" : key}`}
+                                className="underline-anim"
+                            >
+                                <span className="text-hover-decor">
+                                    {t(`navbar.${key}`)}
+                                </span>
+                            </Link>
+                        ))}
                     </div>
 
-                    {/* Right Controls - Very Right */}
+                    {/* Right Controls */}
                     <div className="hidden md:flex items-center space-x-4 pr-2 sm:pr-4">
                         <LanguageSelector />
+
+                        {/* Theme Toggle */}
                         <button
                             onClick={toggleTheme}
                             aria-label="Toggle theme"
-                            className="flex items-center justify-center w-12 h-12 cursor-pointer rounded-full bg-gray-200/80 dark:bg-gray-800/80 text-gray-800 dark:text-gray-200 hover:bg-[#600000]/20 dark:hover:bg-[#600000]/20 transition-all duration-300 hover:scale-110"
+                            className="flex bg-neutral cursor-pointer items-center justify-center w-12 h-12 rounded-full bg-card/80 text-white hover:bg-decor/20 transition-all duration-300 hover:scale-110"
                         >
                             {theme === "light" ? <Sun className="w-6 h-6" /> : <Moon className="w-6 h-6" />}
                         </button>
+
                         {session ? (
                             <div className="flex items-center gap-4">
-                                {/* 2. ADMIN PANEL (ak je admin) */}
+                                {/* Admin Panel */}
                                 {isAdmin && (
                                     <Link
                                         href="/adminpanel"
-                                        className="flex items-center space-x-2 bg-gray-100/60 dark:bg-gray-800/60 text-gray-800 dark:text-gray-200 px-4 py-2 rounded-lg text-lg font-medium transition-all duration-200 hover:scale-105"
+                                        className="flex bg-neutral items-center space-x-2 text-white px-4 py-2 rounded-lg text-lg font-medium transition-all duration-200 hover:scale-105"
                                     >
                                         <Shield className="w-5 h-5" />
                                         <span>Admin</span>
                                     </Link>
                                 )}
-                                {/* 1. DASHBOARD TLAČÍTKO – NOVÉ! */}
+
+                                {/* Dashboard Button */}
                                 <Link
                                     href={`/dashboard/${session.user.id}`}
-                                    className="flex items-center space-x-2 bg-[#600000] text-white px-5 py-3 rounded-lg text-lg font-bold transition-all duration-300 hover:scale-105 hover:shadow-xl hover:bg-[#4b0000]"
+                                    className="flex items-center space-x-2 cl-bg-decor text-white px-5 py-3 rounded-lg text-lg font-bold transition-all duration-300 hover:cl-bg-decor-hover hover:shadow-xl"
                                 >
                                     <Home className="w-6 h-6" />
                                     <span>Dashboard</span>
                                 </Link>
 
-
-                                {/* 3. ODHLÁSIŤ SA */}
+                                {/* Sign Out */}
                                 <button
                                     onClick={handleSignOut}
                                     className="cursor-pointer flex items-center space-x-2 bg-red-600 hover:bg-red-700 text-white px-5 py-3 rounded-lg text-lg font-bold transition-all duration-300 hover:scale-105 hover:shadow-xl"
@@ -120,18 +102,17 @@ export default function Navbar() {
                         ) : (
                             <Link
                                 href="/login"
-                                className="flex items-center space-x-2 bg-[#600000] hover:bg-[#4b0000] text-white px-6 py-3 rounded-lg text-lg font-bold transition-all duration-300 hover:scale-105 hover:shadow-xl"
+                                className="flex items-center space-x-2 cl-bg-decor hover:cl-bg-decor-hover text-white px-6 py-3 rounded-lg text-lg font-bold transition-all duration-300 hover:scale-105 hover:shadow-xl"
                             >
                                 <LogIn className="w-6 h-6" />
                                 <span>{t("navbar.login")}</span>
                             </Link>
                         )}
-
                     </div>
 
                     {/* Mobile Menu Button */}
                     <button
-                        className="md:hidden text-gray-800 dark:text-gray-200 hover:text-[#600000] dark:hover:text-[#600000] focus:outline-none transition-transform duration-300 ease-in-out transform hover:scale-110 pr-2 sm:pr-4"
+                        className="md:hidden text-color hover:text-decor focus:outline-none transition-transform duration-300 ease-in-out transform hover:scale-110 pr-2 sm:pr-4"
                         onClick={toggleMenu}
                     >
                         {isOpen ? <X className="w-8 h-8" /> : <Menu className="w-8 h-8" />}
@@ -141,89 +122,60 @@ export default function Navbar() {
 
             {/* Mobile Menu */}
             <div
-                className={`md:hidden bg-linear-to-r from-[#f8f8f8]/95 to-white/95 bg-navbar backdrop-blur-md shadow-lg border-t border-gray-200/50 dark:border-gray-800/50 overflow-hidden transition-all duration-300 ease-in-out ${isOpen ? "max-h-96" : "max-h-0"
+                className={`md:hidden bg-navbar/95 backdrop-blur-md shadow-lg border-t border-custom/50 overflow-hidden transition-all duration-300 ease-in-out ${isOpen ? "max-h-96" : "max-h-0"
                     }`}
             >
                 <div className="px-4 py-4 space-y-3">
-                    {/* MOBILNÉ MENU – PRIDANÉ DASHBOARD TLAČÍTKO */}
                     {session && (
                         <>
-                            {/* 1. DASHBOARD – NOVÉ! */}
                             <Link
                                 href={`/dashboard/${session.user.id}`}
-                                className="block text-gray-800 dark:text-gray-200 hover:text-[#600000] dark:hover:text-[#600000] transition-all duration-300 hover:pl-2 text-lg font-semibold"
+                                className="block text-color hover:text-decor transition-all duration-300 hover:pl-2 text-lg font-semibold items-center gap-2"
                                 onClick={() => setIsOpen(false)}
                             >
-                                <div className="flex items-center gap-2">
-                                    <Home className="w-5 h-5" />
-                                    <span>Dashboard</span>
-                                </div>
+                                <Home className="w-5 h-5" />
+                                <span>Dashboard</span>
                             </Link>
 
-                            {/* 2. ADMIN PANEL (len pre admina) */}
                             {isAdmin && (
                                 <Link
                                     href="/adminpanel"
-                                    className="block text-gray-800 dark:text-gray-200 hover:text-[#600000] dark:hover:text-[#600000] transition-all duration-300 hover:pl-2 text-lg font-semibold"
+                                    className="block text-color hover:text-decor transition-all duration-300 hover:pl-2 text-lg font-semibold items-center gap-2"
                                     onClick={() => setIsOpen(false)}
                                 >
-                                    <div className="flex items-center gap-2">
-                                        <Shield className="w-5 h-5" />
-                                        <span>Admin</span>
-                                    </div>
+                                    <Shield className="w-5 h-5" />
+                                    <span>Admin</span>
                                 </Link>
                             )}
                         </>
                     )}
-                    <Link
-                        href="/"
-                        className="block text-gray-800 dark:text-gray-200 hover:text-[#600000] dark:hover:text-[#600000] transition-all duration-300 hover:pl-2 text-lg font-semibold"
-                        onClick={() => setIsOpen(false)}
-                    >
-                        {t("navbar.home")}
-                    </Link>
-                    <Link
-                        href="/about"
-                        className="block text-gray-800 dark:text-gray-200 hover:text-[#600000] dark:hover:text-[#600000] transition-all duration-300 hover:pl-2 text-lg font-semibold"
-                        onClick={() => setIsOpen(false)}
-                    >
-                        {t("navbar.about")}
-                    </Link>
-                    <Link
-                        href="/contact"
-                        className="block text-gray-800 dark:text-gray-200 hover:text-[#600000] dark:hover:text-[#600000] transition-all duration-300 hover:pl-2 text-lg font-semibold"
-                        onClick={() => setIsOpen(false)}
-                    >
-                        {t("navbar.contact")}
-                    </Link>
-                    <Link
-                        href="/news"
-                        className="block text-gray-800 dark:text-gray-200 hover:text-[#600000] dark:hover:text-[#600000] transition-all duration-300 hover:pl-2 text-lg font-semibold"
-                        onClick={() => setIsOpen(false)}
-                    >
-                        {t("navbar.news")}
-                    </Link>
-                    <Link
-                        href="/gallery"
-                        className="block text-gray-800 dark:text-gray-200 hover:text-[#600000] dark:hover:text-[#600000] transition-all duration-300 hover:pl-2 text-lg font-semibold"
-                        onClick={() => setIsOpen(false)}
-                    >
-                        {t("navbar.gallery")}
-                    </Link>
+
+                    {["home", "about", "contact", "news", "gallery"].map((key) => (
+                        <Link
+                            key={key}
+                            href={`/${key === "home" ? "" : key}`}
+                            className="block text-color hover:text-decor transition-all duration-300 hover:pl-2 text-lg font-semibold"
+                            onClick={() => setIsOpen(false)}
+                        >
+                            {t(`navbar.${key}`)}
+                        </Link>
+                    ))}
+
                     <div className="flex items-center gap-4 pt-2">
                         <LanguageSelector />
                         <button
                             onClick={toggleTheme}
                             aria-label="Toggle theme"
-                            className="flex items-center justify-center w-12 h-12 rounded-full bg-gray-200/80 dark:bg-gray-800/80 text-gray-800 dark:text-gray-200 hover:bg-[#600000]/20 dark:hover:bg-[#600000]/20 transition-all duration-300 hover:scale-110"
+                            className="flex items-center justify-center w-12 h-12 rounded-full bg-card/80 text-color hover:bg-decor/20 transition-all duration-300 hover:scale-110"
                         >
                             {theme === "light" ? <Sun className="w-6 h-6" /> : <Moon className="w-6 h-6" />}
                         </button>
                     </div>
+
                     {session ? (
                         <button
                             onClick={handleSignOut}
-                            className="flex items-center space-x-2 w-full bg-linear-to-r from-[#600000] to-[#4b0000] text-white px-6 py-3 rounded-lg text-lg font-semibold transition-all duration-300 hover:scale-105 hover:shadow-xl"
+                            className="flex w-full items-center justify-center space-x-2 cl-bg-decor hover:cl-bg-decor-hover text-white px-6 py-3 rounded-lg text-lg font-semibold transition-all duration-300 hover:scale-105 hover:shadow-xl"
                         >
                             <LogOut className="w-6 h-6" />
                             <span>{t("navbar.signOut")}</span>
@@ -231,7 +183,7 @@ export default function Navbar() {
                     ) : (
                         <Link
                             href="/login"
-                            className="flex items-center space-x-2 w-full bg-linear-to-r from-[#600000] to-[#4b0000] text-white px-6 py-3 rounded-lg text-lg font-semibold transition-all duration-300 hover:scale-105 hover:shadow-xl"
+                            className="flex w-full items-center justify-center space-x-2 cl-bg-decor hover:cl-bg-decor-hover text-white px-6 py-3 rounded-lg text-lg font-semibold transition-all duration-300 hover:scale-105 hover:shadow-xl"
                         >
                             <LogIn className="w-6 h-6" />
                             <span>{t("navbar.login")}</span>

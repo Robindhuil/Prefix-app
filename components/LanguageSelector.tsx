@@ -42,7 +42,7 @@ export default function LanguageSelector() {
                                 setLocale(lang.locale as any);
                                 setIsOpen(false);
                             }}
-                            className="flex items-center space-x-3 w-full px-4 py-2 text-left text-gray-800 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-900 transition-colors duration-200"
+                            className="cursor-pointer flex items-center space-x-3 w-full px-4 py-2 text-left text-gray-800 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-900 transition-colors duration-200"
                             role="option"
                             aria-selected={locale === lang.locale}
                             type="button"

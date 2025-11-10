@@ -1,14 +1,61 @@
 @import "tailwindcss";
 
-/* Premenné sa nastavujú na <html> – tu už nie sú potrebné */
+/* --- Svetlá téma --- */
+:root {
+  --background: #ffffff;
+  --navbar-bg: linear-gradient(to right, rgba(15, 26, 45, 1), rgba(0, 0, 0, 1));
+  --input-bg: rgba(255, 255, 255, 0.5);
+  --input-text: #696969;
+  /* bg-white/50 */
+  --card-bg: rgba(197, 197, 197, 0.48);
+  /* #c5c5c57b ≈ rgba(197,197,197,0.48) */
+  --text-color: #000000;
+  --bg-color: rgba(31, 41, 55, 0.8);
+  /* gray-200/80 */
+  --bg-color-hover: rgba(55, 65, 81, 0.8);
+  /* gray-300/80 – voliteľné */
+  --colored-bg-decor: #600000;
+  --colored-bg-decor-hover: #4b0000;
+  --colored-text-decor: #600000;
+  --colored-text-decor-hover: #4b0000;
+  --border-color: #12131b;
+  /* gray-200 */
+  --focus-ring-color: #600000;
+  --focus-border-color: #600000;
+}
+
+/* --- Tmavá téma --- */
+.dark {
+  --background: #12131b;
+  --navbar-bg: linear-gradient(to right, rgba(15, 26, 45, 1), rgba(0, 0, 0, 1));
+  --input-bg: rgba(31, 41, 55, 0.5);
+  --input-text: #d4d4d4;
+  /* gray-900/50 */
+  --card-bg: rgba(7, 10, 21, 0.8);
+  --text-color: #ffffff;
+  --bg-color: rgba(31, 41, 55, 0.8);
+  /* gray-800/80 */
+  --bg-color-hover: rgba(55, 65, 81, 0.8);
+  /* gray-700/80 – voliteľné */
+  --colored-bg-decor: #600000;
+  --colored-bg-decor-hover: #4b0000;
+  --colored-text-decor: #600000;
+  --colored-text-decor-hover: #4b0000;
+  --border-color: #1f2937;
+  /* gray-800 */
+  --focus-ring-color: #600000;
+  --focus-border-color: #600000;
+}
+
+/* --- Globálne štýly --- */
 html,
 body {
   @apply min-h-screen;
   background: var(--background);
-  color: var(--foreground);
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* Zvyšok tvojich tried */
+/* --- Custom triedy --- */
 .bg-navbar {
   background: var(--navbar-bg);
 }
@@ -17,19 +64,97 @@ body {
   background: var(--card-bg);
 }
 
+.input-bg {
+  background: var(--input-bg);
+}
+
+.input-text {
+  color: var(--input-text);
+}
+
 .text-color {
   color: var(--text-color);
 }
 
-.cl-decor {
-  background: var(--colored-decor);
+.interactive-text {
+  color: var(--text-color);
+  transition: color 0.3s ease;
 }
 
-.cl-decor:hover {
-  background: var(--colored-decor-hover);
+.interactive-text:hover {
+  color: var(--colored-text-decor);
 }
 
-/* Skry obsah do hydratácie */
+.cl-bg-decor {
+  background: var(--colored-bg-decor);
+}
+
+.cl-bg-decor:hover {
+  background: var(--colored-bg-decor-hover);
+}
+
+.cl-text-decor {
+  color: var(--colored-text-decor);
+}
+
+.cl-text-decor:hover {
+  color: var(--colored-text-decor-hover);
+}
+
+.border-custom {
+  border: 1px solid var(--border-color);
+}
+
+.focus-ring:focus {
+  outline: 2px solid var(--focus-ring-color);
+  outline-offset: 2px;
+}
+
+.focus-border:focus {
+  border-color: var(--focus-border-color);
+}
+
+.bg-neutral {
+  background: var(--bg-color);
+  transition: background 0.3s ease;
+}
+
+.bg-neutral:hover {
+  background: var(--bg-color-hover);
+}
+
+/* Animácia podčiarknutia */
+.underline-anim {
+  position: relative;
+  display: inline-block;
+}
+
+.underline-anim::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--colored-bg-decor);
+  transition: width 0.3s ease-out;
+}
+
+.underline-anim:hover::after {
+  width: 100%;
+}
+
+/* Farba textu s hoverom */
+.text-hover-decor {
+  color: #ffffff;
+  transition: color 0.3s ease;
+}
+
+.text-hover-decor:hover {
+  color: var(--colored-text-decor);
+}
+
+/* --- Hydratácia --- */
 body {
   opacity: 0;
   transition: opacity 0.2s ease;
@@ -37,12 +162,4 @@ body {
 
 body.hydrated {
   opacity: 1;
-}
-
-html {
-  transition: background-color 0.3s ease, color 0.3s ease;
-}
-
-.dark {
-  color-scheme: dark;
 }

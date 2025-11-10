@@ -12,7 +12,6 @@ export default function PasswordForm() {
     const [oldPass, setOldPass] = useState("");
     const [newPass, setNewPass] = useState("");
     const [confirmPass, setConfirmPass] = useState("");
-    const [message, setMessage] = useState("");
     const [loading, setLoading] = useState(false);
 
     const { addToast } = useToast();
@@ -20,8 +19,12 @@ export default function PasswordForm() {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (newPass !== confirmPass) return setMessage("❌ Nové heslá sa nezhodujú");
-        if (newPass.length < 6) return setMessage("❌ Heslo musí mať aspoň 6 znakov");
+        if (newPass !== confirmPass) {
+            addToast(t("toast.userPasswordMismatch"), "error");
+        }
+        if (newPass.length < 6) {
+            addToast(t("toast.userPasswordTooShort"), "error");
+        };
 
         setLoading(true);
         const result = await changePasswordAction(oldPass, newPass);
@@ -39,8 +42,8 @@ export default function PasswordForm() {
     };
 
     return (
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8">
-            <h2 className="text-2xl font-bold mb-6 flex items-center gap-3">
+        <div className="bg-card rounded-2xl shadow-lg p-8">
+            <h2 className="text-2xl text-color font-bold mb-6 flex items-center gap-3">
                 <Lock className="w-7 h-7 text-[#600000]" />
                 Zmena hesla
             </h2>
@@ -52,7 +55,7 @@ export default function PasswordForm() {
                     value={oldPass}
                     onChange={(e) => setOldPass(e.target.value)}
                     required
-                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-[#600000] transition"
+                    className="w-full px-4 py-3 border-2 input-bg input-text border-custom focus-ring focus-border rounded-lg"
                 />
                 <input
                     type="password"
@@ -61,7 +64,7 @@ export default function PasswordForm() {
                     onChange={(e) => setNewPass(e.target.value)}
                     required
                     minLength={6}
-                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-[#600000] transition"
+                    className="w-full px-4 py-3 border-2 input-bg input-text border-custom focus-ring focus-border rounded-lg"
                 />
                 <input
                     type="password"
@@ -69,23 +72,16 @@ export default function PasswordForm() {
                     value={confirmPass}
                     onChange={(e) => setConfirmPass(e.target.value)}
                     required
-                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-[#600000] transition"
+                    className="w-full px-4 py-3 border-2 input-bg input-text border-custom focus-ring focus-border rounded-lg"
                 />
 
                 <button
                     type="submit"
                     disabled={loading}
-                    className="w-full bg-[#600000] hover:bg-[#4b0000] text-white py-4 rounded-lg font-bold text-lg transition disabled:opacity-70"
+                    className="w-full cl-bg-decor cursor-pointer text-white py-4 rounded-lg font-bold text-lg disabled:opacity-70"
                 >
                     {loading ? "Mením heslo..." : "Zmeniť heslo"}
                 </button>
-
-                {message && (
-                    <p className={`text-center p-4 rounded-lg font-medium text-lg ${message.includes("✅") ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
-                        }`}>
-                        {message}
-                    </p>
-                )}
             </form>
         </div>
     );
