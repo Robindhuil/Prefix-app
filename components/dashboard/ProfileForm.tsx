@@ -29,20 +29,20 @@ export default function ProfileForm({ user }: any) {
     return (
         <div className="bg-card rounded-2xl shadow-lg p-8">
             <h2 className="text-2xl text-color font-bold mb-6 flex items-center gap-3">
-                <Edit className="w-7 h-7 text-color" />
+                <Edit className="w-7 h-7 cl-text-decor" />
                 Tvoje údaje
             </h2>
 
             <div className="space-y-5">
                 <div>
-                    <label className="block text-sm font-medium text-[#600000] mb-1">
+                    <label className="block text-sm font-medium cl-text-decor mb-1">
                         Používateľské meno
                     </label>
                     <p className="text-color font-semibold text-lg">{user.username}</p>
                 </div>
 
                 <div>
-                    <label className="block text-sm font-medium text-[#600000] mb-1">
+                    <label className="block text-sm font-medium cl-text-decor mb-1">
                         Meno
                     </label>
                     {isEditing ? (
@@ -59,7 +59,7 @@ export default function ProfileForm({ user }: any) {
                 </div>
 
                 <div>
-                    <label className="block text-sm font-medium text-[#600000] mb-1">
+                    <label className="block text-sm font-medium cl-text-decor mb-1">
                         Email
                     </label>
                     {isEditing ? (

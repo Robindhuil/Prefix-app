@@ -44,7 +44,7 @@ export default function PasswordForm() {
     return (
         <div className="bg-card rounded-2xl shadow-lg p-8">
             <h2 className="text-2xl text-color font-bold mb-6 flex items-center gap-3">
-                <Lock className="w-7 h-7 text-[#600000]" />
+                <Lock className="w-7 h-7 cl-text-decor" />
                 Zmena hesla
             </h2>
 

@@ -146,7 +146,7 @@ export default function AssignedUsersTable({
         });
 
     return (
-        <div className="bg-gray-50 dark:bg-gray-800 p-6 rounded-xl mt-6 mb-6 space-y-6">
+        <div className="bg-card p-6 rounded-xl mt-6 mb-6 space-y-6">
             {/* FORMULÁR */}
             <form
                 onSubmit={handleSubmit}
@@ -160,10 +160,10 @@ export default function AssignedUsersTable({
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
                         disabled={!!editingAssignment}
-                        className="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-600"
+                        className="w-full p-3 rounded-lg border-custom focus-ring focus-border input-text input-bg"
                     />
                     {searchResults.length > 0 && (
-                        <ul className="absolute z-10 w-full bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg mt-1 max-h-56 overflow-y-auto shadow-lg">
+                        <ul className="absolute z-10 w-full background border border-decor text-color rounded-lg mt-1 max-h-56 overflow-y-auto shadow-lg">
                             {searchResults.map((u) => {
                                 const displayName = u.name
                                     ? `${u.name} (${u.username})`
@@ -176,7 +176,7 @@ export default function AssignedUsersTable({
                                             setSearch(displayName);
                                             setSearchResults([]);
                                         }}
-                                        className="px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer"
+                                        className="px-4 py-2 bg-neutral text-white cursor-pointer"
                                     >
                                         {displayName}
                                     </li>
@@ -190,7 +190,7 @@ export default function AssignedUsersTable({
                 <select
                     value={profession}
                     onChange={(e) => setProfession(e.target.value as Profession)}
-                    className="p-3 rounded-lg border border-gray-300 dark:border-gray-600"
+                    className="p-3 rounded-lg input-bg input-text border-custom focus-border focus-ring cursor-pointer"
                 >
                     <option value={Profession.WELDER}>Zvárač</option>
                     <option value={Profession.BRICKLAYER}>Murár</option>
@@ -202,20 +202,20 @@ export default function AssignedUsersTable({
                     type="date"
                     value={fromDate}
                     onChange={(e) => setFromDate(e.target.value)}
-                    className="p-3 rounded-lg border border-gray-300 dark:border-gray-600"
+                    className="p-3 rounded-lg input-text input-bg focus-ring focus-border border-custom cursor-pointer"
                 />
                 <input
                     type="date"
                     value={toDate}
                     onChange={(e) => setToDate(e.target.value)}
-                    className="p-3 rounded-lg border border-gray-300 dark:border-gray-600"
+                    className="p-3 rounded-lg input-text input-bg focus-ring focus-border border-custom cursor-pointer"
                 />
 
                 {/* Tlačidlo */}
                 <button
                     type="submit"
                     disabled={adding}
-                    className="bg-[#600000] text-white rounded-lg font-bold hover:bg-[#4b0000] transition px-4 py-3 disabled:opacity-50"
+                    className=" text-white rounded-lg font-bold cl-bg-decor transition px-4 py-3 disabled:opacity-50 cursor-pointer"
                 >
                     {adding
                         ? "Ukladám..."
@@ -236,7 +236,7 @@ export default function AssignedUsersTable({
                             setToDate(endDate);
                             setProfession(Profession.OTHER);
                         }}
-                        className="bg-gray-300 text-gray-900 rounded-lg font-medium hover:bg-gray-400 transition px-4 py-3"
+                        className="text-white bg-neutral rounded-lg font-medium  transition px-4 py-3"
                     >
                         Zrušiť
                     </button>
@@ -257,20 +257,20 @@ export default function AssignedUsersTable({
             {/* ZOZNAM */}
             <div className="mt-8 space-y-3">
                 {assignments.length === 0 ? (
-                    <p className="text-gray-500 italic">
+                    <p className="input-text italic">
                         Zatiaľ nikto nie je priradený
                     </p>
                 ) : (
                     assignments.map((a) => (
                         <div
                             key={a.user.id}
-                            className="flex items-center justify-between bg-white dark:bg-gray-900 p-4 rounded-lg border border-gray-200 dark:border-gray-700"
+                            className="flex items-center justify-between bg-card p-4 rounded-lg border-custom"
                         >
                             <div>
-                                <p className="font-medium">
+                                <p className="font-medium cl-text-decor">
                                     {a.user.name || "noname"} (@{a.user.username})
                                 </p>
-                                <p className="text-sm text-gray-600">
+                                <p className="text-sm input-text">
                                     {a.profession === "WELDER"
                                         ? "Zvárač"
                                         : a.profession === "BRICKLAYER"
@@ -282,7 +282,7 @@ export default function AssignedUsersTable({
                             <div className="flex gap-2">
                                 <button
                                     onClick={() => handleEdit(a)}
-                                    className="text-xs bg-blue-600 text-white px-3 py-1.5 rounded hover:bg-blue-700"
+                                    className="text-xs bg-blue-600 text-white px-3 py-1.5 rounded hover:bg-blue-700 cursor-pointer"
                                 >
                                     Upraviť
                                 </button>
@@ -291,7 +291,7 @@ export default function AssignedUsersTable({
                                         setSelectedUser(a.user);
                                         setShowRemoveModal(true);
                                     }}
-                                    className="text-xs bg-red-600 text-white px-3 py-1.5 rounded hover:bg-red-700"
+                                    className="text-xs bg-red-600 text-white px-3 py-1.5 rounded hover:bg-red-700 cursor-pointer"
                                 >
                                     Odstrániť
                                 </button>

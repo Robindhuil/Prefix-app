@@ -25,7 +25,7 @@ export default function DashboardSidebar() {
 
       <aside className={`fixed inset-y-0 left-0 z-40 w-64 dark:bg-gray-800 shadow-2xl transform transition ${isOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0 md:static`}>
         <div className="p-6 h-full flex flex-col">
-          <h2 className="text-2xl font-bold text-[#600000] mb-10">Dashboard</h2>
+          <h2 className="text-2xl font-bold cl-text-decor mb-10">Dashboard</h2>
 
           <nav className="space-y-6 flex-1">
             <button

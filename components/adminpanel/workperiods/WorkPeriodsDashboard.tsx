@@ -77,7 +77,7 @@ export default function WorkPeriodsDashboard({
             className={`w-full space-y-4 transition-transform duration-300 ${sidebarOpen ? "translate-x-0" : "-translate-x-64"
                 } lg:translate-x-0`}
         >
-            <h3 className="text-xl font-bold text-[#600000] dark:text-[#600000] flex items-center gap-2">
+            <h3 className="text-xl font-bold cl-text-decor flex items-center gap-2">
                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M4 4h12v2H4V4zm0 4h12v8H4V8zm2 2v4h4v-4H6z" />
                 </svg>
@@ -87,11 +87,11 @@ export default function WorkPeriodsDashboard({
             {loading ? (
                 <div className="space-y-3">
                     {[1, 2, 3].map((i) => (
-                        <div key={i} className="bg-gray-200 dark:bg-gray-700 h-28 rounded-lg animate-pulse" />
+                        <div key={i} className="bg-card h-28 rounded-lg animate-pulse" />
                     ))}
                 </div>
             ) : periods.length === 0 ? (
-                <p className="text-center py-8 text-gray-500 dark:text-gray-400">
+                <p className="text-center py-8 input-text">
                     {t("noPeriods") || "Zatiaľ žiadne obdobia"}
                 </p>
             ) : (
@@ -106,8 +106,8 @@ export default function WorkPeriodsDashboard({
                                 key={period.id}
                                 className={`
                                     relative p-4 rounded-lg border cursor-pointer transition-all
-                                    bg-white dark:bg-gray-800 overflow-hidden
-                                    ${active ? "border-green-600 ring-2 ring-green-500" : "border-gray-300 dark:border-gray-600"}
+                                    bg-card overflow-hidden
+                                    ${active ? "border-green-600 ring-2 ring-green-500" : "border-decor"}
                                     ${isSelected ? "ring-2 ring-[#600000] ring-offset-2" : ""}
                                     hover:shadow-md hover:-translate-y-0.5
                                     ${isNew ? "animate-in slide-in-from-left-8 duration-500" : ""}
@@ -142,7 +142,7 @@ export default function WorkPeriodsDashboard({
                                         </span>
                                     </div>
 
-                                    <p className="text-sm text-gray-600 dark:text-gray-300 mt-2 flex items-center gap-1">
+                                    <p className="text-sm input-text mt-2 flex items-center gap-1">
                                         <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                                             <path
                                                 fillRule="evenodd"

@@ -48,24 +48,24 @@ export default function DeleteUserModal({ user, isOpen, onClose, onSuccess }: De
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-            <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl w-full max-w-md p-6 relative">
+            <div className="background rounded-2xl shadow-2xl w-full max-w-md p-6 relative">
                 <button
                     onClick={onClose}
-                    className=" cursor-pointer absolute top-4 right-4 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors"
+                    className=" cursor-pointer absolute top-4 right-4 interactive-text transition-colors"
                     disabled={isLoading}
                 >
                     <X className="w-5 h-5" />
                 </button>
 
                 <div className="flex flex-col items-center text-center mb-6">
-                    <div className="w-16 h-16 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center mb-4">
+                    <div className="w-16 h-16 cl-bg-decor rounded-full flex items-center justify-center mb-4">
                         <AlertCircle className="w-8 h-8 text-red-600 dark:text-red-400" />
                     </div>
-                    <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+                    <h2 className="text-2xl font-bold text-color mb-2">
                         {t("adminPanel.deleteUser")}
                     </h2>
                     <p
-                        className="text-gray-600 dark:text-gray-400"
+                        className="input-text"
                         dangerouslySetInnerHTML={{
                             __html: t("adminPanel.deleteConfirm", { username: user.username }),
                         }}
@@ -86,7 +86,7 @@ export default function DeleteUserModal({ user, isOpen, onClose, onSuccess }: De
                         type="button"
                         onClick={onClose}
                         disabled={isLoading}
-                        className="cursor-pointer flex-1 px-4 py-2 border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 rounded-lg font-medium hover:bg-gray-50 dark:hover:bg-gray-800 transition-all"
+                        className="cursor-pointer flex-1 px-4 py-2 border border-custom text-white rounded-lg font-medium bg-neutral transition-all"
                     >
                         {t("adminPanel.cancel")}
                     </button>
@@ -94,7 +94,7 @@ export default function DeleteUserModal({ user, isOpen, onClose, onSuccess }: De
                         type="button"
                         onClick={handleDelete}
                         disabled={isLoading}
-                        className="cursor-pointer flex-1 px-4 py-2 bg-red-600 text-white rounded-lg font-medium hover:bg-red-700 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+                        className="cursor-pointer flex-1 px-4 py-2 text-white rounded-lg font-medium cl-bg-decor transition-all disabled:opacity-50 flex items-center justify-center gap-2"
                     >
                         <Trash2 className="w-4 h-4" />
                         {isLoading ? t("adminPanel.deleting") : t("adminPanel.delete")}

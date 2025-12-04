@@ -5,6 +5,7 @@ import prisma from "@/lib/prisma";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import AssignmentDetail from "@/components/dashboard/assignment/AssignmentDetail";
+import DashboardSidebar from "@/components/dashboard/DashboardSidebar";
 
 export default async function AssignmentPage({
   params,
@@ -47,11 +48,13 @@ export default async function AssignmentPage({
   if (!assignment || assignment.userId !== userId) redirect("/not-found");
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
-      <div className="max-w-9xl mx-auto px-6">
+    <div className="min-h-screen flex flex-col md:flex-row bg-background">
+      <DashboardSidebar />
+
+      <div className="max-w-9xl mx-auto px-6 py-6 bg-card rounded-3xl shadow-2xl mt-10">
         <Link
           href={`/dashboard/${userId}`}
-          className="inline-flex items-center gap-2 text-[#600000] hover:underline mb-6"
+          className="inline-flex items-center gap-2 cl-text-decor hover:underline mb-6"
         >
           <ArrowLeft className="w-5 h-5" />
           Späť na dashboard

@@ -20,8 +20,8 @@ const isActive = (start: string, end: string) => {
 export default function AssignmentsList({ assignments, userId }: { assignments: any[]; userId: number }) {
     return (
         <div className="bg-card rounded-2xl shadow-lg p-8">
-            <h2 className="text-2xl font-bold mb-8 flex items-center gap-3">
-                <Calendar className="w-8 h-8 text-color" />
+            <h2 className="text-2xl font-bold mb-8 flex items-center gap-3 text-color">
+                <Calendar className="w-8 h-8 cl-text-decor" />
                 Tvoje priradenia
             </h2>
 

@@ -60,85 +60,87 @@ export default function AssignmentDetail({
 
   return (
     <div className="space-y-8">
-      {/* HLAVNÁ KARTA – FAREBNÁ PODĽA STAVU */}
-      <div
-        className={`relative overflow-hidden rounded-3xl p-10 shadow-2xl border-4 ${config.color} bg-linear-to-br`}
-      >
-        <div className="absolute inset-0 backdrop-blur-sm" />
+      <div className="flex-1 pb-16 md:pb-24 pt-6 md:pt-0 mt-5">
+        {/* HLAVNÁ KARTA – FAREBNÁ PODĽA STAVU */}
+        <div
+          className={`relative overflow-hidden rounded-3xl p-10 shadow-2xl border-4 ${config.color} bg-linear-to-br`}
+        >
+          <div className="absolute inset-0 backdrop-blur-sm" />
 
-        <div className="relative z-10">
-          {/* STATUS BADGE */}
-          <div className="flex justify-between items-start mb-6">
-            <h1 className={`text-4xl font-bold ${config.labelColor}`}>
-              {workPeriod.title}
-            </h1>
-            <div className="flex items-center gap-3">
-              <span className={config.badge}>
-                {config.icon}
-                <span>{config.text}</span>
-              </span>
+          <div className="relative z-10">
+            {/* STATUS BADGE */}
+            <div className="flex justify-between items-start mb-6">
+              <h1 className={`text-4xl font-bold ${config.labelColor}`}>
+                {workPeriod.title}
+              </h1>
+              <div className="flex items-center gap-3">
+                <span className={config.badge}>
+                  {config.icon}
+                  <span>{config.text}</span>
+                </span>
+              </div>
             </div>
+
+            {/* DETAILY */}
+            <div className="grid md:grid-cols-3 gap-8 mt-8 text-lg">
+              <div className="flex items-center gap-4">
+                <div className="bg-card p-3 rounded-xl">
+                  <Briefcase className="w-8 h-8 cl-text-decor" />
+                </div>
+                <div>
+                  <p className="text-sm input-text">Profesia</p>
+                  <p className="font-bold text-xl text-color">
+                    {profession === "WELDER"
+                      ? "Zvárací"
+                      : profession === "BRICKLAYER"
+                        ? "Murár"
+                        : "Ostatné"}
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-4">
+                <div className="bg-card p-3 rounded-xl">
+                  <Calendar className="w-8 h-8 cl-text-decor" />
+                </div>
+                <div>
+                  <p className="text-sm input-text">Projekt</p>
+                  <p className="font-bold text-color">
+                    {formatDate(workPeriod.startDate)} –{" "}
+                    {formatDate(workPeriod.endDate)}
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-4">
+                <div className="bg-card p-3 rounded-xl">
+                  <Clock className="w-8 h-8 cl-text-decor" />
+                </div>
+                <div>
+                  {/* 🔽 sem sa teraz vloží meno používateľa */}
+                  <p className="text-sm input-text">
+                    Nasadenie pre {user?.name ?? "užívateľa"}
+                  </p>
+                  <p className="font-bold text-color">
+                    {formatDate(fromDate)} – {formatDate(toDate)}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {workPeriod.description && (
+              <div className="mt-8 p-6 bg-card rounded-2xl">
+                <p className="input-text leading-relaxed">
+                  <strong>Popis:</strong> {workPeriod.description}
+                </p>
+              </div>
+            )}
           </div>
-
-          {/* DETAILY */}
-          <div className="grid md:grid-cols-3 gap-8 mt-8 text-lg">
-            <div className="flex items-center gap-4">
-              <div className="bg-white/80 dark:bg-gray-800/80 p-3 rounded-xl">
-                <Briefcase className="w-8 h-8 text-[#600000]" />
-              </div>
-              <div>
-                <p className="text-sm text-gray-600">Profesia</p>
-                <p className="font-bold text-xl">
-                  {profession === "WELDER"
-                    ? "Zvárací"
-                    : profession === "BRICKLAYER"
-                      ? "Murár"
-                      : "Ostatné"}
-                </p>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-4">
-              <div className="bg-white/80 dark:bg-gray-800/80 p-3 rounded-xl">
-                <Calendar className="w-8 h-8 text-[#600000]" />
-              </div>
-              <div>
-                <p className="text-sm text-gray-600">Projekt</p>
-                <p className="font-bold">
-                  {formatDate(workPeriod.startDate)} –{" "}
-                  {formatDate(workPeriod.endDate)}
-                </p>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-4">
-              <div className="bg-white/80 dark:bg-gray-800/80 p-3 rounded-xl">
-                <Clock className="w-8 h-8 text-[#600000]" />
-              </div>
-              <div>
-                {/* 🔽 sem sa teraz vloží meno používateľa */}
-                <p className="text-sm text-gray-600">
-                  Nasadenie pre {user?.name ?? "užívateľa"}
-                </p>
-                <p className="font-bold">
-                  {formatDate(fromDate)} – {formatDate(toDate)}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {workPeriod.description && (
-            <div className="mt-8 p-6 bg-white/90 dark:bg-gray-800/90 rounded-2xl">
-              <p className="text-gray-700 leading-relaxed">
-                <strong>Popis:</strong> {workPeriod.description}
-              </p>
-            </div>
-          )}
         </div>
-      </div>
 
-      {/* NOVÝ KOMPONENT */}
-      <SharedDocuments documents={assignment.documents} assignment={assignment} />
+        {/* NOVÝ KOMPONENT */}
+        <SharedDocuments documents={assignment.documents} assignment={assignment} />
+      </div>
     </div>
   );
 }

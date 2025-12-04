@@ -64,16 +64,16 @@ export default function WorkPeriodsSection() {
     }, []);
 
     return (
-        <div className="relative flex min-h-screen bg-gray-50 dark:bg-gray-900 overflow-hidden">
+        <div className="relative flex min-h-screen bg-card overflow-hidden">
             {/* SIDEBAR */}
             <aside
-                className={`fixed inset-y-0 left-0 z-40 w-120 bg-white dark:bg-gray-800 shadow-2xl border-r border-gray-200 dark:border-gray-700
+                className={`fixed inset-y-0 left-0 z-40 w-120 bg-card shadow-2xl border-r 
           transition-transform duration-500 ease-in-out
           ${sidebarOpen ? "translate-x-0" : "-translate-x-[85%]"}
         `}
             >
-                <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
-                    <h2 className="text-lg font-bold text-[#600000]">Obdobia</h2>
+                <div className="flex items-center justify-between p-4 border-b ">
+                    <h2 className="text-xl font-bold text-color">Obdobia</h2>
 
                     <div className="flex items-center gap-3">
                         {/* CREATE */}
@@ -82,7 +82,7 @@ export default function WorkPeriodsSection() {
                                 setModalMode("create");
                                 setModalOpen(true);
                             }}
-                            className="px-5 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg font-bold flex items-center gap-2"
+                            className="px-5 py-3 cl-bg-decor text-white rounded-lg font-bold flex items-center gap-2 cursor-pointer"
                         >
                             <Plus className="w-5 h-5" />
                             Nové obdobie
@@ -91,11 +91,11 @@ export default function WorkPeriodsSection() {
                         {/* Toggle */}
                         <button
                             onClick={() => setSidebarOpen(!sidebarOpen)}
-                            className="bg-[#600000] text-white rounded-full shadow-2xl border-2 border-white/30 p-3 hover:bg-[#4b0000] transition-all duration-500"
+                            className="text-white rounded-full shadow-2xl p-3 cl-bg-decor transition-all duration-500 cursor-pointer"
                             title={sidebarOpen ? "Skryť panel" : "Zobraziť panel"}
                         >
                             <svg
-                                className={`w-5 h-5 transition-transform duration-300 ${sidebarOpen ? "rotate-180" : ""}`}
+                                className={`w-5 h-5 transition-transform duration-300 ${sidebarOpen ? "" : "rotate-180"}`}
                                 fill="none"
                                 stroke="currentColor"
                                 strokeWidth={2.5}
@@ -121,7 +121,7 @@ export default function WorkPeriodsSection() {
             {/* Trčiaci pás */}
             {!sidebarOpen && (
                 <div
-                    className="fixed inset-y-0 left-0 w-6 bg-linear-to-r from-white/90 to-transparent dark:from-gray-800/80 cursor-pointer z-30"
+                    className="fixed inset-y-0 left-0 w-6 bg-linear-to-r bg-card cursor-pointer z-30"
                     onClick={() => setSidebarOpen(true)}
                     title="Otvoriť panel"
                 />

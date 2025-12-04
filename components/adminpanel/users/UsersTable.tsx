@@ -105,14 +105,14 @@ export default function UsersTable({ onEdit, onDelete, onToggleActive }: UsersTa
     const getSortIcon = (key: SortKey) => {
         if (sortKey !== key) return <ArrowUpDown className="w-4 h-4 opacity-40 ml-1" />;
         return sortOrder === "asc"
-            ? <ArrowUp className="w-4 h-4 ml-1 text-[#600000]" />
-            : <ArrowDown className="w-4 h-4 ml-1 text-[#600000]" />;
+            ? <ArrowUp className="w-4 h-4 ml-1 cl-text-decor" />
+            : <ArrowDown className="w-4 h-4 ml-1 cl-text-decor" />;
     };
 
     if (loading) {
         return (
             <div className="w-full text-center py-12">
-                <p className="text-gray-500 dark:text-gray-400">{t("common.loading")}</p>
+                <p className="input-text">{t("common.loading")}</p>
             </div>
         );
     }
@@ -128,32 +128,32 @@ export default function UsersTable({ onEdit, onDelete, onToggleActive }: UsersTa
     return (
         <div className="w-full overflow-x-auto">
             <div className="mb-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-                <h3 className="text-2xl font-bold text-[#600000] dark:text-[#600000] flex items-center gap-2">
-                    <User className="w-6 h-6" />
+                <h3 className="text-2xl font-bold text-color flex items-center gap-2">
+                    <User className="w-6 h-6 cl-text-decor" />
                     {t("adminPanel.usersList")}
                 </h3>
 
                 {/* VYHĽADÁVACÍ INPUT */}
                 <div className="relative w-full sm:w-80">
-                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 cl-text-decor" />
                     <input
                         type="text"
                         placeholder={t("adminPanel.table.filter.searchPlaceholder") || "Hľadať v používateľoch..."}
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        className="w-full pl-10 pr-4 py-2.5 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-gray-300 dark:border-gray-700 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#600000]/50 focus:border-[#600000] transition-all"
+                        className="w-full pl-10 pr-4 py-2.5 input-bg input-text backdrop-blur-sm border border-custom rounded-lg text-sm focus-ring focus-border transition-all"
                     />
                     {searchQuery && (
                         <button
                             onClick={() => setSearchQuery("")}
-                            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                            className="absolute right-3 top-1/2 transform -translate-y-1/2 input-text"
                         >
                             <X className="w-4 h-4" />
                         </button>
                     )}
                 </div>
 
-                <span className="text-sm text-gray-600 dark:text-gray-400">
+                <span className="text-sm input-text">
                     {t("adminPanel.totalUsers")} {filteredAndSortedUsers.length}
                     {searchQuery && ` (${t("adminPanel.table.filter.filtered")})`}
                 </span>
@@ -166,114 +166,114 @@ export default function UsersTable({ onEdit, onDelete, onToggleActive }: UsersTa
                     </p>
                 </div>
             ) : (
-                <div className="bg-white/50 dark:bg-gray-900/50 backdrop-blur-sm rounded-xl shadow-lg border border-gray-200 dark:border-gray-800 overflow-hidden">
-                    <table className="w-full min-w-full divide-y divide-gray-200 dark:divide-gray-800">
-                        <thead className="bg-gray-50 dark:bg-gray-800/50">
+                <div className="backdrop-blur-sm rounded-xl shadow-lg border border-custom overflow-hidden">
+                    <table className="w-full min-w-full divide-y divide-color">
+                        <thead className="bg-card">
                             <tr>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                <th className="px-6 py-3 text-left text-xs font-medium text-color uppercase tracking-wider">
                                     <button
                                         onClick={() => handleSort("id")}
-                                        className="flex items-center gap-1 hover:text-[#600000] dark:hover:text-[#600000] transition-colors font-semibold"
+                                        className="flex items-center gap-1 interactive-text transition-colors font-semibold cursor-pointer"
                                     >
                                         {t("adminPanel.table.id")}
                                         {getSortIcon("id")}
                                     </button>
                                 </th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                <th className="px-6 py-3 text-left text-xs font-medium text-color uppercase tracking-wider">
                                     <button
                                         onClick={() => handleSort("username")}
-                                        className="flex items-center gap-1 hover:text-[#600000] dark:hover:text-[#600000] transition-colors font-semibold"
+                                        className="flex items-center gap-1 interactive-text transition-colors font-semibold cursor-pointer"
                                     >
                                         {t("adminPanel.table.username")}
                                         {getSortIcon("username")}
                                     </button>
                                 </th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                <th className="px-6 py-3 text-left text-xs font-medium text-color uppercase tracking-wider">
                                     <button
                                         onClick={() => handleSort("email")}
-                                        className="flex items-center gap-1 hover:text-[#600000] dark:hover:text-[#600000] transition-colors font-semibold"
+                                        className="flex items-center gap-1 interactive-text transition-colors font-semibold cursor-pointer"
                                     >
                                         <Mail className="w-4 h-4 inline mr-1" />
                                         {t("adminPanel.table.email")}
                                         {getSortIcon("email")}
                                     </button>
                                 </th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                <th className="px-6 py-3 text-left text-xs font-medium text-color uppercase tracking-wider">
                                     <button
                                         onClick={() => handleSort("name")}
-                                        className="flex items-center gap-1 hover:text-[#600000] dark:hover:text-[#600000] transition-colors font-semibold"
+                                        className="flex items-center gap-1 interactive-text transition-colors font-semibold cursor-pointer"
                                     >
                                         {t("adminPanel.table.name")}
                                         {getSortIcon("name")}
                                     </button>
                                 </th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                <th className="px-6 py-3 text-left text-xs font-medium text-color uppercase tracking-wider">
                                     <button
                                         onClick={() => handleSort("role")}
-                                        className="flex items-center gap-1 hover:text-[#600000] dark:hover:text-[#600000] transition-colors font-semibold"
+                                        className="flex items-center gap-1 interactive-text transition-colors font-semibold cursor-pointer"
                                     >
                                         <Shield className="w-4 h-4 inline mr-1" />
                                         {t("adminPanel.table.role")}
                                         {getSortIcon("role")}
                                     </button>
                                 </th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                <th className="px-6 py-3 text-left text-xs font-medium text-color uppercase tracking-wider">
                                     <button
                                         onClick={() => handleSort("isActive")}
-                                        className="flex items-center gap-1 hover:text-[#600000] dark:hover:text-[#600000] transition-colors font-semibold"
+                                        className="flex items-center gap-1 interactive-text transition-colors font-semibold cursor-pointer"
                                     >
                                         <Shield className="w-4 h-4 inline mr-1" />
                                         {t("adminPanel.table.isActive")}
                                         {getSortIcon("isActive")}
                                     </button>
                                 </th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                <th className="px-6 py-3 text-left text-xs font-medium text-coloruppercase tracking-wider">
                                     <button
                                         onClick={() => handleSort("createdAt")}
-                                        className="flex items-center gap-1 hover:text-[#600000] dark:hover:text-[#600000] transition-colors font-semibold"
+                                        className="flex items-center gap-1 interactive-text transition-colors font-semibold cursor-pointer"
                                     >
                                         <Calendar className="w-4 h-4 inline mr-1" />
                                         {t("adminPanel.table.created")}
                                         {getSortIcon("createdAt")}
                                     </button>
                                 </th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                <th className="px-6 py-3 text-left text-xs font-medium text-color uppercase tracking-wider">
                                     <button
                                         onClick={() => handleSort("updatedAt")}
-                                        className="flex items-center gap-1 hover:text-[#600000] dark:hover:text-[#600000] transition-colors font-semibold"
+                                        className="flex items-center gap-1 interactive-text transition-colors font-semibold cursor-pointer"
                                     >
                                         <Edit className="w-4 h-4 inline mr-1" />
                                         {t("adminPanel.table.updated")}
                                         {getSortIcon("updatedAt")}
                                     </button>
                                 </th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                <th className="px-6 py-3 text-left text-xs font-medium text-color uppercase tracking-wider">
                                     {t("adminPanel.table.actions")}
                                 </th>
                             </tr>
                         </thead>
-                        <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-800">
+                        <tbody className="background divide-y divide-custom">
                             {filteredAndSortedUsers.map((user) => (
                                 <tr
                                     key={user.id}
-                                    className="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-200"
+                                    className="background transition-colors duration-200"
                                 >
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-color">
                                         #{user.id}
                                     </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300">
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-color">
                                         {user.username}
                                     </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-400">
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-color">
                                         {user.email || (
-                                            <span className="text-gray-400 dark:text-gray-600 italic">
+                                            <span className="input-text italic">
                                                 {t("adminPanel.table.noEmail")}
                                             </span>
                                         )}
                                     </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300">
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-color">
                                         {user.name || (
-                                            <span className="text-gray-400 dark:text-gray-600 italic">
+                                            <span className="input-text italic">
                                                 {t("adminPanel.table.noName")}
                                             </span>
                                         )}
@@ -298,10 +298,10 @@ export default function UsersTable({ onEdit, onDelete, onToggleActive }: UsersTa
                                         </div>
                                     </td>
 
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-400">
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm input-text">
                                         {format(new Date(user.createdAt), "dd.MM.yyyy HH:mm")}
                                     </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-400">
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm input-text">
                                         {format(new Date(user.updatedAt), "dd.MM.yyyy HH:mm")}
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap text-center">

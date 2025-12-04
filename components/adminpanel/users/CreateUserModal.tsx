@@ -46,11 +46,11 @@ export default function CreateUserModal({ isOpen, onClose, onSuccess }: CreateUs
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-            <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl w-full max-w-md p-6 relative">
+            <div className="background rounded-2xl shadow-2xl w-full max-w-md p-6 relative border-decor">
                 {/* Close button */}
                 <button
                     onClick={onClose}
-                    className="cursor-pointer absolute top-4 right-4 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors"
+                    className="cursor-pointer absolute top-4 right-4 interactive-text transition-colors"
                     disabled={isLoading}
                 >
                     <X className="w-5 h-5" />
@@ -58,10 +58,10 @@ export default function CreateUserModal({ isOpen, onClose, onSuccess }: CreateUs
 
                 {/* Header */}
                 <div className="flex items-center gap-3 mb-6">
-                    <div className="w-12 h-12 bg-linear-to-r from-[#600000] to-[#4b0000] rounded-full flex items-center justify-center">
+                    <div className="w-12 h-12 bg-linear-to-r cl-bg-decor rounded-full flex items-center justify-center">
                         <UserPlus className="w-6 h-6 text-white" />
                     </div>
-                    <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+                    <h2 className="text-2xl font-bold text-color">
                         {t("adminPanel.createUser")}
                     </h2>
                 </div>
@@ -76,8 +76,8 @@ export default function CreateUserModal({ isOpen, onClose, onSuccess }: CreateUs
                 {/* Form */}
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <div>
-                        <label className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                            <User className="w-4 h-4" />
+                        <label className="flex items-center gap-2 text-sm font-medium text-color mb-1">
+                            <User className="w-4 h-4 cl-text-decor" />
                             {t("adminPanel.username")}
                         </label>
                         <input
@@ -86,45 +86,45 @@ export default function CreateUserModal({ isOpen, onClose, onSuccess }: CreateUs
                             required
                             minLength={3}
                             maxLength={50}
-                            className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#600000] focus:border-transparent transition-all"
+                            className="w-full px-4 py-2 rounded-lg border-custom input-bg input-text focus-border focus-ring transition-all"
                             placeholder={t("adminPanel.usernamePlaceholder")}
                             disabled={isLoading}
                         />
                     </div>
 
                     <div>
-                        <label className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                            <Mail className="w-4 h-4" />
+                        <label className="flex items-center gap-2 text-sm font-medium text-color mb-1">
+                            <Mail className="w-4 h-4 cl-text-decor" />
                             {t("adminPanel.email")}
                         </label>
                         <input
                             name="email"
                             type="email"
                             maxLength={100}
-                            className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#600000] focus:border-transparent transition-all"
+                            className="w-full px-4 py-2 rounded-lg border-custom input-bg input-text focus-border focus-ring transition-all"
                             placeholder={t("adminPanel.emailPlaceholder")}
                             disabled={isLoading}
                         />
                     </div>
 
                     <div>
-                        <label className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                            <User className="w-4 h-4" />
+                        <label className="flex items-center gap-2 text-sm font-medium text-color mb-1">
+                            <User className="w-4 h-4 cl-text-decor" />
                             {t("adminPanel.name")}
                         </label>
                         <input
                             name="name"
                             type="text"
                             maxLength={100}
-                            className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#600000] focus:border-transparent transition-all"
+                            className="w-full px-4 py-2 rounded-lg border-custom input-bg input-text focus-border focus-ring transition-all"
                             placeholder={t("adminPanel.namePlaceholder")}
                             disabled={isLoading}
                         />
                     </div>
 
                     <div>
-                        <label className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                            <Lock className="w-4 h-4" />
+                        <label className="flex items-center gap-2 text-sm font-medium text-color mb-1">
+                            <Lock className="w-4 h-4 cl-text-decor" />
                             {t("adminPanel.password")}
                         </label>
                         <input
@@ -133,21 +133,21 @@ export default function CreateUserModal({ isOpen, onClose, onSuccess }: CreateUs
                             required
                             minLength={6}
                             maxLength={100}
-                            className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#600000] focus:border-transparent transition-all"
+                            className="w-full px-4 py-2 rounded-lg border-custom input-bg input-text focus-border focus-ring transition-all"
                             placeholder={t("adminPanel.passwordPlaceholder")}
                             disabled={isLoading}
                         />
                     </div>
 
                     <div>
-                        <label className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                        <label className="flex items-center gap-2 text-sm font-mediumtext-color mb-1">
                             <Shield className="w-4 h-4" />
                             {t("adminPanel.role")}
                         </label>
                         <select
                             name="role"
                             defaultValue="USER"
-                            className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-[#600000] focus:border-transparent transition-all"
+                            className="w-full px-4 py-2 rounded-lg border-custom input-bg input-text focus-border focus-ring transition-all cursor-pointer"
                             disabled={isLoading}
                         >
                             <option value="USER">{t("adminPanel.roleUser")}</option>
@@ -161,14 +161,14 @@ export default function CreateUserModal({ isOpen, onClose, onSuccess }: CreateUs
                             type="button"
                             onClick={onClose}
                             disabled={isLoading}
-                            className="cursor-pointer flex-1 px-4 py-2 border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 rounded-lg font-medium hover:bg-gray-50 dark:hover:bg-gray-800 transition-all"
+                            className="cursor-pointer flex-1 px-4 py-2 border border-custom text-white rounded-lg font-medium bg-neutral transition-all"
                         >
                             {t("adminPanel.cancel")}
                         </button>
                         <button
                             type="submit"
                             disabled={isLoading}
-                            className="cursor-pointer flex-1 px-4 py-2 bg-linear-to-r from-[#600000] to-[#4b0000] text-white rounded-lg font-medium hover:from-[#4b0000] hover:to-[#600000] transition-all disabled:opacity-50"
+                            className="cursor-pointer flex-1 px-4 py-2 bg-linear-to-r cl-bg-decor text-white rounded-lg font-medium transition-all disabled:opacity-50"
                         >
                             {isLoading ? t("adminPanel.creating") : t("adminPanel.create")}
                         </button>

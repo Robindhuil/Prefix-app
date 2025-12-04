@@ -139,7 +139,7 @@ export default function WorkPeriodsDashboardDetail({
                                 </span>
                             )}
                         </h2>
-                        <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                        <p className="text-sm input-text mt-1">
                             #{detail.id} • Vytvorené {formatDate(detail.createdAt)}
                         </p>
                     </div>
@@ -172,14 +172,14 @@ export default function WorkPeriodsDashboardDetail({
                 </div>
 
                 {/* DÁTUMY */}
-                <div className="bg-gray-50 dark:bg-gray-800 p-6 rounded-xl">
-                    <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
+                <div className="bg-card p-6 rounded-xl">
+                    <h3 className="text-lg font-semibold mb-3 flex items-center gap-2 cl-text-decor">
                         <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                             <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zM4 8h12v8H4V8z" />
                         </svg>
                         Trvanie obdobia
                     </h3>
-                    <p className="text-2xl font-medium">
+                    <p className="text-2xl font-medium text-color">
                         {formatDate(detail.startDate)} – {formatDate(detail.endDate)}
                     </p>
                 </div>
@@ -187,8 +187,8 @@ export default function WorkPeriodsDashboardDetail({
                 {/* POPIS */}
                 {detail.description && (
                     <div>
-                        <h3 className="text-lg font-semibold mb-2">Popis</h3>
-                        <p className="text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-gray-800 p-4 rounded-lg">
+                        <h3 className="text-lg font-semibold mb-2 cl-text-decor">Popis</h3>
+                        <p className="bg-card text-color p-4 rounded-lg">
                             {detail.description}
                         </p>
                     </div>
@@ -197,21 +197,21 @@ export default function WorkPeriodsDashboardDetail({
                 {/* POŽIADAVKY */}
                 <div>
                     <h3 className="text-lg font-semibold mb-4 flex items-center justify-between">
-                        <span className="flex items-center gap-2">
+                        <span className="flex items-center gap-2 cl-text-decor">
                             <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                                 <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
                             Požadovaní pracovníci
                         </span>
-                        <span className="text-sm text-gray-600">{totalNeeded} osôb</span>
+                        <span className="text-sm input-text">{totalNeeded} osôb</span>
                     </h3>
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                         {detail.requirements.map(r => (
-                            <div key={r.profession} className="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 p-4 rounded-lg text-center">
-                                <p className="font-medium text-[#600000]">
+                            <div key={r.profession} className="bg-card border-custom p-4 rounded-lg text-center">
+                                <p className="font-medium cl-text-decor">
                                     {r.profession === "WELDER" ? "Zvárací" : r.profession === "BRICKLAYER" ? "Murári" : "Ostatní"}
                                 </p>
-                                <p className="text-3xl font-bold mt-2">{r.countNeeded}</p>
+                                <p className="text-3xl font-bold mt-2 text-color">{r.countNeeded}</p>
                             </div>
                         ))}
                     </div>
@@ -220,7 +220,7 @@ export default function WorkPeriodsDashboardDetail({
                 {/* PRIRADENIA */}
                 <div>
                     <h3 className="text-lg font-semibold mb-4 flex items-center justify-between">
-                        <span className="flex items-center gap-2">
+                        <span className="flex items-center gap-2 cl-text-decor">
                             <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                                 <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 9c1.333 0 2.416.67 3 1.5.584.83 1 1.83 1 3 0 .34-.024.67-.07 1H12.93zM9 11a5 5 0 00-5 5h10a5 5 0 00-5-5z" />
                             </svg>
@@ -241,13 +241,13 @@ export default function WorkPeriodsDashboardDetail({
 
             {/* DELETE MODAL */}
             {deleteModal && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-                    <div className="bg-white dark:bg-gray-800 rounded-xl p-6 max-w-md w-full shadow-2xl">
-                        <div className="flex items-center gap-3 text-red-600 mb-4">
+                <div className="fixed inset-0 bg-black/70 backdrop-blur-sm bg-opacity-50 flex items-center justify-center z-50 p-4">
+                    <div className="background rounded-xl p-6 max-w-md w-full shadow-2xl border-decor">
+                        <div className="flex items-center gap-3 cl-text-color    mb-4">
                             <AlertCircle className="w-8 h-8" />
                             <h3 className="text-xl font-bold">Odstrániť obdobie?</h3>
                         </div>
-                        <p className="text-gray-600 dark:text-gray-300 mb-6">
+                        <p className="input-text mb-6">
                             Naozaj chceš odstrániť obdobie <strong>{detail.title}</strong>?<br />
                             <span className="text-sm">Toto je nevratná operácia.</span>
                         </p>
@@ -255,14 +255,14 @@ export default function WorkPeriodsDashboardDetail({
                             <button
                                 onClick={() => setDeleteModal(false)}
                                 disabled={isDeleting}
-                                className="px-5 py-2.5 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 rounded-lg transition"
+                                className="px-5 py-2.5 bg-neutral rounded-lg transition cursor-pointer"
                             >
                                 Zrušiť
                             </button>
                             <button
                                 onClick={handleDelete}
                                 disabled={isDeleting}
-                                className="px-5 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-lg transition flex items-center gap-2"
+                                className="px-5 py-2.5 cl-bg-decor cursor-pointer text-white rounded-lg transition flex items-center gap-2"
                             >
                                 {isDeleting ? "Odstraňuje sa..." : "Odstrániť"}
                                 {!isDeleting && <Trash2 className="w-4 h-4" />}

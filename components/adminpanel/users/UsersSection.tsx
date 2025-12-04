@@ -53,12 +53,12 @@ export default function UsersSection() {
     return (
         <>
             <div className="mb-6 flex items-center justify-between">
-                <h2 className="text-3xl font-bold text-[#600000] dark:text-[#600000]">
+                <h2 className="text-3xl font-bold cl-text-decor">
                     {t("adminPanel.usersTab")}
                 </h2>
                 <button
                     onClick={() => setIsCreateOpen(true)}
-                    className="cursor-pointer flex items-center gap-2 px-4 py-2 bg-linear-to-r from-[#600000] to-[#4b0000] text-white rounded-lg font-medium hover:from-[#4b0000] hover:to-[#600000] transition-all hover:scale-105 hover:shadow-lg"
+                    className="cursor-pointer flex items-center gap-2 px-4 py-2 bg-linear-to-r cl-bg-decor rounded-lg font-medium transition-all hover:scale-105 hover:shadow-lg text-white"
                 >
                     <Plus className="w-5 h-5" />
                     {t("adminPanel.createUser")}

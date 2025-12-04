@@ -95,8 +95,8 @@ export default function AdminInfo() {
         <div className="w-full p-6 space-y-8">
             {/* Header */}
             <div className="flex items-center justify-between">
-                <h1 className="text-3xl font-bold text-[#600000] dark:text-[#600000] flex items-center gap-3">
-                    <div className="w-12 h-12 bg-linear-to-r cl-decor rounded-full flex items-center justify-center shadow-lg">
+                <h1 className="text-3xl font-bold text-color flex items-center gap-3">
+                    <div className="w-12 h-12 bg-linear-to-r  cl-bg-decor rounded-full flex items-center justify-center shadow-lg">
                         <Building2 className="w-7 h-7 text-white" />
                     </div>
                     {t("adminPanel.adminInfo.title")}
@@ -110,8 +110,8 @@ export default function AdminInfo() {
             )}
 
             {/* Basic Information */}
-            <section className="bg-white/50 dark:bg-gray-900/50 backdrop-blur-sm rounded-2xl shadow-xl border border-gray-200 dark:border-gray-800 p-8">
-                <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-6 pb-3 border-b border-gray-200 dark:border-gray-700">
+            <section className="bg-card backdrop-blur-sm rounded-2xl shadow-xl border border-custom p-8">
+                <h2 className="text-xl font-semibold cl-text-decor mb-6 pb-3 border-b border-gray-200 dark:border-gray-700">
                     {t("adminPanel.adminInfo.basicInfo")}
                 </h2>
 
@@ -145,8 +145,8 @@ export default function AdminInfo() {
             </section>
 
             {/* Statutory Representative */}
-            <section className="bg-white/50 dark:bg-gray-900/50 backdrop-blur-sm rounded-2xl shadow-xl border border-gray-200 dark:border-gray-800 p-8">
-                <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-6 pb-3 border-b border-gray-200 dark:border-gray-700">
+            <section className="bg-card backdrop-blur-sm rounded-2xl shadow-xl border border-custom p-8">
+                <h2 className="text-xl font-semibold cl-text-decor mb-6 pb-3 border-b border-gray-200 dark:border-gray-700">
                     {t("adminPanel.adminInfo.representative")}
                 </h2>
 
@@ -170,8 +170,8 @@ export default function AdminInfo() {
             </section>
 
             {/* Contact */}
-            <section className="bg-white/50 dark:bg-gray-900/50 backdrop-blur-sm rounded-2xl shadow-xl border border-gray-200 dark:border-gray-800 p-8">
-                <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-6 pb-3 border-b border-gray-200 dark:border-gray-700">
+            <section className="bg-card backdrop-blur-sm rounded-2xl shadow-xl border border-custom p-8">
+                <h2 className="text-xl font-semibold cl-text-decor mb-6 pb-3 border-b border-gray-200 dark:border-gray-700">
                     {t("adminPanel.adminInfo.contact")}
                 </h2>
 
@@ -189,7 +189,7 @@ export default function AdminInfo() {
                 <button
                     onClick={handleSave}
                     disabled={isSaving}
-                    className="cursor-pointer flex items-center gap-2 px-8 py-3 bg-linear-to-r cl-decor text-white rounded-lg font-medium hover:from-[#4b0000] hover:to-[#600000] transition-all duration-300 hover:scale-105 hover:shadow-lg text-lg disabled:opacity-50"
+                    className="cursor-pointer flex items-center gap-2 px-8 py-3 bg-linear-to-r text-white rounded-lg font-medium cl-bg-decor transition-all duration-300 hover:scale-105 hover:shadow-lg text-lg disabled:opacity-50"
                 >
                     {isSaving ? (
                         <Loader2 className="w-6 h-6 animate-spin" />
@@ -215,14 +215,14 @@ function InputField({
 }) {
     return (
         <div className="flex flex-col">
-            <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label className="text-sm font-medium text-color mb-2">
                 {label}
             </label>
             <input
                 type="text"
                 value={value}
                 onChange={(e) => onChange(e.target.value)}
-                className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-700 bg-white/50 dark:bg-gray-900/50 backdrop-blur-sm text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#600000] focus:border-[#600000] transition-all text-base"
+                className="w-full px-4 py-3 rounded-lg border-custom input-bg backdrop-blur-sm input-text focus-ring focus-border transition-all text-base"
                 placeholder={label}
             />
         </div>
@@ -241,14 +241,14 @@ function DatePickerField({
 }) {
     return (
         <div className="flex flex-col">
-            <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label className="text-sm font-medium text-color">
                 {label}
             </label>
             <input
                 type="date"
                 value={value}
                 onChange={(e) => onChange(e.target.value)}
-                className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-700 bg-white/50 dark:bg-gray-900/50 backdrop-blur-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#600000] focus:border-[#600000] transition-all text-base"
+                className="w-full px-4 py-3 rounded-lg border border-custom input-bg backdrop-blur-sm input-text focus-ring focus-border transition-all text-base"
             />
         </div>
     );

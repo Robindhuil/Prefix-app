@@ -14,14 +14,16 @@
   /* gray-200/80 */
   --bg-color-hover: rgba(55, 65, 81, 0.8);
   /* gray-300/80 – voliteľné */
-  --colored-bg-decor: #600000;
-  --colored-bg-decor-hover: #4b0000;
-  --colored-text-decor: #600000;
-  --colored-text-decor-hover: #4b0000;
+  --colored-bg-decor: #ba1313;
+  --colored-bg-decor-hover: #a51212;
+  --colored-text-decor: #ba1313;
+  --colored-text-decor-hover: #a51212;
   --border-color: #12131b;
-  /* gray-200 */
-  --focus-ring-color: #600000;
-  --focus-border-color: #600000;
+  --divide-color: #12131b;
+  --border-decor-color: #ba1313
+    /* gray-200 */
+    --focus-ring-color: #ba1313;
+  --focus-border-color: #a51212;
 }
 
 /* --- Tmavá téma --- */
@@ -41,10 +43,12 @@
   --colored-bg-decor-hover: #4b0000;
   --colored-text-decor: #600000;
   --colored-text-decor-hover: #4b0000;
-  --border-color: #1f2937;
-  /* gray-800 */
-  --focus-ring-color: #600000;
-  --focus-border-color: #600000;
+  --border-color: #6c6c6c;
+  --divide-color: #6c6c6c;
+  --border-decor-color: #600000
+    /* gray-800 */
+    --focus-ring-color: #600000;
+  --focus-border-color: #4b0000;
 }
 
 /* --- Globálne štýly --- */
@@ -53,6 +57,10 @@ body {
   @apply min-h-screen;
   background: var(--background);
   transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.background {
+  background: var(--background);
 }
 
 /* --- Custom triedy --- */
@@ -103,6 +111,14 @@ body {
 
 .border-custom {
   border: 1px solid var(--border-color);
+}
+
+.divide-custom {
+  border: 1px solid var(--divide-color);
+}
+
+.border-decor {
+  border: 1px solid var(--border-decor-color);
 }
 
 .focus-ring:focus {

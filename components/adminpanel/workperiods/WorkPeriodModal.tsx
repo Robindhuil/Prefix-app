@@ -107,11 +107,11 @@ export default function WorkPeriodModal({ isOpen, onClose, mode, initialData }: 
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-2xl max-w-2xl w-full max-h-screen overflow-y-auto">
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+            <div className="background rounded-xl shadow-2xl max-w-2xl w-full max-h-screen overflow-y-auto">
                 {/* Header */}
-                <div className="flex items-center justify-between p-6 border-b dark:border-gray-700">
-                    <h2 className="text-2xl font-bold flex items-center gap-3">
+                <div className="flex items-center justify-between p-6 border-b">
+                    <h2 className="text-2xl font-bold flex items-center gap-3 cl-text-decor">
                         {isEdit ? (
                             <>
                                 <Edit className="w-6 h-6 text-blue-600" />
@@ -124,71 +124,71 @@ export default function WorkPeriodModal({ isOpen, onClose, mode, initialData }: 
                             </>
                         )}
                     </h2>
-                    <button onClick={onClose} className="text-3xl">&times;</button>
+                    <button onClick={onClose} className="text-3xl interactive-text cursor-pointer">&times;</button>
                 </div>
 
                 {/* Formulár */}
                 <form onSubmit={handleSubmit} className="p-6 space-y-6">
                     {/* Názov */}
                     <div>
-                        <label className="block text-sm font-medium mb-2">Názov obdobia *</label>
+                        <label className="block text-sm font-medium mb-2 text-color">Názov obdobia *</label>
                         <input
                             type="text"
                             value={title}
                             onChange={e => setTitle(e.target.value)}
                             placeholder="Napíš názov, napr. Letná sezóna 2025"
                             required
-                            className="w-full px-4 py-3 border rounded-lg dark:bg-gray-700 focus:ring-2 focus:ring-[#600000]"
+                            className="w-full px-4 py-3 border rounded-lg input-text input-bg focus-ring focus-border"
                         />
                     </div>
 
                     {/* Popis */}
                     <div>
-                        <label className="block text-sm font-medium mb-2">Popis (voliteľné)</label>
+                        <label className="block text-sm font-medium mb-2 text-color">Popis (voliteľné)</label>
                         <textarea
                             value={description}
                             onChange={e => setDescription(e.target.value)}
                             rows={3}
                             placeholder="Krátky popis projektu..."
-                            className="w-full px-4 py-3 border rounded-lg dark:bg-gray-700 resize-none focus:ring-2 focus:ring-[#600000]"
+                            className="w-full px-4 py-3 border rounded-lg input-text input-bg focus-ring focus-border resize-none"
                         />
                     </div>
 
                     {/* Dátumy */}
                     <div className="grid grid-cols-2 gap-4">
                         <div>
-                            <label className="block text-sm font-medium mb-2">Začiatok *</label>
+                            <label className="block text-sm font-medium mb-2 text-color">Začiatok *</label>
                             <input
                                 type="date"
                                 value={startDate}
                                 onChange={e => setStartDate(e.target.value)}
                                 required
-                                className="w-full px-4 py-3 border rounded-lg dark:bg-gray-700"
+                                className="w-full px-4 py-3 rounded-lg input-text input-bg focus-ring focus-border border-custom cursor-pointer"
                             />
                         </div>
                         <div>
-                            <label className="block text-sm font-medium mb-2">Koniec *</label>
+                            <label className="block text-sm font-medium mb-2 text-color">Koniec *</label>
                             <input
                                 type="date"
                                 value={endDate}
                                 onChange={e => setEndDate(e.target.value)}
                                 min={startDate}
                                 required
-                                className="w-full px-4 py-3 border rounded-lg dark:bg-gray-700"
+                                className="w-full px-4 py-3 rounded-lg input-text input-bg focus-ring focus-border border-custom cursor-pointer"
                             />
                         </div>
                     </div>
 
                     {/* Požiadavky */}
                     <div>
-                        <h3 className="font-bold mb-3 text-lg">Požadovaní pracovníci</h3>
+                        <h3 className="font-bold mb-3 text-lg text-color">Požadovaní pracovníci</h3>
                         <div className="space-y-3">
                             {requirements.map((req, i) => (
-                                <div key={i} className="flex items-center gap-3 p-3 border rounded-lg dark:border-gray-700">
+                                <div key={i} className="flex items-center gap-3 p-3 rounded-lg border-custom">
                                     <select
                                         value={req.profession}
                                         onChange={e => updateRow(i, "profession", e.target.value as Requirement["profession"])}
-                                        className="px-4 py-2 border rounded-lg dark:bg-gray-700"
+                                        className="px-4 py-2 border rounded-lg input-bg focus-ring focus-border cursor-pointer"
                                     >
                                         <option value="WELDER">Zvárací</option>
                                         <option value="BRICKLAYER">Murári</option>
@@ -200,13 +200,13 @@ export default function WorkPeriodModal({ isOpen, onClose, mode, initialData }: 
                                         min="1"
                                         value={req.countNeeded}
                                         onChange={e => updateRow(i, "countNeeded", parseInt(e.target.value) || 1)}
-                                        className="w-24 px-3 py-2 border rounded-lg text-center dark:bg-gray-700"
+                                        className="w-24 px-3 py-2 border rounded-lg text-center input-bg focus-ring focus-border"
                                     />
 
                                     <button
                                         type="button"
                                         onClick={() => removeRow(i)}
-                                        className="text-red-600 hover:text-red-800"
+                                        className="text-red-600 hover:text-red-800 cursor-pointer"
                                     >
                                         <Trash2 className="w-5 h-5" />
                                     </button>
@@ -216,7 +216,7 @@ export default function WorkPeriodModal({ isOpen, onClose, mode, initialData }: 
                             <button
                                 type="button"
                                 onClick={addRow}
-                                className="text-blue-600 hover:underline text-sm font-medium"
+                                className="text-blue-600 hover:underline text-sm font-medium cursor-pointer"
                             >
                                 + Pridať profesiu
                             </button>
@@ -237,14 +237,14 @@ export default function WorkPeriodModal({ isOpen, onClose, mode, initialData }: 
                             type="button"
                             onClick={onClose}
                             disabled={loading}
-                            className="px-6 py-3 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 rounded-lg font-medium"
+                            className="px-6 py-3 bg-neutral text-white rounded-lg font-medium cursor-pointer"
                         >
                             Zrušiť
                         </button>
                         <button
                             type="submit"
                             disabled={loading}
-                            className="px-6 py-3 bg-[#600000] hover:bg-[#4b0000] text-white rounded-lg font-bold flex items-center gap-2"
+                            className="px-6 py-3 cl-bg-decor text-white rounded-lg font-bold flex items-center gap-2 cursor-pointer"
                         >
                             {loading ? "Ukladá sa..." : isEdit ? <>Upraviť</> : <>Vytvoriť</>}
                         </button>
