@@ -19,13 +19,6 @@ export default async function RootLayout({
         >
             <head />
             <body className="h-full flex flex-col min-h-screen">
-                {/* Hydratácia */}
-                <script
-                    dangerouslySetInnerHTML={{
-                        __html: `document.body.classList.add('hydrated');`,
-                    }}
-                />
-
                 <ThemeProvider initialTheme={theme}>
                     <I18nProvider initial="sk">
                         <ToastProvider>

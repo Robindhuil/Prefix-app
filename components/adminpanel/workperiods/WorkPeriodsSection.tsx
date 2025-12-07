@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import WorkPeriodsDashboard from "./WorkPeriodsDashboard";
 import WorkPeriodsDashboardDetail from "./WorkPeriodsDashboardDetail";
 import WorkPeriodModal from "./WorkPeriodModal";
@@ -28,27 +28,36 @@ export default function WorkPeriodsSection() {
     // ---------------------------------------------------------
     // 1. Po výbere v zozname uložíme preview dát pre edit
     // ---------------------------------------------------------
-    const handleSelect = (id: number) => {
+    const handleSelect = useCallback((id: number) => {
         setSelectedId(id);
         setSidebarOpen(false);
-    };
+    }, []);
 
     // ---------------------------------------------------------
     // 2. Otvorenie EDIT modalu
     // ---------------------------------------------------------
-    const openEditModal = (period: PeriodPreview) => {
+    const openEditModal = useCallback((period: PeriodPreview) => {
         setSelectedPeriod(period);
         setModalMode("edit");
         setModalOpen(true);
-    };
+    }, []);
 
     // ---------------------------------------------------------
     // 3. Po úspešnom CREATE / UPDATE zavrieme modal
     // ---------------------------------------------------------
-    const closeModal = () => {
+    const closeModal = useCallback(() => {
         setModalOpen(false);
         setSelectedPeriod(null);
-    };
+    }, []);
+
+    const toggleSidebar = useCallback(() => {
+        setSidebarOpen(prev => !prev);
+    }, []);
+
+    const openCreateModal = useCallback(() => {
+        setModalMode("create");
+        setModalOpen(true);
+    }, []);
 
     // ---------------------------------------------------------
     // 4. Listener na refresh preview dát po editácii
@@ -68,7 +77,7 @@ export default function WorkPeriodsSection() {
             {/* SIDEBAR */}
             <aside
                 className={`fixed inset-y-0 left-0 z-40 w-120 bg-card shadow-2xl border-r 
-          transition-transform duration-500 ease-in-out
+          transition-transform duration-300 ease-out will-change-transform
           ${sidebarOpen ? "translate-x-0" : "-translate-x-[85%]"}
         `}
             >
@@ -78,10 +87,7 @@ export default function WorkPeriodsSection() {
                     <div className="flex items-center gap-3">
                         {/* CREATE */}
                         <button
-                            onClick={() => {
-                                setModalMode("create");
-                                setModalOpen(true);
-                            }}
+                            onClick={openCreateModal}
                             className="px-5 py-3 cl-bg-decor text-white rounded-lg font-bold flex items-center gap-2 cursor-pointer"
                         >
                             <Plus className="w-5 h-5" />
@@ -90,12 +96,12 @@ export default function WorkPeriodsSection() {
 
                         {/* Toggle */}
                         <button
-                            onClick={() => setSidebarOpen(!sidebarOpen)}
-                            className="text-white rounded-full shadow-2xl p-3 cl-bg-decor transition-all duration-500 cursor-pointer"
+                            onClick={toggleSidebar}
+                            className="text-white rounded-full shadow-2xl p-3 cl-bg-decor transition-all duration-300 cursor-pointer will-change-transform"
                             title={sidebarOpen ? "Skryť panel" : "Zobraziť panel"}
                         >
                             <svg
-                                className={`w-5 h-5 transition-transform duration-300 ${sidebarOpen ? "" : "rotate-180"}`}
+                                className={`w-5 h-5 transition-transform duration-200 ${sidebarOpen ? "" : "rotate-180"}`}
                                 fill="none"
                                 stroke="currentColor"
                                 strokeWidth={2.5}
@@ -112,8 +118,6 @@ export default function WorkPeriodsSection() {
                         sidebarOpen={sidebarOpen}
                         onSelect={handleSelect}
                         selectedId={selectedId}
-                        // Pošleme callback, aby dashboard vedel, že má poslať preview
-                        onRequestEdit={openEditModal}
                     />
                 </div>
             </aside>
@@ -122,18 +126,17 @@ export default function WorkPeriodsSection() {
             {!sidebarOpen && (
                 <div
                     className="fixed inset-y-0 left-0 w-6 bg-linear-to-r bg-card cursor-pointer z-30"
-                    onClick={() => setSidebarOpen(true)}
+                    onClick={toggleSidebar}
                     title="Otvoriť panel"
                 />
             )}
 
             {/* HLAVNÝ OBSAH */}
-            <main className={`flex-1 transition-all duration-500 ${sidebarOpen ? "ml-120" : "ml-0"}`}>
-                <div className={`mx-auto max-w-[1600px] transition-all duration-300 ${sidebarOpen ? "px-8" : "px-4 md:px-8"}`}>
+            <main className={`flex-1 transition-all duration-300 will-change-[margin] ${sidebarOpen ? "ml-120" : "ml-0"}`}>
+                <div className={`mx-auto max-w-[1600px] transition-all duration-200 ${sidebarOpen ? "px-8" : "px-4 md:px-8"}`}>
                     <div className="py-10">
                         <WorkPeriodsDashboardDetail
                             periodId={selectedId}
-                            onEdit={openEditModal}
                         />
                     </div>
                 </div>

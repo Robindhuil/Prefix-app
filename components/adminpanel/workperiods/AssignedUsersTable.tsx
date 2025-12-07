@@ -1,10 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { assignUserToWorkPeriodAction } from "@/app/(root)/adminpanel/workperiods/actions/assignUserToWorkPeriodAction";
 import { updateAssignmentAction } from "@/app/(root)/adminpanel/workperiods/actions/updateAssignmentAction";
 import { searchUsersAction } from "@/app/(root)/adminpanel/workperiods/actions/searchUsersAction";
-import { removeAssignmentAction } from "@/app/(root)/adminpanel/workperiods/actions/removeAssignmentAction";
 import { Profession } from "@/app/generated/prisma/client";
 import RemoveAssignmentModal from "./RemoveAssignmentModal";
 
@@ -44,8 +43,10 @@ export default function AssignedUsersTable({
     const [showRemoveModal, setShowRemoveModal] = useState(false);
     const [selectedUser, setSelectedUser] = useState<{ id: number; username: string; name?: string | null } | null>(null);
 
+    // Memoize assigned IDs to prevent recalculation
+    const assignedIds = useMemo(() => assignments.map((a) => a.user.id), [assignments]);
 
-    // 🔍 Vyhľadávanie používateľov
+    // 🔍 Vyhľadávanie používateľov - optimalizované
     useEffect(() => {
         const fetchUsers = async () => {
             if (search.trim().length < 2) {
@@ -54,18 +55,16 @@ export default function AssignedUsersTable({
             }
             const res = await searchUsersAction(search);
             if (res.success) {
-                // ❌ odfiltrujeme už priradených
-                const assignedIds = assignments.map((a) => a.user.id);
                 const filtered = res.users.filter((u) => !assignedIds.includes(u.id));
                 setSearchResults(filtered);
             }
         };
         const delay = setTimeout(fetchUsers, 300);
         return () => clearTimeout(delay);
-    }, [search, assignments]);
+    }, [search, assignedIds]);
 
-    // ➕ Pridanie alebo ✏️ úprava
-    const handleSubmit = async (e: React.FormEvent) => {
+    // ➕ Pridanie alebo ✏️ úprava - optimalizované
+    const handleSubmit = useCallback(async (e: React.FormEvent) => {
         e.preventDefault();
         if (!userId) {
             setMessage("Vyber používateľa.");
@@ -74,24 +73,21 @@ export default function AssignedUsersTable({
         setAdding(true);
         setMessage("");
 
-        let res;
-        if (editingAssignment) {
-            res = await updateAssignmentAction({
+        const res = editingAssignment
+            ? await updateAssignmentAction({
+                userId,
+                workPeriodId: periodId,
+                fromDate,
+                toDate,
+                profession,
+            })
+            : await assignUserToWorkPeriodAction({
                 userId,
                 workPeriodId: periodId,
                 fromDate,
                 toDate,
                 profession,
             });
-        } else {
-            res = await assignUserToWorkPeriodAction({
-                userId,
-                workPeriodId: periodId,
-                fromDate,
-                toDate,
-                profession,
-            });
-        }
 
         if (res.success) {
             setMessage(editingAssignment ? "✅ Údaje upravené." : "✅ Pracovník pridaný.");
@@ -107,22 +103,17 @@ export default function AssignedUsersTable({
             setMessage(`❌ ${res.error}`);
         }
         setAdding(false);
-    };
+    }, [userId, editingAssignment, periodId, fromDate, toDate, profession, startDate, endDate]);
 
-    // ❌ Odstránenie používateľa
-    const handleRemove = async (userId: number) => {
-        if (!confirm("Naozaj chceš odstrániť tohto používateľa z obdobia?")) return;
-        const res = await removeAssignmentAction({ userId, workPeriodId: periodId });
-        if (res.success) {
-            setMessage("✅ Pracovník odstránený.");
-            window.dispatchEvent(new Event("assignment:changed"));
-        } else {
-            setMessage(`❌ ${res.error}`);
+    // 🖊️ Spustenie editácie - optimalizované
+    const handleEdit = useCallback((
+        a: {
+            user: { id: number; username: string; name: string | null };
+            fromDate: string;
+            toDate: string;
+            profession: Profession;
         }
-    };
-
-    // 🖊️ Spustenie editácie
-    const handleEdit = (a: any) => {
+    ) => {
         setEditingAssignment({
             userId: a.user.id,
             profession: a.profession,
@@ -136,14 +127,34 @@ export default function AssignedUsersTable({
         setToDate(a.toDate.split("T")[0]);
         setSearchResults([]);
         window.scrollTo({ top: 0, behavior: "smooth" });
-    };
+    }, []);
 
-    const formatDate = (d: string) =>
+    const handleCancelEdit = useCallback(() => {
+        setEditingAssignment(null);
+        setSearch("");
+        setUserId(null);
+        setFromDate(startDate);
+        setToDate(endDate);
+        setProfession(Profession.OTHER);
+    }, [startDate, endDate]);
+
+    const formatDate = useCallback((d: string) =>
         new Date(d).toLocaleDateString("sk-SK", {
             day: "2-digit",
             month: "2-digit",
             year: "numeric",
-        });
+        }), []);
+
+    const handleSelectUser = useCallback((u: { id: number; username: string; name: string | null }) => {
+        setUserId(u.id);
+        setSearch(u.name ? `${u.name} (${u.username})` : `noname (${u.username})`);
+        setSearchResults([]);
+    }, []);
+
+    const handleRemoveClick = useCallback((user: { id: number; username: string; name: string | null }) => {
+        setSelectedUser(user);
+        setShowRemoveModal(true);
+    }, []);
 
     return (
         <div className="bg-card p-6 rounded-xl mt-6 mb-6 space-y-6">
@@ -164,24 +175,15 @@ export default function AssignedUsersTable({
                     />
                     {searchResults.length > 0 && (
                         <ul className="absolute z-10 w-full background border border-decor text-color rounded-lg mt-1 max-h-56 overflow-y-auto shadow-lg">
-                            {searchResults.map((u) => {
-                                const displayName = u.name
-                                    ? `${u.name} (${u.username})`
-                                    : `noname (${u.username})`;
-                                return (
-                                    <li
-                                        key={u.id}
-                                        onClick={() => {
-                                            setUserId(u.id);
-                                            setSearch(displayName);
-                                            setSearchResults([]);
-                                        }}
-                                        className="px-4 py-2 bg-neutral text-white cursor-pointer"
-                                    >
-                                        {displayName}
-                                    </li>
-                                );
-                            })}
+                            {searchResults.map((u) => (
+                                <li
+                                    key={u.id}
+                                    onClick={() => handleSelectUser(u)}
+                                    className="px-4 py-2 bg-neutral text-white cursor-pointer hover:bg-opacity-80"
+                                >
+                                    {u.name ? `${u.name} (${u.username})` : `noname (${u.username})`}
+                                </li>
+                            ))}
                         </ul>
                     )}
                 </div>
@@ -215,28 +217,17 @@ export default function AssignedUsersTable({
                 <button
                     type="submit"
                     disabled={adding}
-                    className=" text-white rounded-lg font-bold cl-bg-decor transition px-4 py-3 disabled:opacity-50 cursor-pointer"
+                    className="text-white rounded-lg font-bold cl-bg-decor transition px-4 py-3 disabled:opacity-50 cursor-pointer"
                 >
-                    {adding
-                        ? "Ukladám..."
-                        : editingAssignment
-                            ? "Uložiť zmeny"
-                            : "Pridať"}
+                    {adding ? "Ukladám..." : editingAssignment ? "Uložiť zmeny" : "Pridať"}
                 </button>
 
                 {/* Reset editácie */}
                 {editingAssignment && (
                     <button
                         type="button"
-                        onClick={() => {
-                            setEditingAssignment(null);
-                            setSearch("");
-                            setUserId(null);
-                            setFromDate(startDate);
-                            setToDate(endDate);
-                            setProfession(Profession.OTHER);
-                        }}
-                        className="text-white bg-neutral rounded-lg font-medium  transition px-4 py-3"
+                        onClick={handleCancelEdit}
+                        className="text-white bg-neutral rounded-lg font-medium transition px-4 py-3"
                     >
                         Zrušiť
                     </button>
@@ -245,10 +236,9 @@ export default function AssignedUsersTable({
 
             {message && (
                 <p
-                    className={`text-center text-sm font-medium ${message.includes("✅")
-                        ? "text-green-600"
-                        : "text-red-600"
-                        }`}
+                    className={`text-center text-sm font-medium ${
+                        message.includes("✅") ? "text-green-600" : "text-red-600"
+                    }`}
                 >
                     {message}
                 </p>
@@ -257,9 +247,7 @@ export default function AssignedUsersTable({
             {/* ZOZNAM */}
             <div className="mt-8 space-y-3">
                 {assignments.length === 0 ? (
-                    <p className="input-text italic">
-                        Zatiaľ nikto nie je priradený
-                    </p>
+                    <p className="input-text italic">Zatiaľ nikto nie je priradený</p>
                 ) : (
                     assignments.map((a) => (
                         <div
@@ -287,26 +275,24 @@ export default function AssignedUsersTable({
                                     Upraviť
                                 </button>
                                 <button
-                                    onClick={() => {
-                                        setSelectedUser(a.user);
-                                        setShowRemoveModal(true);
-                                    }}
+                                    onClick={() => handleRemoveClick(a.user)}
                                     className="text-xs bg-red-600 text-white px-3 py-1.5 rounded hover:bg-red-700 cursor-pointer"
                                 >
                                     Odstrániť
                                 </button>
-                                <RemoveAssignmentModal
-                                    isOpen={showRemoveModal}
-                                    onClose={() => setShowRemoveModal(false)}
-                                    user={selectedUser}
-                                    workPeriodId={periodId}
-                                    onSuccess={() => window.dispatchEvent(new Event("assignment:changed"))}
-                                />
                             </div>
                         </div>
                     ))
                 )}
             </div>
+
+            <RemoveAssignmentModal
+                isOpen={showRemoveModal}
+                onClose={() => setShowRemoveModal(false)}
+                user={selectedUser}
+                workPeriodId={periodId}
+                onSuccess={() => window.dispatchEvent(new Event("assignment:changed"))}
+            />
         </div>
     );
 }

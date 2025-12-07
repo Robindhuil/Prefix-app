@@ -18,7 +18,6 @@ export default function Navbar() {
     const isAdmin = session?.user?.role === "ADMIN";
     const toggleMenu = () => setIsOpen(!isOpen);
 
-    const handleLoginClick = () => router.push("/login");
     const handleSignOut = async () => {
         await signOut({ redirect: false });
         router.push("/");

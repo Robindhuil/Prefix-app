@@ -1,12 +1,18 @@
 // app/dashboard/[id]/components/ProfileHeader.tsx
-import { User } from "lucide-react";
+import { User as LucideUser } from "lucide-react";
 
-export default function ProfileHeader({ user }: any) {
+type User = {
+    name?: string;
+    username: string;
+    role?: string;
+};
+
+export default function ProfileHeader({ user }: { user: User }) {
     return (
         <div className="bg-linear-to-r cl-bg-decor text-color rounded-2xl p-8 shadow-xl">
             <div className="flex items-center gap-5">
                 <div className="bg-white/20 backdrop-blur-sm rounded-full p-4">
-                    <User className="w-12 h-12 text-white" />
+                    <LucideUser className="w-12 h-12 text-white" />
                 </div>
                 <div>
                     <h1 className="text-4xl font-bold text-white">

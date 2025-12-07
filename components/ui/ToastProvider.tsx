@@ -23,14 +23,18 @@ export function ToastProvider({ children }: { children: ReactNode }) {
     const [toasts, setToasts] = useState<Toast[]>([]);
 
     const addToast = (message: string, type: ToastType = "info", duration = 4000) => {
-        const id = Math.random().toString(36).substr(2, 9);
-        setToasts((prev) => [...prev, { id, message, type, duration }]);
+        setToasts((prev) => {
+            const id = Math.random().toString(36).substr(2, 9);
+            const newToast = { id, message, type, duration };
 
-        if (duration > 0) {
-            setTimeout(() => {
-                removeToast(id);
-            }, duration);
-        }
+            if (duration > 0) {
+                setTimeout(() => {
+                    removeToast(id);
+                }, duration);
+            }
+
+            return [...prev, newToast];
+        });
     };
 
     const removeToast = (id: string) => {

@@ -10,12 +10,11 @@ import WorkPeriodsSection from "@/components/adminpanel/workperiods/WorkPeriodsS
 type Tab = "users" | "admin" | "workperiods";
 
 export default function AdminPanel() {
-    const [activeTab, setActiveTab] = useState<Tab>("users");
-
-    useEffect(() => {
+    const [activeTab, setActiveTab] = useState<Tab>(() => {
+        if (typeof window === "undefined") return "users";
         const saved = localStorage.getItem("activeAdminTab") as Tab | null;
-        if (saved) setActiveTab(saved);
-    }, []);
+        return saved ?? "users";
+    });
 
     useEffect(() => {
         localStorage.setItem("activeAdminTab", activeTab);

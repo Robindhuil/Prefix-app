@@ -1,5 +1,5 @@
 // app/dashboard/[id]/components/AssignmentsList.tsx
-import { Calendar, CheckCircle2, ArrowRight } from "lucide-react";
+import { Calendar, ArrowRight } from "lucide-react";
 import Link from "next/link";
 
 const formatDate = (date: string | Date) => {
@@ -17,7 +17,23 @@ const isActive = (start: string, end: string) => {
     return now >= s && now <= e;
 };
 
-export default function AssignmentsList({ assignments, userId }: { assignments: any[]; userId: number }) {
+type Assignment = {
+    id: number;
+    workPeriod: {
+        id: number;
+        title: string;
+        startDate: string;
+        endDate: string;
+    };
+};
+
+export default function AssignmentsList({
+    assignments,
+    userId,
+}: {
+    assignments: Assignment[];
+    userId: number;
+}) {
     return (
         <div className="bg-card rounded-2xl shadow-lg p-8">
             <h2 className="text-2xl font-bold mb-8 flex items-center gap-3 text-color">
@@ -31,7 +47,7 @@ export default function AssignmentsList({ assignments, userId }: { assignments: 
                 </p>
             ) : (
                 <div className="space-y-6">
-                    {assignments.map((a: any) => {
+                    {assignments.map((a: Assignment) => {
                         const active = isActive(a.workPeriod.startDate, a.workPeriod.endDate);
                         return (
                             <Link

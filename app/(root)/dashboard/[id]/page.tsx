@@ -34,5 +34,20 @@ export default async function DashboardPage({ params }: { params: Promise<{ id: 
 
     if (!user) redirect("/not-found");
 
-    return <DashboardContent user={user} />;
+    // Convert Date fields in assignments -> strings for DashboardContent
+    const userForClient = {
+        ...user,
+        assignments: user.assignments.map(a => ({
+            ...a,
+            workPeriod: {
+                ...a.workPeriod,
+                startDate: a.workPeriod.startDate instanceof Date ? a.workPeriod.startDate.toISOString() : String(a.workPeriod.startDate),
+                endDate: a.workPeriod.endDate instanceof Date ? a.workPeriod.endDate.toISOString() : String(a.workPeriod.endDate),
+            },
+            fromDate: a.fromDate instanceof Date ? a.fromDate.toISOString() : String(a.fromDate),
+            toDate: a.toDate instanceof Date ? a.toDate.toISOString() : String(a.toDate),
+        })),
+    };
+
+    return <DashboardContent user={userForClient} />;
 }

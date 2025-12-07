@@ -3,7 +3,7 @@
 
 import { useState } from "react";
 import { useDropzone } from "react-dropzone";
-import { Upload, FileText, X, CheckCircle } from "lucide-react";
+import { Upload, FileText, X } from "lucide-react";
 import { uploadDocumentAction } from "@/app/(root)/dashboard/[id]/assignment/[assignmentId]/actions/uploadDocumentAction";
 import { useToast } from "@/components/ui/ToastProvider";
 
@@ -54,8 +54,9 @@ export default function UploadModal({ open, onClose, assignmentId, selectedType 
             } else {
                 throw new Error(result.error);
             }
-        } catch (err: any) {
-            setMessage("Chyba: " + err.message);
+        } catch (err) {
+            const error = err as Error;
+            setMessage("Chyba: " + error.message);
             addToast("Nahrávanie zlyhalo", "error");
         } finally {
             setUploading(false);

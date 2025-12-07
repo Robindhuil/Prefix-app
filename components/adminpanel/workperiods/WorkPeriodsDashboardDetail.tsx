@@ -2,7 +2,7 @@
 "use client";
 
 import { useTranslation } from "@/app/i18n/I18nProvider";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { getWorkPeriodDetail } from "@/app/(root)/adminpanel/workperiods/actions/getWorkPeriodDetailAction";
 import { deleteWorkPeriodAction } from "@/app/(root)/adminpanel/workperiods/actions/deleteWorkPeriodAction";
 import AssignedUsersTable from "./AssignedUsersTable";
@@ -31,16 +31,8 @@ TODAY.setHours(0, 0, 0, 0);
 
 export default function WorkPeriodsDashboardDetail({
     periodId,
-    onEdit
 }: {
     periodId: number | null;
-    onEdit?: (data: {
-        id: number;
-        title: string;
-        description: string | null;
-        startDate: string;
-        endDate: string;
-    }) => void;
 }) {
     const { t } = useTranslation();
     const [detail, setDetail] = useState<Detail | null>(null);
@@ -51,7 +43,7 @@ export default function WorkPeriodsDashboardDetail({
     // EDIT MODAL STAV
     const [editModalOpen, setEditModalOpen] = useState(false);
 
-    const loadDetail = async () => {
+    const loadDetail = useCallback(async () => {
         if (!periodId) {
             setDetail(null);
             setLoading(false);
@@ -61,11 +53,15 @@ export default function WorkPeriodsDashboardDetail({
         const data = await getWorkPeriodDetail(periodId);
         setDetail(data);
         setLoading(false);
-    };
+    }, [periodId]);
 
     useEffect(() => {
-        loadDetail();
-    }, [periodId]);
+        // call stable callback on next tick to avoid synchronous setState in effect
+        const id = setTimeout(() => {
+            loadDetail();
+        }, 0);
+        return () => clearTimeout(id);
+    }, [loadDetail]);
 
     useEffect(() => {
         const handler = () => {
@@ -80,7 +76,7 @@ export default function WorkPeriodsDashboardDetail({
             window.removeEventListener("workperiod:deleted", handler);
             window.removeEventListener("assignment:changed", handler);
         };
-    }, [periodId]);
+    }, [periodId, loadDetail]);
 
     const formatDate = (d: string) =>
         new Date(d).toLocaleDateString("sk-SK", { day: "2-digit", month: "2-digit", year: "numeric" });

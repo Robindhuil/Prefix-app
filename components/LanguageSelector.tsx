@@ -1,9 +1,10 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { useTranslation } from "@/app/i18n/I18nProvider";
 
-const languages = [
+type Locale = "sk" | "en" | "de" | "nl";
+const languages: { locale: Locale; flag: string; name: string }[] = [
     { locale: "sk", flag: "sk", name: "Slovenčina" },
     { locale: "en", flag: "gb", name: "English" },
     { locale: "de", flag: "de", name: "Deutsch" },
@@ -13,11 +14,7 @@ const languages = [
 export default function LanguageSelector() {
     const { locale, setLocale } = useTranslation();
     const [isOpen, setIsOpen] = useState(false);
-    const [selected, setSelected] = useState(languages.find((l) => l.locale === locale) ?? languages[0]);
-
-    useEffect(() => {
-        setSelected(languages.find((l) => l.locale === locale) ?? languages[0]);
-    }, [locale]);
+    const selected = languages.find((l) => l.locale === locale) ?? languages[0];
 
     return (
         <div className="relative">
@@ -39,7 +36,7 @@ export default function LanguageSelector() {
                         <button
                             key={lang.locale}
                             onClick={() => {
-                                setLocale(lang.locale as any);
+                                setLocale(lang.locale as Locale);
                                 setIsOpen(false);
                             }}
                             className="cursor-pointer flex items-center space-x-3 w-full px-4 py-2 text-left text-gray-800 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-900 transition-colors duration-200"

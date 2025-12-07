@@ -7,8 +7,15 @@ import { updateProfileAction } from "@/app/(root)/dashboard/[id]/actions/updateP
 import { useToast } from "../ui/ToastProvider";
 import { useTranslation } from "@/app/i18n/I18nProvider";
 
+type User = {
+    id: number;
+    username: string;
+    name?: string;
+    email?: string;
+    // Add other user fields as needed
+};
 
-export default function ProfileForm({ user }: any) {
+export default function ProfileForm({ user }: { user: User }) {
     const [isEditing, setIsEditing] = useState(false);
     const [name, setName] = useState(user.name || "");
     const [email, setEmail] = useState(user.email || "");

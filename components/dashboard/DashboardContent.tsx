@@ -9,24 +9,42 @@ import ProfileHeader from "./ProfileHeader";
 import DashboardSidebar from "@/components/dashboard/DashboardSidebar";
 
 
-export default function DashboardContent({ user }: { user: any }) {
-    const [activeTab, setActiveTab] = useState<"profil" | "priradenia">("profil");
+type Assignment = {
+    id: number;
+    workPeriod: {
+        id: number;
+        title: string;
+        startDate: string;
+        endDate: string;
+    };
+};
 
-    // Načítanie z URL
-    useEffect(() => {
+type User = {
+    id: number;
+    username: string;
+    assignments: Assignment[];
+    // Add other user fields as needed
+};
+
+type TabKey = "profil" | "priradenia";
+
+export default function DashboardContent({ user }: { user: User }) {
+    // Initialize from location.hash on first render (client-only component)
+    const [activeTab, setActiveTab] = useState<TabKey>(() => {
+        if (typeof window === "undefined") return "profil";
         const hash = window.location.hash.slice(1);
-        if (hash === "priradenia") setActiveTab("priradenia");
-    }, []);
+        return (hash === "priradenia" || hash === "profil") ? (hash as TabKey) : "profil";
+    });
 
     // Prepínanie + URL
-    const switchTab = (tab: "profil" | "priradenia") => {
+    const switchTab = (tab: TabKey) => {
         setActiveTab(tab);
         window.history.replaceState(null, "", `#${tab}`);
     };
 
     // Globálna funkcia pre sidebar
     useEffect(() => {
-        (window as any).switchDashboardTab = switchTab;
+        (window as unknown as { switchDashboardTab: (tab: TabKey) => void }).switchDashboardTab = switchTab;
     }, []);
 
     return (
@@ -51,10 +69,10 @@ export default function DashboardContent({ user }: { user: any }) {
                                 ].map(({ key, label }) => (
                                     <button
                                         key={key}
-                                        onClick={() => switchTab(key as any)}
+                                        onClick={() => switchTab(key as TabKey)}
                                         className={`
-                      px-6 py-3 text-lg font-semibold border-b-4 transition-all duration-300 cursor-pointer
-                      ${activeTab === key
+                    px-6 py-3 text-lg font-semibold border-b-4 transition-all duration-300 cursor-pointer
+                    ${activeTab === key
                                                 ? "cl-text-decor"
                                                 : "border-transparent interactive-text"
                                             }

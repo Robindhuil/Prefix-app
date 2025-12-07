@@ -8,8 +8,9 @@ export default function DashboardSidebar() {
   const [isOpen, setIsOpen] = useState(false);
 
   const switchTab = (tab: "profil" | "priradenia") => {
-    if ((window as any).switchDashboardTab) {
-      (window as any).switchDashboardTab(tab);
+    const win = window as unknown as { switchDashboardTab?: (tab: "profil" | "priradenia") => void };
+    if (win.switchDashboardTab) {
+      win.switchDashboardTab(tab);
     }
     setIsOpen(false);
   };

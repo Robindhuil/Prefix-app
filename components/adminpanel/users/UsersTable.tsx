@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useCallback } from "react";
 import { useTranslation } from "@/app/i18n/I18nProvider";
 import { format } from "date-fns";
 import {
@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import type { UserModel } from "./UsersSection";
 import { getUsersAction } from "@/app/(root)/adminpanel/users/actions/getUsersAction";
+import { TableVirtuoso } from "react-virtuoso";
 
 type SortKey = "id" | "username" | "email" | "name" | "role" | "isActive" | "createdAt" | "updatedAt";
 type SortOrder = "asc" | "desc";
@@ -28,21 +29,26 @@ export default function UsersTable({ onEdit, onDelete, onToggleActive }: UsersTa
     const [sortOrder, setSortOrder] = useState<SortOrder>("asc");
     const [searchQuery, setSearchQuery] = useState("");
 
-    const fetchUsers = async () => {
-        setLoading(true);
-        setError(null);
-        const result = await getUsersAction();
-        if (result.success) {
-            setUsers(result.data);
-        } else {
-            setError(result.error);
+    const fetchUsers = useCallback(async () => {
+        try {
+            const result = await getUsersAction();
+            if (result.success) {
+                setUsers(result.data);
+                setError(null);
+            } else {
+                setError(result.error);
+            }
+        } catch (e) {
+            console.error(e);
+            setError("An unexpected error occurred");
+        } finally {
+            setLoading(false);
         }
-        setLoading(false);
-    };
+    }, []);
 
     useEffect(() => {
         fetchUsers();
-    }, []);
+    }, [fetchUsers]);
 
     // Live filter + sort (useMemo pre výkon)
     const filteredAndSortedUsers = useMemo(() => {
@@ -60,10 +66,15 @@ export default function UsersTable({ onEdit, onDelete, onToggleActive }: UsersTa
             );
         }
 
+        // helper to safely read a field value from UserModel
+        const getFieldValue = (u: UserModel, key: SortKey): unknown => {
+            return (u as unknown as Record<string, unknown>)[key];
+        };
+
         // === ZORADENIE ===
         return [...filtered].sort((a, b) => {
-            let aValue: any = a[sortKey];
-            let bValue: any = b[sortKey];
+            let aValue: unknown = getFieldValue(a, sortKey);
+            let bValue: unknown = getFieldValue(b, sortKey);
 
             if (sortKey === "isActive") {
                 aValue = a.isActive ? 1 : 0;
@@ -71,8 +82,8 @@ export default function UsersTable({ onEdit, onDelete, onToggleActive }: UsersTa
             }
 
             if (typeof aValue === "string" || typeof bValue === "string") {
-                const aStr = (aValue || "").toString().toLowerCase();
-                const bStr = (bValue || "").toString().toLowerCase();
+                const aStr = (aValue as string || "").toString().toLowerCase();
+                const bStr = (bValue as string || "").toString().toLowerCase();
 
                 if (aStr === "" && bStr !== "") return 1;
                 if (bStr === "" && aStr !== "") return -1;
@@ -87,20 +98,32 @@ export default function UsersTable({ onEdit, onDelete, onToggleActive }: UsersTa
             if (bValue == null && aValue != null) return -1;
             if (aValue == null && bValue == null) return 0;
 
-            if (aValue < bValue) return sortOrder === "asc" ? -1 : 1;
-            if (aValue > bValue) return sortOrder === "asc" ? 1 : -1;
+            // Try numeric comparison first when both are numbers or numeric strings
+            const aNum = typeof aValue === "number" ? aValue : Number(aValue);
+            const bNum = typeof bValue === "number" ? bValue : Number(bValue);
+            if (!Number.isNaN(aNum) && !Number.isNaN(bNum)) {
+                if (aNum < bNum) return sortOrder === "asc" ? -1 : 1;
+                if (aNum > bNum) return sortOrder === "asc" ? 1 : -1;
+                return 0;
+            }
+
+            // Fallback to string comparison
+            const aStr = String(aValue).toLowerCase();
+            const bStr = String(bValue).toLowerCase();
+            if (aStr < bStr) return sortOrder === "asc" ? -1 : 1;
+            if (aStr > bStr) return sortOrder === "asc" ? 1 : -1;
             return 0;
         });
     }, [users, searchQuery, sortKey, sortOrder]);
 
-    const handleSort = (key: SortKey) => {
+    const handleSort = useCallback((key: SortKey) => {
         if (sortKey === key) {
             setSortOrder(prev => prev === "asc" ? "desc" : "asc");
         } else {
             setSortKey(key);
             setSortOrder("asc");
         }
-    };
+    }, [sortKey]);
 
     const getSortIcon = (key: SortKey) => {
         if (sortKey !== key) return <ArrowUpDown className="w-4 h-4 opacity-40 ml-1" />;
@@ -126,7 +149,7 @@ export default function UsersTable({ onEdit, onDelete, onToggleActive }: UsersTa
     }
 
     return (
-        <div className="w-full overflow-x-auto">
+        <div className="w-full">
             <div className="mb-6 flex flex-col sm:flex-row items-center justify-between gap-4">
                 <h3 className="text-2xl font-bold text-color flex items-center gap-2">
                     <User className="w-6 h-6 cl-text-decor" />
@@ -141,7 +164,7 @@ export default function UsersTable({ onEdit, onDelete, onToggleActive }: UsersTa
                         placeholder={t("adminPanel.table.filter.searchPlaceholder") || "Hľadať v používateľoch..."}
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        className="w-full pl-10 pr-4 py-2.5 input-bg input-text backdrop-blur-sm border border-custom rounded-lg text-sm focus-ring focus-border transition-all"
+                        className="w-full pl-10 pr-4 py-2.5 input-bg input-text border border-custom rounded-lg text-sm focus-ring focus-border transition-all"
                     />
                     {searchQuery && (
                         <button
@@ -166,10 +189,12 @@ export default function UsersTable({ onEdit, onDelete, onToggleActive }: UsersTa
                     </p>
                 </div>
             ) : (
-                <div className="backdrop-blur-sm rounded-xl shadow-lg border border-custom overflow-hidden">
-                    <table className="w-full min-w-full divide-y divide-color">
-                        <thead className="bg-card">
-                            <tr>
+                <div className="rounded-xl shadow-lg border border-custom overflow-hidden">
+                    <TableVirtuoso
+                        style={{ height: "calc(100vh - 300px)" }}
+                        data={filteredAndSortedUsers}
+                        fixedHeaderContent={() => (
+                            <tr className="bg-card">
                                 <th className="px-6 py-3 text-left text-xs font-medium text-color uppercase tracking-wider">
                                     <button
                                         onClick={() => handleSort("id")}
@@ -227,10 +252,10 @@ export default function UsersTable({ onEdit, onDelete, onToggleActive }: UsersTa
                                         {getSortIcon("isActive")}
                                     </button>
                                 </th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-coloruppercase tracking-wider">
+                                <th className="px-6 py-3 text-left text-xs font-medium text-color uppercase tracking-wider">
                                     <button
                                         onClick={() => handleSort("createdAt")}
-                                        className="flex items-center gap-1 interactive-text transition-colors font-semibold cursor-pointer"
+                                        className="flex items-center gap-1 interactive-colors font-semibold cursor-pointer"
                                     >
                                         <Calendar className="w-4 h-4 inline mr-1" />
                                         {t("adminPanel.table.created")}
@@ -251,91 +276,98 @@ export default function UsersTable({ onEdit, onDelete, onToggleActive }: UsersTa
                                     {t("adminPanel.table.actions")}
                                 </th>
                             </tr>
-                        </thead>
-                        <tbody className="background divide-y divide-custom">
-                            {filteredAndSortedUsers.map((user) => (
-                                <tr
-                                    key={user.id}
-                                    className="background transition-colors duration-200"
-                                >
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-color">
-                                        #{user.id}
-                                    </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-color">
-                                        {user.username}
-                                    </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-color">
-                                        {user.email || (
-                                            <span className="input-text italic">
-                                                {t("adminPanel.table.noEmail")}
-                                            </span>
-                                        )}
-                                    </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-color">
-                                        {user.name || (
-                                            <span className="input-text italic">
-                                                {t("adminPanel.table.noName")}
-                                            </span>
-                                        )}
-                                    </td>
-                                    <td className="px-6 py-4 whitespace-nowrap">
-                                        <span
-                                            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${user.role === "ADMIN"
+                        )}
+                        itemContent={(index, user) => (
+                            <>
+                                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-color">
+                                    #{user.id}
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap text-sm text-color">
+                                    {user.username}
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap text-sm text-color">
+                                    {user.email || (
+                                        <span className="input-text italic">
+                                            {t("adminPanel.table.noEmail")}
+                                        </span>
+                                    )}
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap text-sm text-color">
+                                    {user.name || (
+                                        <span className="input-text italic">
+                                            {t("adminPanel.table.noName")}
+                                        </span>
+                                    )}
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap">
+                                    <span
+                                        className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                                            user.role === "ADMIN"
                                                 ? "bg-[#600000]/10 text-[#600000] dark:bg-[#600000]/20"
                                                 : "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300"
-                                                }`}
+                                        }`}
+                                    >
+                                        {user.role}
+                                    </span>
+                                </td>
+                                <td className="px-6 py-4 text-sm text-gray-700 dark:text-gray-300 text-center align-middle">
+                                    <div className="w-6 flex justify-center">
+                                        {user.isActive ? (
+                                            <Check className="text-green-500 w-5 h-5" />
+                                        ) : (
+                                            <X className="text-red-500 w-5 h-5" />
+                                        )}
+                                    </div>
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap text-sm input-text">
+                                    {format(new Date(user.createdAt), "dd.MM.yyyy HH:mm")}
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap text-sm input-text">
+                                    {format(new Date(user.updatedAt), "dd.MM.yyyy HH:mm")}
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap text-center">
+                                    <div className="flex items-center justify-center gap-3">
+                                        <button
+                                            onClick={() => onEdit(user)}
+                                            className="text-[#0996e2] hover:text-[#00659b] cursor-pointer dark:text-[#0073b1] hover:dark:text-[#00659b] transition-colors"
+                                            title={t("adminPanel.edit")}
                                         >
-                                            {user.role}
-                                        </span>
-                                    </td>
-                                    <td className="px-6 py-4 text-sm text-gray-700 dark:text-gray-300 text-center align-middle">
-                                        <div className="w-6 flex justify-center">
-                                            {user.isActive ? (
-                                                <Check className="text-green-500 w-5 h-5 -translate-x-[0.5px]" />
-                                            ) : (
-                                                <X className="text-red-500 w-5 h-5 -translate-x-[0.5px]" />
-                                            )}
-                                        </div>
-                                    </td>
-
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm input-text">
-                                        {format(new Date(user.createdAt), "dd.MM.yyyy HH:mm")}
-                                    </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm input-text">
-                                        {format(new Date(user.updatedAt), "dd.MM.yyyy HH:mm")}
-                                    </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-center">
-                                        <div className="flex items-center justify-center gap-3">
-                                            <button
-                                                onClick={() => onEdit(user)}
-                                                className="text-[#0996e2] hover:text-[#00659b] cursor-pointer dark:text-[#0073b1] hover:dark:text-[#00659b] transition-colors"
-                                                title={t("adminPanel.edit")}
-                                            >
-                                                <Pencil className="w-5 h-5" />
-                                            </button>
-                                            <button
-                                                onClick={() => onToggleActive({ id: user.id, username: user.username, isActive: user.isActive })}
-                                                className={`transition-colors cursor-pointer ${user.isActive
+                                            <Pencil className="w-5 h-5" />
+                                        </button>
+                                        <button
+                                            onClick={() => onToggleActive({ id: user.id, username: user.username, isActive: user.isActive })}
+                                            className={`transition-colors cursor-pointer ${
+                                                user.isActive
                                                     ? "text-orange-600 hover:text-orange-800 dark:text-orange-500 dark:hover:text-orange-400"
                                                     : "text-green-600 hover:text-green-800 dark:text-green-500 dark:hover:text-green-400"
-                                                    }`}
-                                                title={user.isActive ? t("adminPanel.banUser") : t("adminPanel.activateUser")}
-                                            >
-                                                {user.isActive ? <Ban className="w-5 h-5" /> : <CheckCircle className="w-5 h-5" />}
-                                            </button>
-                                            <button
-                                                onClick={() => onDelete({ id: user.id, username: user.username })}
-                                                className="text-red-600 hover:text-red-800 cursor-pointer dark:text-red-500 dark:hover:text-red-400 transition-colors"
-                                                title={t("adminPanel.delete")}
-                                            >
-                                                <Trash2 className="w-5 h-5" />
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                                            }`}
+                                            title={user.isActive ? t("adminPanel.banUser") : t("adminPanel.activateUser")}
+                                        >
+                                            {user.isActive ? <Ban className="w-5 h-5" /> : <CheckCircle className="w-5 h-5" />}
+                                        </button>
+                                        <button
+                                            onClick={() => onDelete({ id: user.id, username: user.username })}
+                                            className="text-red-600 hover:text-red-800 cursor-pointer dark:text-red-500 dark:hover:text-red-400 transition-colors"
+                                            title={t("adminPanel.delete")}
+                                        >
+                                            <Trash2 className="w-5 h-5" />
+                                        </button>
+                                    </div>
+                                </td>
+                            </>
+                        )}
+                        components={{
+                            Table: ({ style, ...props }) => (
+                                <table {...props} style={{ ...style, width: "100%", borderCollapse: "collapse" }} className="min-w-full divide-y divide-color" />
+                            ),
+                            TableRow: ({ style, ...props }) => (
+                                <tr {...props} style={style} className="background transition-colors duration-200" />
+                            ),
+                            TableBody: ({ style, ...props }) => (
+                                <tbody {...props} style={style} className="background divide-y divide-custom" />
+                            ),
+                        }}
+                    />
                 </div>
             )}
         </div>

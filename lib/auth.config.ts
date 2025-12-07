@@ -76,18 +76,20 @@ export const authConfig: NextAuthConfig = {
 
         async session({ session, token }) {
             if (session.user && token.id) {
-                session.user.id = token.id as string;  // ← PRIDAJ!
+                session.user.id = token.id as string;
                 session.user.role = token.role as "USER" | "ADMIN";
                 session.user.isActive = token.isActive as boolean;
             }
 
             if (token.isActive === false) {
                 session.user = {
+                    id: token.id as string,
                     name: 'Deactivated',
                     email: '',
-                    role: 'USER',
+                    emailVerified: null,
+                    role: 'USER' as const,
                     isActive: false,
-                } as any;
+                };
             }
 
             return session;

@@ -44,22 +44,44 @@ const sectionConfig = [
     },
 ];
 
+type Document = {
+    id: number;
+    fileName: string;
+    size: number;
+    documentType: DocumentType;
+    // ...other fields as needed
+};
+
+type AssignmentDocument = {
+    id: number;
+    document: Document;
+    // ...other fields as needed
+};
+
+type Assignment = {
+    id: number;
+    // ...other fields as needed
+};
+
 export default function SharedDocuments({
     documents = [],
     assignment,
 }: {
-    documents: any[];
-    assignment: any;
+    documents: AssignmentDocument[];
+    assignment: Assignment;
 }) {
     const [isOpen, setIsOpen] = useState(false);
     const [selectedType, setSelectedType] = useState<DocumentType>("OTHER");
 
-    const grouped = documents.reduce((acc: any, ad: any) => {
-        const type = ad.document.documentType || "OTHER";
-        if (!acc[type]) acc[type] = [];
-        acc[type].push(ad);
-        return acc;
-    }, {});
+    const grouped = documents.reduce(
+        (acc: Record<DocumentType, AssignmentDocument[]>, ad: AssignmentDocument) => {
+            const type = ad.document.documentType || "OTHER";
+            if (!acc[type]) acc[type] = [];
+            acc[type].push(ad);
+            return acc;
+        },
+        {} as Record<DocumentType, AssignmentDocument[]>
+    );
 
     const openModal = (type: DocumentType) => {
         setSelectedType(type);
@@ -122,7 +144,7 @@ export default function SharedDocuments({
                                 {/* DOKUMENTY */}
                                 <div className="space-y-4 min-h-40">
                                     {docs.length > 0 ? (
-                                        docs.map((ad: any) => {
+                                        docs.map((ad: AssignmentDocument) => {
                                             const doc = ad.document;
                                             return (
                                                 <a

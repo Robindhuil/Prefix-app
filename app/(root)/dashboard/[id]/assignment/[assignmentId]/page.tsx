@@ -10,13 +10,14 @@ import DashboardSidebar from "@/components/dashboard/DashboardSidebar";
 export default async function AssignmentPage({
   params,
 }: {
-  params: { id: string; assignmentId: string };
+  params: Promise<{ id: string; assignmentId: string }>;
 }) {
   const session = await auth();
   if (!session?.user) redirect("/login");
 
-  const userId = Number(params.id);
-  const assignmentId = Number(params.assignmentId);
+  const { id, assignmentId: assignmentIdStr } = await params;
+  const userId = Number(id);
+  const assignmentId = Number(assignmentIdStr);
 
   if (session.user.role !== "ADMIN" && Number(session.user.id) !== userId) {
     redirect("/unauthorized");
@@ -47,6 +48,27 @@ export default async function AssignmentPage({
 
   if (!assignment || assignment.userId !== userId) redirect("/not-found");
 
+  // Convert Date fields to string for AssignmentDetail props
+  const assignmentForDetail = {
+    ...assignment,
+    workPeriod: {
+      ...assignment.workPeriod,
+      startDate: assignment.workPeriod.startDate.toISOString(),
+      endDate: assignment.workPeriod.endDate.toISOString(),
+      description: assignment.workPeriod.description ?? undefined, // convert null -> undefined
+      title: assignment.workPeriod.title,
+    },
+    fromDate: assignment.fromDate.toISOString(),
+    toDate: assignment.toDate.toISOString(),
+    documents: assignment.documents.map((doc) => ({
+      ...doc,
+      document: {
+        ...doc.document,
+        size: doc.document.size ?? 0,
+      },
+    })),
+  };
+
   return (
     <div className="min-h-screen flex flex-col md:flex-row bg-background">
       <DashboardSidebar />
@@ -60,7 +82,7 @@ export default async function AssignmentPage({
           Späť na dashboard
         </Link>
 
-        <AssignmentDetail assignment={assignment} user={assignment.user} />
+        <AssignmentDetail assignment={assignmentForDetail} user={assignment.user} />
       </div>
     </div>
   );

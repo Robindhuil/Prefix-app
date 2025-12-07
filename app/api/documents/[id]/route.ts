@@ -4,9 +4,10 @@ import { downloadDocumentAction } from "@/app/(root)/dashboard/[id]/assignment/[
 
 export async function GET(
     request: Request,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
-    const id = parseInt(params.id, 10);
+    const { id: idStr } = await params;
+    const id = parseInt(idStr, 10);
     if (isNaN(id)) return new NextResponse("Invalid ID", { status: 400 });
 
     const result = await downloadDocumentAction(id);

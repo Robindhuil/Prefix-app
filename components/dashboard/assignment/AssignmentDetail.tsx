@@ -46,15 +46,46 @@ const statusConfig = {
   },
 };
 
+// Document shape from Prisma (minimal)
+type PrismaDocument = {
+  id: number;
+  fileName: string;
+  mimeType?: string | null;
+  size: number;
+  documentType: "INVOICE" | "ORDER" | "CONTRACT" | "OTHER";
+  createdAt?: string | Date;
+  hash?: string | null;
+};
+
+type AssignmentDocument = {
+  id: number;
+  document: PrismaDocument;
+};
+
+type Assignment = {
+  id: number;
+  workPeriod: {
+    title: string;
+    startDate: string;
+    endDate: string;
+    description?: string;
+  };
+  profession: "WELDER" | "BRICKLAYER" | "OTHER";
+  fromDate: string;
+  toDate: string;
+  documents?: AssignmentDocument[]; // <- typed instead of `any`
+  // ...other fields as needed
+};
+
 // ✅ Pridali sme `user` ako prop
 export default function AssignmentDetail({
   assignment,
   user,
 }: {
-  assignment: any;
-  user?: { name?: string | null }; // ✅ pridané | null
+  assignment: Assignment;
+  user?: { name?: string | null; username?: string };
 }) {
-  const { workPeriod, profession, fromDate, toDate, documents } = assignment;
+  const { workPeriod, profession, fromDate, toDate } = assignment;
   const status = getStatus(fromDate, toDate);
   const config = statusConfig[status];
 
@@ -139,7 +170,7 @@ export default function AssignmentDetail({
         </div>
 
         {/* NOVÝ KOMPONENT */}
-        <SharedDocuments documents={assignment.documents} assignment={assignment} />
+        <SharedDocuments documents={assignment.documents ?? []} assignment={assignment} />
       </div>
     </div>
   );

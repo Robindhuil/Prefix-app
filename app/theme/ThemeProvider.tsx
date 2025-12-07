@@ -8,17 +8,18 @@ type ThemeContextType = { theme: Theme; toggleTheme: () => void };
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function ThemeProvider({ children, initialTheme }: { children: ReactNode; initialTheme?: Theme }) {
-    const [theme, setTheme] = useState<Theme>(initialTheme || "light");
-
-    // Na načítanie témy z localStorage / prefers-color-scheme
-    useEffect(() => {
+    const [theme, setTheme] = useState<Theme>(() => {
+        if (typeof window === "undefined") return initialTheme || "light";
         const saved = localStorage.getItem("theme") as Theme | null;
         const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-        const finalTheme = saved || (prefersDark ? "dark" : "light");
-        setTheme(finalTheme);
-        document.documentElement.classList.toggle("dark", finalTheme === "dark");
+        return saved || (prefersDark ? "dark" : "light");
+    });
+
+    // Apply theme to DOM after mount
+    useEffect(() => {
+        document.documentElement.classList.toggle("dark", theme === "dark");
         document.body.classList.add("hydrated");
-    }, []);
+    }, [theme]);
 
     const toggleTheme = () => {
         const newTheme = theme === "light" ? "dark" : "light";

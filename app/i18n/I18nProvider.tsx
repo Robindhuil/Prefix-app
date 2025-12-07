@@ -5,8 +5,8 @@ import en from "../locales/en.json";
 import de from "../locales/de.json";
 import nl from "../locales/nl.json";
 
-type Locale = "sk" | "en" | "de" | "nl";
-const translations: Record<Locale, any> = { sk, en, de, nl };
+export type Locale = "sk" | "en" | "de" | "nl";
+const translations: Record<Locale, Record<string, unknown>> = { sk, en, de, nl };
 
 // typ pre interpoláciu – napr. { username: "Peter" }
 type TranslationParams = Record<string, string | number>;
@@ -49,10 +49,10 @@ export function I18nProvider({
         () =>
             (key: string, params?: TranslationParams) => {
                 const keys = key.split(".");
-                let value: any = translations[locale];
+                let value: unknown = translations[locale];
                 for (const k of keys) {
                     if (value == null) return key;
-                    value = value[k];
+                    value = (value as Record<string, unknown>)[k];
                 }
 
                 if (typeof value !== "string") return key;
@@ -60,11 +60,11 @@ export function I18nProvider({
                 // interpolácia {param}
                 if (params) {
                     Object.entries(params).forEach(([paramKey, paramValue]) => {
-                        value = value.replace(`{${paramKey}}`, String(paramValue));
+                        value = (value as string).replace(`{${paramKey}}`, String(paramValue));
                     });
                 }
 
-                return value;
+                return value as string;
             },
         [locale]
     );

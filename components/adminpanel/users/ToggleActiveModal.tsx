@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { X, Ban, CheckCircle, AlertCircle } from "lucide-react";
+import { X, Ban, CheckCircle } from "lucide-react";
 import { useTranslation } from "@/app/i18n/I18nProvider";
 import { toggleUserActiveAction } from "@/app/(root)/adminpanel/users/actions/toggleUserActiveAction";
 import { useToast } from "@/components/ui/ToastProvider";

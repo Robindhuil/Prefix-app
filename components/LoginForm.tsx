@@ -2,14 +2,12 @@
 import { useState, useEffect } from "react";
 import { LogIn, Eye, EyeOff, AlertCircle } from "lucide-react";
 import { useTranslation } from "@/app/i18n/I18nProvider";
-import { useTheme } from "@/app/theme/ThemeProvider";
 import { useRouter } from "next/navigation";
 import { signIn, useSession } from "next-auth/react";
 import { useToast } from "@/components/ui/ToastProvider";
 
 export default function LoginForm() {
     const { t } = useTranslation();
-    const { theme } = useTheme();
     const router = useRouter();
 
     const [username, setUsername] = useState("");
@@ -19,7 +17,7 @@ export default function LoginForm() {
     const [error, setError] = useState("");
     const { addToast } = useToast();
 
-    const { data: session, status } = useSession();
+    const { status } = useSession();
 
     useEffect(() => {
         if (status === "authenticated") {

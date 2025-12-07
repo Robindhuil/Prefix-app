@@ -25,12 +25,6 @@ type Props = {
     };
 };
 
-const LABELS: Record<Requirement["profession"], string> = {
-    WELDER: "Zvárací",
-    BRICKLAYER: "Murári",
-    OTHER: "Ostatní",
-};
-
 export default function WorkPeriodModal({ isOpen, onClose, mode, initialData }: Props) {
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
@@ -64,7 +58,11 @@ export default function WorkPeriodModal({ isOpen, onClose, mode, initialData }: 
 
     const addRow = () => setRequirements(prev => [...prev, { profession: "OTHER", countNeeded: 1 }]);
     const removeRow = (i: number) => setRequirements(prev => prev.filter((_, idx) => idx !== i));
-    const updateRow = (i: number, field: "profession" | "countNeeded", value: any) => {
+    const updateRow = (
+        i: number,
+        field: "profession" | "countNeeded",
+        value: Requirement["profession"] | number
+    ) => {
         setRequirements(prev => prev.map((r, idx) => idx === i ? { ...r, [field]: value } : r));
     };
 
