@@ -28,7 +28,7 @@ type User = {
 
 type TabKey = "profil" | "priradenia";
 
-export default function DashboardContent({ user }: { user: User }) {
+export default function DashboardContent({ user, canEditSensitive = false }: { user: User; canEditSensitive?: boolean }) {
     // Initialize from location.hash on first render (client-only component)
     const [activeTab, setActiveTab] = useState<TabKey>(() => {
         if (typeof window === "undefined") return "profil";
@@ -89,7 +89,7 @@ export default function DashboardContent({ user }: { user: User }) {
                             {activeTab === "profil" ? (
                                 <div className="grid md:grid-cols-2 gap-8">
                                     <ProfileForm user={user} />
-                                    <PasswordForm />
+                                    {canEditSensitive && <PasswordForm />}
                                 </div>
                             ) : (
                                 <AssignmentsList assignments={user.assignments} userId={user.id} />

@@ -11,7 +11,7 @@ export default async function DashboardPage({ params }: { params: Promise<{ id: 
     if (!session?.user) redirect("/login");
 
     if (session.user.role !== "ADMIN" && Number(session.user.id) !== userId) {
-        redirect("/unauthorized");
+        redirect(`/dashboard/${session.user.id}`); // <- redirect to own dashboard
     }
 
     const user = await prisma.user.findUnique({
@@ -49,5 +49,8 @@ export default async function DashboardPage({ params }: { params: Promise<{ id: 
         })),
     };
 
-    return <DashboardContent user={userForClient} />;
+    const isAdmin = session.user.role === "ADMIN";
+    const isOwner = Number(session.user.id) === userId;
+
+    return <DashboardContent user={userForClient} canEditSensitive={isAdmin || isOwner} />;
 }

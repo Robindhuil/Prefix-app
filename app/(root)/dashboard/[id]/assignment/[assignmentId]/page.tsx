@@ -20,7 +20,7 @@ export default async function AssignmentPage({
   const assignmentId = Number(assignmentIdStr);
 
   if (session.user.role !== "ADMIN" && Number(session.user.id) !== userId) {
-    redirect("/unauthorized");
+    redirect(`/dashboard/${session.user.id}`); // <- redirect to own dashboard
   }
 
   const assignment = await prisma.userAssignment.findUnique({
@@ -82,7 +82,11 @@ export default async function AssignmentPage({
           Späť na dashboard
         </Link>
 
-        <AssignmentDetail assignment={assignmentForDetail} user={assignment.user} />
+        <AssignmentDetail
+          assignment={assignmentForDetail}
+          user={assignment.user}
+          isUserAdmin={session.user.role === "ADMIN"} // <- pass admin flag
+        />
       </div>
     </div>
   );

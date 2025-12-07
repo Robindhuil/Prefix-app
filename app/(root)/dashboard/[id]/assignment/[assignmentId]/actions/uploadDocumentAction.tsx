@@ -4,6 +4,7 @@
 import { auth } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import crypto from "crypto";
+import { isAdmin } from "@/utils/auth";
 
 export async function uploadDocumentAction(
   file: File,
@@ -12,6 +13,12 @@ export async function uploadDocumentAction(
 ) {
   const session = await auth();
   if (!session?.user?.id) return { success: false, error: "Neautorizovaný" };
+
+  // Check if user is admin
+  const userIsAdmin = await isAdmin();
+  if (!userIsAdmin) {
+    return { success: false, error: "Prístup odmietnutý. Len administrátori môžu nahrávať dokumenty." };
+  }
 
   const userId = parseInt(session.user.id, 10);
   if (isNaN(userId)) return { success: false, error: "Neplatné ID" };

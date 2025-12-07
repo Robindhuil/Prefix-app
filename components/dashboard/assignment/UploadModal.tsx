@@ -1,9 +1,10 @@
 // components/dashboard/UploadModal.tsx
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useDropzone } from "react-dropzone";
 import { Upload, FileText, X } from "lucide-react";
+import { createPortal } from "react-dom";
 import { uploadDocumentAction } from "@/app/(root)/dashboard/[id]/assignment/[assignmentId]/actions/uploadDocumentAction";
 import { useToast } from "@/components/ui/ToastProvider";
 
@@ -22,6 +23,31 @@ export default function UploadModal({ open, onClose, assignmentId, selectedType 
     const [message, setMessage] = useState("");
     const [dragActive, setDragActive] = useState(false);
     const { addToast } = useToast();
+
+    useEffect(() => {
+        if (!open) return;
+        const scrollY = window.scrollY;
+        document.documentElement.style.overflow = "hidden";
+        document.body.style.position = "fixed";
+        document.body.style.top = `-${scrollY}px`;
+        document.body.style.width = "100%";
+        const scrollbarGap = window.innerWidth - document.documentElement.clientWidth;
+        if (scrollbarGap > 0) {
+            document.documentElement.style.paddingRight = `${scrollbarGap}px`;
+        }
+        return () => {
+            document.documentElement.style.overflow = "";
+            document.documentElement.style.paddingRight = "";
+            const top = document.body.style.top;
+            document.body.style.position = "";
+            document.body.style.top = "";
+            document.body.style.width = "";
+            if (top) {
+                const y = parseInt(top || "0", 10) * -1;
+                window.scrollTo(0, y);
+            }
+        };
+    }, [open]);
 
     const onDrop = (acceptedFiles: File[]) => {
         if (acceptedFiles[0]) {
@@ -63,14 +89,26 @@ export default function UploadModal({ open, onClose, assignmentId, selectedType 
         }
     };
 
+    const handleBackdropClick = (e: React.MouseEvent) => {
+        if (e.target === e.currentTarget) {
+            onClose();
+        }
+    };
+
     if (!open) return null;
 
-    return (
+    return createPortal(
         <>
-            <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-9998" onClick={onClose} />
-            <div className="fixed inset-0 z-9999 flex items-center justify-center p-4">
+            <div
+                className="fixed inset-0 bg-black/70 backdrop-blur-sm z-[9998]"
+                onClick={handleBackdropClick}
+            />
+            <div
+                className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[9999] p-4"
+                onClick={handleBackdropClick}
+            >
                 <div
-                    className="background rounded-3xl shadow-3xl w-full max-w-2xl max-h-[90vh] overflow-y-auto"
+                    className="background rounded-3xl shadow-3xl w-screen max-w-2xl max-h-[80vh] overflow-auto"
                     onClick={e => e.stopPropagation()}
                 >
                     <div className="p-10">
@@ -131,7 +169,8 @@ export default function UploadModal({ open, onClose, assignmentId, selectedType 
                     </div>
                 </div>
             </div>
-        </>
+        </>,
+        typeof document !== "undefined" ? document.body : ({} as HTMLElement)
     );
 }
 

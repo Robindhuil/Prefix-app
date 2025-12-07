@@ -66,9 +66,13 @@ type Assignment = {
 export default function SharedDocuments({
     documents = [],
     assignment,
+    gridLayout = false,
+    isUserAdmin = false, // <- new prop
 }: {
     documents: AssignmentDocument[];
     assignment: Assignment;
+    gridLayout?: boolean;
+    isUserAdmin?: boolean; // <- new optional prop
 }) {
     const [isOpen, setIsOpen] = useState(false);
     const [selectedType, setSelectedType] = useState<DocumentType>("OTHER");
@@ -106,8 +110,8 @@ export default function SharedDocuments({
                     </div>
                 </div>
 
-                {/* SEKCIE POD SEBOU */}
-                <div className="space-y-8">
+                {/* SEKCIE - Grid alebo pod sebou */}
+                <div className={gridLayout ? "grid md:grid-cols-2 gap-6" : "space-y-8"}>
                     {sectionConfig.map((sec) => {
                         const docs = grouped[sec.type] || [];
                         return (
@@ -131,18 +135,20 @@ export default function SharedDocuments({
                                             {docs.length}
                                         </div>
 
-                                        <button
-                                            onClick={() => openModal(sec.type)}
-                                            className=" cursor-pointer cl-bg-decor text-white p-3.5 rounded-full shadow-xl hover:shadow-2xl hover:scale-110 transition-all duration-300"
-                                            title={`Nahrať do ${sec.label}`}
-                                        >
-                                            <PlusCircle className="w-7 h-7" />
-                                        </button>
+                                        {isUserAdmin && (
+                                            <button
+                                                onClick={() => openModal(sec.type)}
+                                                className=" cursor-pointer cl-bg-decor text-white p-3.5 rounded-full shadow-xl hover:shadow-2xl hover:scale-110 transition-all duration-300"
+                                                title={`Nahrať do ${sec.label}`}
+                                            >
+                                                <PlusCircle className="w-7 h-7" />
+                                            </button>
+                                        )}
                                     </div>
                                 </div>
 
                                 {/* DOKUMENTY */}
-                                <div className="space-y-4 min-h-40">
+                                <div className={`space-y-4 ${gridLayout ? "min-h-32" : "min-h-40"}`}>
                                     {docs.length > 0 ? (
                                         docs.map((ad: AssignmentDocument) => {
                                             const doc = ad.document;
@@ -151,14 +157,14 @@ export default function SharedDocuments({
                                                     key={ad.id}
                                                     href={`/api/documents/${doc.id}`}
                                                     download={doc.fileName}
-                                                    className="group flex items-center justify-between p-6 bg-card rounded-2xl border-2 border-custom hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+                                                    className={`group flex items-center justify-between ${gridLayout ? "p-4" : "p-6"} bg-card rounded-2xl border-2 border-custom hover:shadow-xl transition-all duration-300 hover:-translate-y-1`}
                                                 >
                                                     <div className="flex items-center gap-5">
-                                                        <div className="bg-card p-4 rounded-xl group-hover:scale-110 transition">
-                                                            <FileText className="w-10 h-10 cl-text-decor" />
+                                                        <div className={`bg-card ${gridLayout ? "p-3" : "p-4"} rounded-xl group-hover:scale-110 transition`}>
+                                                            <FileText className={`${gridLayout ? "w-8 h-8" : "w-10 h-10"} cl-text-decor`} />
                                                         </div>
                                                         <div>
-                                                            <p className="font-bold text-lg text-color group-hover:underline">
+                                                            <p className={`font-bold ${gridLayout ? "text-base" : "text-lg"} text-color group-hover:underline`}>
                                                                 {doc.fileName}
                                                             </p>
                                                             <p className="text-sm input-text">
@@ -167,17 +173,16 @@ export default function SharedDocuments({
                                                         </div>
                                                     </div>
 
-                                                    {/* DOWNLOAD TLAČIDLO */}
                                                     <div className="bg-card p-3 rounded-xl transition-all duration-300 group-hover:scale-110">
-                                                        <Download className="w-7 h-7 cl-text-decor group-hover:translate-y-1 transition" />
+                                                        <Download className={`${gridLayout ? "w-6 h-6" : "w-7 h-7"} cl-text-decor group-hover:translate-y-1 transition`} />
                                                     </div>
                                                 </a>
                                             );
                                         })
                                     ) : (
-                                        <div className="flex flex-col items-center justify-center h-40 text-center input-text">
-                                            <FileText className="w-16 h-16 mb-4 opacity-20" />
-                                            <p className="text-lg font-medium italic">
+                                        <div className={`flex flex-col items-center justify-center ${gridLayout ? "h-32" : "h-40"} text-center input-text`}>
+                                            <FileText className={`${gridLayout ? "w-12 h-12" : "w-16 h-16"} mb-4 opacity-20`} />
+                                            <p className={`${gridLayout ? "text-base" : "text-lg"} font-medium italic`}>
                                                 Žiadne {sec.label.toLowerCase()} zatiaľ
                                             </p>
                                         </div>
@@ -191,7 +196,7 @@ export default function SharedDocuments({
 
             {/* MODAL */}
             <UploadModal
-                open={isOpen}
+                open={isOpen && isUserAdmin}
                 onClose={() => setIsOpen(false)}
                 assignmentId={assignment.id}
                 selectedType={selectedType}

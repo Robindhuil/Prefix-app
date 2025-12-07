@@ -7,8 +7,9 @@ import { getWorkPeriodDetail } from "@/app/(root)/adminpanel/workperiods/actions
 import { deleteWorkPeriodAction } from "@/app/(root)/adminpanel/workperiods/actions/deleteWorkPeriodAction";
 import AssignedUsersTable from "./AssignedUsersTable";
 import WorkPeriodModal from "./WorkPeriodModal"; // ← NOVÉ
+import WorkPeriodDeleteModal from "./WorkPeriodDeleteModal";
 import { Profession } from "@/app/generated/prisma/client";
-import { Trash2, Edit, AlertCircle } from "lucide-react";
+import { Trash2, Edit } from "lucide-react";
 
 type Detail = {
     id: number;
@@ -151,14 +152,14 @@ export default function WorkPeriodsDashboardDetail({
                         <div className="flex gap-2">
                             <button
                                 onClick={() => setEditModalOpen(true)}
-                                className="p-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition shadow-md"
+                                className="p-2.5 bg-blue-600 hover:bg-blue-700 cursor-pointer text-white rounded-lg transition shadow-md"
                                 title="Upraviť obdobie"
                             >
                                 <Edit className="w-5 h-5" />
                             </button>
                             <button
                                 onClick={() => setDeleteModal(true)}
-                                className="p-2.5 bg-red-600 hover:bg-red-700 text-white rounded-lg transition shadow-md"
+                                className="p-2.5 bg-red-600 hover:bg-red-700 cursor-pointer text-white rounded-lg transition shadow-md"
                                 title="Odstrániť obdobie"
                             >
                                 <Trash2 className="w-5 h-5" />
@@ -236,37 +237,13 @@ export default function WorkPeriodsDashboardDetail({
             </div>
 
             {/* DELETE MODAL */}
-            {deleteModal && (
-                <div className="fixed inset-0 bg-black/70 backdrop-blur-sm bg-opacity-50 flex items-center justify-center z-50 p-4">
-                    <div className="background rounded-xl p-6 max-w-md w-full shadow-2xl border-decor">
-                        <div className="flex items-center gap-3 cl-text-color    mb-4">
-                            <AlertCircle className="w-8 h-8" />
-                            <h3 className="text-xl font-bold">Odstrániť obdobie?</h3>
-                        </div>
-                        <p className="input-text mb-6">
-                            Naozaj chceš odstrániť obdobie <strong>{detail.title}</strong>?<br />
-                            <span className="text-sm">Toto je nevratná operácia.</span>
-                        </p>
-                        <div className="flex justify-end gap-3">
-                            <button
-                                onClick={() => setDeleteModal(false)}
-                                disabled={isDeleting}
-                                className="px-5 py-2.5 bg-neutral rounded-lg transition cursor-pointer"
-                            >
-                                Zrušiť
-                            </button>
-                            <button
-                                onClick={handleDelete}
-                                disabled={isDeleting}
-                                className="px-5 py-2.5 cl-bg-decor cursor-pointer text-white rounded-lg transition flex items-center gap-2"
-                            >
-                                {isDeleting ? "Odstraňuje sa..." : "Odstrániť"}
-                                {!isDeleting && <Trash2 className="w-4 h-4" />}
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            )}
+            <WorkPeriodDeleteModal
+                isOpen={deleteModal}
+                onClose={() => setDeleteModal(false)}
+                title={detail.title}
+                onConfirm={handleDelete}
+                isDeleting={isDeleting}
+            />
 
             {/* EDIT MODAL – UNIVERZÁLNY */}
             <WorkPeriodModal

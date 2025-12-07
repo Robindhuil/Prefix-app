@@ -4,8 +4,11 @@ import { useState, useEffect, useCallback, useMemo } from "react";
 import { assignUserToWorkPeriodAction } from "@/app/(root)/adminpanel/workperiods/actions/assignUserToWorkPeriodAction";
 import { updateAssignmentAction } from "@/app/(root)/adminpanel/workperiods/actions/updateAssignmentAction";
 import { searchUsersAction } from "@/app/(root)/adminpanel/workperiods/actions/searchUsersAction";
+import { getAssignmentDetailsAction } from "@/app/(root)/adminpanel/workperiods/actions/getAssignmentDetailsAction";
 import { Profession } from "@/app/generated/prisma/client";
 import RemoveAssignmentModal from "./RemoveAssignmentModal";
+import AssignmentDetailsModal from "./AssignmentDetailsModal";
+import { Pencil, Trash } from "lucide-react";
 
 export default function AssignedUsersTable({
     periodId,
@@ -42,6 +45,17 @@ export default function AssignedUsersTable({
     const [message, setMessage] = useState("");
     const [showRemoveModal, setShowRemoveModal] = useState(false);
     const [selectedUser, setSelectedUser] = useState<{ id: number; username: string; name?: string | null } | null>(null);
+    const [selectedAssignment, setSelectedAssignment] = useState<{
+        id: number;
+        workPeriod: { title: string; startDate: string; endDate: string; description?: string };
+        profession: Profession;
+        fromDate: string;
+        toDate: string;
+        documents?: any[];
+        user: { id: number; username: string; name: string | null };
+    } | null>(null);
+    const [showDetailsModal, setShowDetailsModal] = useState(false);
+    const [loadingDetails, setLoadingDetails] = useState(false);
 
     // Memoize assigned IDs to prevent recalculation
     const assignedIds = useMemo(() => assignments.map((a) => a.user.id), [assignments]);
@@ -156,6 +170,36 @@ export default function AssignedUsersTable({
         setShowRemoveModal(true);
     }, []);
 
+    const handleUserClick = useCallback(async (a: typeof assignments[0]) => {
+        setLoadingDetails(true);
+        
+        const result = await getAssignmentDetailsAction(a.user.id, periodId);
+        
+        if (result.success && result.assignment) {
+            setSelectedAssignment(result.assignment);
+            setShowDetailsModal(true);
+        } else {
+            // Fallback na základné dáta ak zlyhá načítanie
+            setSelectedAssignment({
+                id: periodId,
+                workPeriod: {
+                    title: "Work Period",
+                    startDate,
+                    endDate,
+                    description: "",
+                },
+                profession: a.profession,
+                fromDate: a.fromDate,
+                toDate: a.toDate,
+                documents: [],
+                user: a.user,
+            });
+            setShowDetailsModal(true);
+        }
+        
+        setLoadingDetails(false);
+    }, [periodId, startDate, endDate]);
+
     return (
         <div className="bg-card p-6 rounded-xl mt-6 mb-6 space-y-6">
             {/* FORMULÁR */}
@@ -252,9 +296,12 @@ export default function AssignedUsersTable({
                     assignments.map((a) => (
                         <div
                             key={a.user.id}
-                            className="flex items-center justify-between bg-card p-4 rounded-lg border-custom"
+                            className="flex items-center justify-between bg-card p-4 rounded-lg border-custom hover:border-decor transition"
                         >
-                            <div>
+                            <div
+                                onClick={() => handleUserClick(a)}
+                                className="flex-1 cursor-pointer hover:opacity-70 transition "
+                            >
                                 <p className="font-medium cl-text-decor">
                                     {a.user.name || "noname"} (@{a.user.username})
                                 </p>
@@ -270,15 +317,15 @@ export default function AssignedUsersTable({
                             <div className="flex gap-2">
                                 <button
                                     onClick={() => handleEdit(a)}
-                                    className="text-xs bg-blue-600 text-white px-3 py-1.5 rounded hover:bg-blue-700 cursor-pointer"
+                                    className="text-xs bg-blue-600 text-white px-3 py-1.5 rounded hover:bg-blue-700 cursor-pointer flex items-center gap-1.5"
                                 >
-                                    Upraviť
+                                    <Pencil className="w-4 h-4" />
                                 </button>
                                 <button
                                     onClick={() => handleRemoveClick(a.user)}
-                                    className="text-xs bg-red-600 text-white px-3 py-1.5 rounded hover:bg-red-700 cursor-pointer"
+                                    className="text-xs bg-red-600 text-white px-3 py-1.5 rounded hover:bg-red-700 cursor-pointer flex items-center gap-1.5"
                                 >
-                                    Odstrániť
+                                    <Trash className="w-4 h-4" />
                                 </button>
                             </div>
                         </div>
@@ -292,6 +339,18 @@ export default function AssignedUsersTable({
                 user={selectedUser}
                 workPeriodId={periodId}
                 onSuccess={() => window.dispatchEvent(new Event("assignment:changed"))}
+            />
+
+            {loadingDetails && (
+                <div className="fixed inset-0 bg-black/50 z-[9997] flex items-center justify-center">
+                    <div className="text-white text-xl font-bold">Načítavam...</div>
+                </div>
+            )}
+
+            <AssignmentDetailsModal
+                isOpen={showDetailsModal}
+                onClose={() => setShowDetailsModal(false)}
+                assignment={selectedAssignment}
             />
         </div>
     );

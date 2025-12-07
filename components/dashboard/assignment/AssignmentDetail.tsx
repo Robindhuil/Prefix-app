@@ -81,9 +81,11 @@ type Assignment = {
 export default function AssignmentDetail({
   assignment,
   user,
+  isUserAdmin = false, // <- add this prop
 }: {
   assignment: Assignment;
   user?: { name?: string | null; username?: string };
+  isUserAdmin?: boolean; // <- add this prop type
 }) {
   const { workPeriod, profession, fromDate, toDate } = assignment;
   const status = getStatus(fromDate, toDate);
@@ -170,7 +172,11 @@ export default function AssignmentDetail({
         </div>
 
         {/* NOVÝ KOMPONENT */}
-        <SharedDocuments documents={assignment.documents ?? []} assignment={assignment} />
+        <SharedDocuments 
+          documents={assignment.documents ?? []} 
+          assignment={assignment}
+          isUserAdmin={isUserAdmin}
+        />
       </div>
     </div>
   );
