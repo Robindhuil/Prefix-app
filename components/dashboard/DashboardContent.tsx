@@ -7,6 +7,7 @@ import PasswordForm from "./PasswordForm";
 import AssignmentsList from "./AssignmentsList";
 import ProfileHeader from "./ProfileHeader";
 import DashboardSidebar from "@/components/dashboard/DashboardSidebar";
+import CalendarSection from "@/components/dashboard/calendar/CalendarSection";
 
 
 type Assignment = {
@@ -26,14 +27,14 @@ type User = {
     // Add other user fields as needed
 };
 
-type TabKey = "profil" | "priradenia";
+type TabKey = "profil" | "priradenia" | "kalendar";
 
 export default function DashboardContent({ user, canEditSensitive = false }: { user: User; canEditSensitive?: boolean }) {
     // Initialize from location.hash on first render (client-only component)
     const [activeTab, setActiveTab] = useState<TabKey>(() => {
         if (typeof window === "undefined") return "profil";
         const hash = window.location.hash.slice(1);
-        return (hash === "priradenia" || hash === "profil") ? (hash as TabKey) : "profil";
+        return (hash === "priradenia" || hash === "profil" || hash === "kalendar") ? (hash as TabKey) : "profil";
     });
 
     // Prepínanie + URL
@@ -46,7 +47,7 @@ export default function DashboardContent({ user, canEditSensitive = false }: { u
     useEffect(() => {
         const handleHashChange = () => {
             const hash = window.location.hash.slice(1);
-            if (hash === "priradenia" || hash === "profil") {
+            if (hash === "priradenia" || hash === "profil" || hash === "kalendar") {
                 setActiveTab(hash as TabKey);
             }
         };
@@ -74,6 +75,7 @@ export default function DashboardContent({ user, canEditSensitive = false }: { u
                                 {[
                                     { key: "profil", label: "Profil" },
                                     { key: "priradenia", label: "Priradenia" },
+                                    { key: "kalendar", label: "Kalendár" },
                                 ].map(({ key, label }) => (
                                     <button
                                         key={key}
@@ -99,8 +101,10 @@ export default function DashboardContent({ user, canEditSensitive = false }: { u
                                     <ProfileForm user={user} />
                                     {canEditSensitive && <PasswordForm />}
                                 </div>
-                            ) : (
+                            ) : activeTab === "priradenia" ? (
                                 <AssignmentsList assignments={user.assignments} userId={user.id} />
+                            ) : (
+                                <CalendarSection />
                             )}
                         </div>
 

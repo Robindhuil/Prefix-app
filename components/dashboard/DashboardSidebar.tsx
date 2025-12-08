@@ -1,7 +1,7 @@
 // components/dashboard/DashboardSidebar.tsx
 "use client";
 
-import { User, Calendar } from "lucide-react";
+import { User, Calendar, CalendarDays } from "lucide-react";
 import { useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 
@@ -11,7 +11,7 @@ export default function DashboardSidebar() {
   const params = useParams();
   const userId = params?.id as string;
 
-  const switchTab = (tab: "profil" | "priradenia") => {
+  const switchTab = (tab: "profil" | "priradenia" | "kalendar") => {
     // Navigate to base dashboard with hash
     router.push(`/dashboard/${userId}#${tab}`);
     setIsOpen(false);
@@ -41,10 +41,18 @@ export default function DashboardSidebar() {
 
             <button
               onClick={() => switchTab("priradenia")}
-              className="cursor-pointer w-full flex items-center gap-3 text-lg font-medium text-left text-hover-decor"
+              className="cursor-pointer w-full flex items-center gap-3 text-lg font-medium text-left text-hover-decor transition hover:pl-2"
             >
               <Calendar className="w-6 h-6" />
               <span>Priradenia</span>
+            </button>
+
+            <button
+              onClick={() => switchTab("kalendar")}
+              className="cursor-pointer w-full flex items-center gap-3 text-lg font-medium text-left text-hover-decor transition hover:pl-2"
+            >
+              <CalendarDays className="w-6 h-6" />
+              <span>Kalendár</span>
             </button>
           </nav>
         </div>
