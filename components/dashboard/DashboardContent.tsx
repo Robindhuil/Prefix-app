@@ -12,6 +12,8 @@ import CalendarSection from "@/components/dashboard/calendar/CalendarSection";
 
 type Assignment = {
     id: number;
+    fromDate: string;
+    toDate: string;
     workPeriod: {
         id: number;
         title: string;
@@ -104,7 +106,7 @@ export default function DashboardContent({ user, canEditSensitive = false }: { u
                             ) : activeTab === "priradenia" ? (
                                 <AssignmentsList assignments={user.assignments} userId={user.id} />
                             ) : (
-                                <CalendarSection />
+                                <CalendarSection assignments={user.assignments} userId={user.id} />
                             )}
                         </div>
 

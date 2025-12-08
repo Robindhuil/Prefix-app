@@ -1,18 +1,39 @@
 "use client";
 
 import { useState } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import CalendarHeader from "./CalendarHeader";
+import CalendarGrid from "./CalendarGrid";
+import WorkPeriodCards from "./WorkPeriodCards";
 
 type CalendarDay = {
   date: Date;
   isCurrentMonth: boolean;
   isToday: boolean;
-  isSelected: boolean;
+  workPeriodStatus?: "active" | "upcoming" | "ended";
+  assignments: Assignment[];
 };
 
-export default function CalendarSection() {
+type Assignment = {
+  id: number;
+  fromDate: string;
+  toDate: string;
+  workPeriod: {
+    id: number;
+    title: string;
+    startDate: string;
+    endDate: string;
+  };
+};
+
+type CalendarSectionProps = {
+  assignments?: Assignment[];
+  userId: number;
+};
+
+export default function CalendarSection({ assignments = [], userId }: CalendarSectionProps) {
   const [currentDate, setCurrentDate] = useState(new Date());
-  const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
+  const [hoveredDay, setHoveredDay] = useState<CalendarDay | null>(null);
+  const [hoveredElement, setHoveredElement] = useState<HTMLElement | null>(null);
 
   const monthNames = [
     "Január", "Február", "Marec", "Apríl", "Máj", "Jún",
@@ -20,6 +41,54 @@ export default function CalendarSection() {
   ];
 
   const dayNames = ["Po", "Ut", "St", "Št", "Pi", "So", "Ne"];
+
+  // Helper to get all assignments for a specific date
+  const getAssignmentsForDate = (date: Date): Assignment[] => {
+    const matchingAssignments: Assignment[] = [];
+
+    for (const assignment of assignments) {
+      const fromDate = new Date(assignment.fromDate);
+      const toDate = new Date(assignment.toDate);
+      fromDate.setHours(0, 0, 0, 0);
+      toDate.setHours(0, 0, 0, 0);
+
+      // Check if date is within assignment period
+      if (date >= fromDate && date <= toDate) {
+        matchingAssignments.push(assignment);
+      }
+    }
+
+    return matchingAssignments;
+  };
+
+  // Helper to get work period status for a date (primary status)
+  const getWorkPeriodStatusForDate = (date: Date): "active" | "upcoming" | "ended" | undefined => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const dateAssignments = getAssignmentsForDate(date);
+    if (dateAssignments.length === 0) return undefined;
+
+    // Prioritize active status
+    for (const assignment of dateAssignments) {
+      const workStart = new Date(assignment.workPeriod.startDate);
+      const workEnd = new Date(assignment.workPeriod.endDate);
+      workStart.setHours(0, 0, 0, 0);
+      workEnd.setHours(0, 0, 0, 0);
+
+      if (today >= workStart && today <= workEnd) return "active";
+    }
+
+    // Then upcoming
+    for (const assignment of dateAssignments) {
+      const workStart = new Date(assignment.workPeriod.startDate);
+      workStart.setHours(0, 0, 0, 0);
+      if (today < workStart) return "upcoming";
+    }
+
+    // Otherwise ended
+    return "ended";
+  };
 
   // Get calendar days for the current month
   const getCalendarDays = (): CalendarDay[] => {
@@ -48,7 +117,8 @@ export default function CalendarSection() {
         date,
         isCurrentMonth: false,
         isToday: false,
-        isSelected: selectedDate ? isSameDay(date, selectedDate) : false,
+        workPeriodStatus: getWorkPeriodStatusForDate(date),
+        assignments: getAssignmentsForDate(date),
       });
     }
 
@@ -59,7 +129,8 @@ export default function CalendarSection() {
         date,
         isCurrentMonth: true,
         isToday: isSameDay(date, today),
-        isSelected: selectedDate ? isSameDay(date, selectedDate) : false,
+        workPeriodStatus: getWorkPeriodStatusForDate(date),
+        assignments: getAssignmentsForDate(date),
       });
     }
 
@@ -71,7 +142,8 @@ export default function CalendarSection() {
         date,
         isCurrentMonth: false,
         isToday: false,
-        isSelected: selectedDate ? isSameDay(date, selectedDate) : false,
+        workPeriodStatus: getWorkPeriodStatusForDate(date),
+        assignments: getAssignmentsForDate(date),
       });
     }
 
@@ -94,118 +166,63 @@ export default function CalendarSection() {
     setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1));
   };
 
-  const handleDateClick = (day: CalendarDay) => {
-    setSelectedDate(day.date);
+  const handleMouseEnter = (day: CalendarDay, event: React.MouseEvent) => {
+    if (day.assignments.length > 0) {
+      setHoveredDay(day);
+      setHoveredElement(event.currentTarget as HTMLElement);
+    }
+  };
+
+  const handleMouseLeave = () => {
+    setHoveredDay(null);
+    setHoveredElement(null);
   };
 
   const calendarDays = getCalendarDays();
 
+  // Get assignments within current month
+  const getAssignmentsInCurrentMonth = () => {
+    const year = currentDate.getFullYear();
+    const month = currentDate.getMonth();
+    const monthStart = new Date(year, month, 1);
+    const monthEnd = new Date(year, month + 1, 0);
+    monthStart.setHours(0, 0, 0, 0);
+    monthEnd.setHours(23, 59, 59, 999);
+
+    return assignments.filter(assignment => {
+      const fromDate = new Date(assignment.fromDate);
+      const toDate = new Date(assignment.toDate);
+      
+      // Check if assignment overlaps with current month
+      return (fromDate <= monthEnd && toDate >= monthStart);
+    });
+  };
+
+  const monthAssignments = getAssignmentsInCurrentMonth();
+
   return (
     <div className="w-full max-w-6xl mx-auto">
       <div className="bg-card backdrop-blur-sm rounded-3xl shadow-2xl p-6 sm:p-8 lg:p-12">
-        {/* Header with Year and Month Navigation */}
-        <div className="flex items-center justify-between mb-8">
-          {/* Year on the left */}
-          <div className="text-3xl font-bold cl-text-decor">
-            {currentDate.getFullYear()}
-          </div>
+        <CalendarHeader
+          year={currentDate.getFullYear()}
+          monthName={monthNames[currentDate.getMonth()]}
+          onPreviousMonth={goToPreviousMonth}
+          onNextMonth={goToNextMonth}
+        />
 
-          {/* Month with navigation arrows in center */}
-          <div className="flex items-center gap-4">
-            <button
-              onClick={goToPreviousMonth}
-              className="p-2 rounded-full bg-neutral hover:bg-neutral transition-all duration-300 group"
-              aria-label="Previous month"
-            >
-              <ChevronLeft className="w-6 h-6 text-color group-hover:cl-text-decor transition-colors" />
-            </button>
+        <CalendarGrid
+          calendarDays={calendarDays}
+          dayNames={dayNames}
+          hoveredDay={hoveredDay}
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+        />
 
-            <h2 className="text-2xl sm:text-3xl font-bold text-color min-w-[180px] text-center">
-              {monthNames[currentDate.getMonth()]}
-            </h2>
-
-            <button
-              onClick={goToNextMonth}
-              className="p-2 rounded-full bg-neutral hover:bg-neutral transition-all duration-300 group"
-              aria-label="Next month"
-            >
-              <ChevronRight className="w-6 h-6 text-color group-hover:cl-text-decor transition-colors" />
-            </button>
-          </div>
-
-          {/* Empty space for balance */}
-          <div className="w-24"></div>
-        </div>
-
-        {/* Calendar Grid */}
-        <div className="grid grid-cols-7 gap-1">
-          {/* Day names header */}
-          {dayNames.map((day) => (
-            <div
-              key={day}
-              className="text-center font-semibold text-color py-1.5 text-xs sm:text-sm"
-            >
-              {day}
-            </div>
-          ))}
-
-          {/* Calendar days */}
-          {calendarDays.map((day, index) => {
-            const isWeekend = day.date.getDay() === 0 || day.date.getDay() === 6;
-
-            return (
-              <button
-                key={index}
-                onClick={() => handleDateClick(day)}
-                className={`
-                  w-full h-12 p-1 sm:p-1.5 rounded-lg text-center transition-all duration-300
-                  flex items-center justify-center text-xs sm:text-sm
-                  ${
-                    day.isCurrentMonth
-                      ? "text-color font-medium"
-                      : "text-color opacity-30"
-                  }
-                  ${
-                    day.isToday
-                      ? "ring-2 ring-offset-2 ring-offset-card border-decor font-bold"
-                      : ""
-                  }
-                  ${
-                    day.isSelected && !day.isToday
-                      ? "cl-bg-decor text-white font-bold shadow-lg scale-105"
-                      : ""
-                  }
-                  ${
-                    !day.isSelected && !day.isToday
-                      ? "bg-neutral hover:bg-neutral hover:scale-105 hover:shadow-md"
-                      : ""
-                  }
-                  ${isWeekend && day.isCurrentMonth ? "opacity-80" : ""}
-                `}
-                aria-label={day.date.toLocaleDateString()}
-              >
-                {day.date.getDate()}
-              </button>
-            );
-          })}
-        </div>
-
-        {/* Selected Date Info */}
-        {selectedDate && (
-          <div className="mt-8 p-6 bg-neutral rounded-2xl border-custom">
-            <h3 className="text-lg font-semibold cl-text-decor mb-2">
-              Vybraný dátum
-            </h3>
-            <p className="text-color text-xl">
-              {selectedDate.toLocaleDateString("sk-SK", {
-                weekday: "long",
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-              })}
-            </p>
-          </div>
-        )}
+        <WorkPeriodCards
+          assignments={monthAssignments}
+          userId={userId}
+          monthName={monthNames[currentDate.getMonth()]}
+        />
       </div>
     </div>
   );
