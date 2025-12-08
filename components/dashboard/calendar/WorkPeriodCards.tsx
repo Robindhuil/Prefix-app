@@ -101,7 +101,7 @@ export default function WorkPeriodCards({
               >
                 <div className="flex items-start justify-between mb-3">
                   <div className="flex items-center gap-2">
-                    <span className="relative flex h-3 w-3 flex-shrink-0">
+                    <span className="relative flex h-3 w-3 shrink-0">
                       {status === "active" && (
                         <span
                           className={`animate-ping absolute inline-flex h-full w-full rounded-full ${colors.dotPing} opacity-75`}
@@ -122,7 +122,7 @@ export default function WorkPeriodCards({
                       #{assignment.workPeriod.id}
                     </span>
                   </div>
-                  <ArrowRight className="w-4 h-4 cl-text-decor group-hover:translate-x-1 transition flex-shrink-0" />
+                  <ArrowRight className="w-4 h-4 cl-text-decor group-hover:translate-x-1 transition shrink-0" />
                 </div>
 
                 <h4
@@ -133,13 +133,13 @@ export default function WorkPeriodCards({
 
                 <div className="mt-auto">
                   <div className="flex items-center gap-2 text-xs text-color">
-                    <Calendar className="w-4 h-4 flex-shrink-0" />
+                    <Calendar className="w-4 h-4 shrink-0" />
                     <span className="truncate">
                       {formatDate(assignment.workPeriod.startDate)}
                     </span>
                   </div>
                   <div className="flex items-center gap-2 text-xs text-color mt-1">
-                    <span className="w-4 h-4 flex-shrink-0"></span>
+                    <span className="w-4 h-4 shrink-0"></span>
                     <span className="truncate">
                       {formatDate(assignment.workPeriod.endDate)}
                     </span>

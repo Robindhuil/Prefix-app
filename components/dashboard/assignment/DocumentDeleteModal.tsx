@@ -42,9 +42,9 @@ export default function DocumentDeleteModal({
   };
 
   return (
-    <div className="fixed inset-0 z-[9998]">
+    <div className="fixed inset-0 z-9998">
       <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => !isDeleting && onCancel()} />
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[9999] w-full max-w-md px-4">
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-9999 w-full max-w-md px-4">
         <div className="bg-card rounded-2xl shadow-2xl border-custom p-6">
           <div className="flex justify-between items-start mb-2">
             <h3 className="text-xl font-semibold text-color">Odstrániť dokument</h3>

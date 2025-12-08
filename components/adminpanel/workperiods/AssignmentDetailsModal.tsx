@@ -163,13 +163,13 @@ export default function AssignmentDetailsModal({
         <>
             {/* Backdrop */}
             <div
-                className="fixed inset-0 bg-black/70 backdrop-blur-sm z-[9998]"
+                className="fixed inset-0 bg-black/70 backdrop-blur-sm z-9998"
                 onClick={handleBackdropClick}
             />
 
             {/* Modal */}
             <div
-                className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[9999] p-4"
+                className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-9999 p-4"
                 onClick={handleBackdropClick}
             >
                 <div

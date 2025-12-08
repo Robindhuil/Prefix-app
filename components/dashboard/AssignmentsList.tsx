@@ -99,7 +99,7 @@ export default function AssignmentsList({
                 <div className={`h-full p-5 rounded-xl border-2 ${colors.borderColor} hover:shadow-xl hover:scale-[1.02] transition-all duration-300 input-bg flex flex-col`}>
                     <div className="flex items-start justify-between mb-3">
                         <div className="flex items-center gap-2">
-                            <span className="relative flex h-3 w-3 flex-shrink-0">
+                            <span className="relative flex h-3 w-3 shrink-0">
                                 {status === "active" && (
                                     <span className={`animate-ping absolute inline-flex h-full w-full rounded-full ${colors.dotPing} opacity-75`}></span>
                                 )}
@@ -112,7 +112,7 @@ export default function AssignmentsList({
                                 #{a.workPeriod.id}
                             </span>
                         </div>
-                        <ArrowRight className="w-4 h-4 cl-text-decor group-hover:translate-x-1 transition flex-shrink-0" />
+                        <ArrowRight className="w-4 h-4 cl-text-decor group-hover:translate-x-1 transition shrink-0" />
                     </div>
                     
                     <h4 className={`font-bold text-lg line-clamp-2 mb-3 transition-colors ${colors.titleColor}`}>
@@ -121,13 +121,13 @@ export default function AssignmentsList({
 
                     <div className="mt-auto">
                         <div className="flex items-center gap-2 text-xs text-color">
-                            <Calendar className="w-4 h-4 flex-shrink-0" />
+                            <Calendar className="w-4 h-4 shrink-0" />
                             <span className="truncate">
                                 {formatDate(a.workPeriod.startDate)}
                             </span>
                         </div>
                         <div className="flex items-center gap-2 text-xs text-color mt-1">
-                            <span className="w-4 h-4 flex-shrink-0"></span>
+                            <span className="w-4 h-4 shrink-0"></span>
                             <span className="truncate">
                                 {formatDate(a.workPeriod.endDate)}
                             </span>
