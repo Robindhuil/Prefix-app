@@ -24,3 +24,12 @@ export const validateLoginForm = (data: LoginFormData): ValidationErrors => {
 
     return errors;
 };
+
+// Add a basic email validator for forgot password flow
+export const validateEmail = (email: string): string | undefined => {
+    const trimmed = email.trim();
+    if (!trimmed) return "login.errors.emailRequired";
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(trimmed)) return "login.errors.emailInvalid";
+    return undefined;
+};
