@@ -73,7 +73,7 @@ export default async function AssignmentPage({
     <div className="min-h-screen flex flex-col md:flex-row bg-background">
       <DashboardSidebar />
 
-      <div className="max-w-9xl mx-auto px-6 py-6 bg-card rounded-3xl shadow-2xl mt-10">
+      <div className="flex-1 w-full px-6 py-6 bg-card rounded-3xl shadow-2xl m-10">
         <Link
           href={`/dashboard/${userId}`}
           className="inline-flex items-center gap-2 cl-text-decor hover:underline mb-6"

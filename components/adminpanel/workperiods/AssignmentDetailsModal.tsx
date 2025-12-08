@@ -50,6 +50,49 @@ interface AssignmentDetailsModalProps {
 
 const formatDate = (date: string) => new Date(date).toLocaleDateString("sk-SK");
 
+type Status = "active" | "upcoming" | "ended";
+const getStatus = (from: string, to: string): Status => {
+    const now = new Date();
+    const start = new Date(from);
+    const end = new Date(to);
+    if (now >= start && now <= end) return "active";
+    if (now < start) return "upcoming";
+    return "ended";
+};
+
+const statusColors = {
+    active: {
+        titleColor: "text-green-700 dark:text-green-400",
+        badgeBg: "bg-green-100 dark:bg-green-900",
+        badgeText: "text-green-800 dark:text-green-200",
+        label: "AKTÍVNE TERAZ",
+        labelColor: "text-green-700 dark:text-green-400",
+        borderColor: "border-green-500",
+        dotBg: "bg-green-500",
+        dotPing: "bg-green-400",
+    },
+    upcoming: {
+        titleColor: "text-yellow-700 dark:text-yellow-400",
+        badgeBg: "bg-yellow-100 dark:bg-yellow-900",
+        badgeText: "text-yellow-800 dark:text-yellow-200",
+        label: "ČAKÁ NA ŠTART",
+        labelColor: "text-yellow-700 dark:text-yellow-400",
+        borderColor: "border-yellow-500",
+        dotBg: "bg-yellow-500",
+        dotPing: "bg-yellow-400",
+    },
+    ended: {
+        titleColor: "text-blue-700 dark:text-blue-400",
+        badgeBg: "bg-blue-100 dark:bg-blue-900",
+        badgeText: "text-blue-800 dark:text-blue-200",
+        label: "UKONČENÉ",
+        labelColor: "text-blue-700 dark:text-blue-400",
+        borderColor: "border-blue-500",
+        dotBg: "bg-blue-500",
+        dotPing: "bg-blue-400",
+    },
+};
+
 export default function AssignmentDetailsModal({
     isOpen,
     onClose,
@@ -94,10 +137,24 @@ export default function AssignmentDetailsModal({
     if (!isOpen || !assignment) return null;
 
     const { workPeriod, profession, fromDate, toDate, user } = assignment;
+    const status = getStatus(fromDate, toDate);
+    const colors = statusColors[status];
 
     const handleBackdropClick = (e: React.MouseEvent) => {
         if (e.target === e.currentTarget) {
             onClose();
+        }
+    };
+
+    // Provide a delete handler for documents rendered inside this modal
+    const handleDeleteDocument = async (documentId: number) => {
+        try {
+            await fetch(`/api/documents/${documentId}`, { method: "DELETE" });
+            // Optionally trigger a refresh outside of this component
+            // e.g., re-fetch assignment details
+        } catch (e) {
+            // eslint-disable-next-line no-console
+            console.error("Failed to delete document in modal:", e);
         }
     };
 
@@ -138,10 +195,24 @@ export default function AssignmentDetailsModal({
                     {/* Content */}
                     <div className="p-6 space-y-6">
                         {/* Assignment Info Card */}
-                        <div className="bg-card rounded-3xl p-8 border-4 border-custom">
-                            <h3 className="text-2xl font-bold cl-text-decor mb-6">
-                                {workPeriod.title}
-                            </h3>
+                        <div className={`bg-card rounded-3xl p-8 border-4 ${colors.borderColor}`}>
+                            <div className="flex justify-between items-start mb-6">
+                                <h3 className={`text-2xl font-bold ${colors.titleColor}`}>
+                                    {workPeriod.title}
+                                </h3>
+                                <span className={`flex items-center gap-2 px-4 py-2 rounded-full font-bold text-sm ${colors.badgeBg} ${colors.badgeText}`}>
+                                    <span className="relative flex items-center justify-center">
+                                        {status === "active" && (
+                                            <span className={`absolute inline-flex h-3 w-3 rounded-full ${colors.dotPing} opacity-75 animate-ping`}></span>
+                                        )}
+                                        {status === "upcoming" && (
+                                            <span className={`absolute inline-flex h-3 w-3 rounded-full ${colors.dotPing} opacity-75 animate-pulse`}></span>
+                                        )}
+                                        <span className={`relative inline-flex h-3 w-3 rounded-full ${colors.dotBg}`}></span>
+                                    </span>
+                                    <span>{colors.label}</span>
+                                </span>
+                            </div>
 
                             <div className="grid md:grid-cols-3 gap-6">
                                 <div className="flex items-center gap-4">
@@ -199,7 +270,8 @@ export default function AssignmentDetailsModal({
                             documents={assignment.documents ?? []}
                             assignment={assignment}
                             gridLayout={true}
-                            isUserAdmin={isUserAdmin}
+                            // Force admin tools visible in this modal
+                            isUserAdmin={true}
                         />
                     </div>
                 </div>

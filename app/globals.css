@@ -59,6 +59,21 @@ body {
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
+.status-active {
+  background: linear-gradient(to right, rgba(34, 197, 94, 0.2), rgba(74, 222, 128, 0.1));
+  border-color: rgb(34, 197, 94);
+}
+
+.status-ended {
+  background: linear-gradient(to right, rgba(59, 130, 246, 0.2), rgba(147, 197, 253, 0.1));
+  border-color: rgb(59, 130, 246);
+}
+
+.status-upcoming {
+  background: linear-gradient(to right, rgba(234, 179, 8, 0.2), rgba(253, 224, 71, 0.1));
+  border-color: rgb(234, 179, 8);
+}
+
 .background {
   background: var(--background);
 }

@@ -30,6 +30,45 @@ type Detail = {
 const TODAY = new Date();
 TODAY.setHours(0, 0, 0, 0);
 
+type Status = "active" | "upcoming" | "ended";
+const getStatus = (start: string, end: string): Status => {
+    const s = new Date(start);
+    const e = new Date(end);
+    if (s <= TODAY && TODAY <= e) return "active";
+    if (TODAY < s) return "upcoming";
+    return "ended";
+};
+
+const statusColors = {
+    active: {
+        titleColor: "text-green-700 dark:text-green-400",
+        badgeBg: "bg-green-100 dark:bg-green-900",
+        badgeText: "text-green-800 dark:text-green-200",
+        label: "→ AKTÍVNE",
+        borderColor: "border-green-500",
+        dotBg: "bg-green-500",
+        dotPing: "bg-green-400",
+    },
+    upcoming: {
+        titleColor: "text-yellow-700 dark:text-yellow-400",
+        badgeBg: "bg-yellow-100 dark:bg-yellow-900",
+        badgeText: "text-yellow-800 dark:text-yellow-200",
+        label: "→ ČAKÁ",
+        borderColor: "border-yellow-500",
+        dotBg: "bg-yellow-500",
+        dotPing: "bg-yellow-400",
+    },
+    ended: {
+        titleColor: "text-blue-700 dark:text-blue-400",
+        badgeBg: "bg-blue-100 dark:bg-blue-900",
+        badgeText: "text-blue-800 dark:text-blue-200",
+        label: "→ UKONČENÉ",
+        borderColor: "border-blue-500",
+        dotBg: "bg-blue-500",
+        dotPing: "bg-blue-400",
+    },
+};
+
 export default function WorkPeriodsDashboardDetail({
     periodId,
 }: {
@@ -115,61 +154,65 @@ export default function WorkPeriodsDashboardDetail({
 
     if (!detail) return <p className="text-red-600">Obdobie sa nenašlo</p>;
 
-    const active = new Date(detail.startDate) <= TODAY && TODAY <= new Date(detail.endDate);
+    const status = getStatus(detail.startDate, detail.endDate);
+    const colors = statusColors[status];
     const totalNeeded = detail.requirements.reduce((a, b) => a + b.countNeeded, 0);
     const totalAssigned = detail.assignments.length;
 
     return (
         <>
-            <div className="space-y-8">
+            <div className={`space-y-8 border-2 ${colors.borderColor} rounded-2xl p-8 bg-card`}>
                 {/* HLAVIČKA */}
-                <div className="flex justify-between items-start">
-                    <div>
-                        <h2 className={`text-3xl font-bold ${active ? "text-green-600" : "text-[#600000]"}`}>
-                            {detail.title}
-                            {active && (
+                <div>
+                    <div className="flex justify-between items-start">
+                        <div>
+                            <h2 className={`text-3xl font-bold ${colors.titleColor}`}>
+                                {detail.title}
                                 <span className="ml-3 inline-block">
                                     <span className="relative flex h-4 w-4">
-                                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                                        <span className="relative inline-flex rounded-full h-4 w-4 bg-green-500"></span>
+                                        {status === "active" && (
+                                            <span className={`animate-ping absolute inline-flex h-full w-full rounded-full ${colors.dotPing} opacity-75`}></span>
+                                        )}
+                                        {status === "upcoming" && (
+                                            <span className={`animate-pulse absolute inline-flex h-full w-full rounded-full ${colors.dotPing} opacity-75`}></span>
+                                        )}
+                                        <span className={`relative inline-flex rounded-full h-4 w-4 ${colors.dotBg}`}></span>
                                     </span>
                                 </span>
-                            )}
-                        </h2>
-                        <p className="text-sm input-text mt-1">
-                            #{detail.id} • Vytvorené {formatDate(detail.createdAt)}
-                        </p>
-                    </div>
+                            </h2>
+                            <p className="text-sm input-text mt-1">
+                                #{detail.id} • Vytvorené {formatDate(detail.createdAt)}
+                            </p>
+                        </div>
 
-                    <div className="flex items-center gap-3">
-                        {active && (
-                            <span className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200 px-4 py-2 rounded-full text-sm font-bold">
-                                → AKTÍVNE
+                        <div className="flex items-center gap-3">
+                            <span className={`${colors.badgeBg} ${colors.badgeText} px-4 py-2 rounded-full text-sm font-bold`}>
+                                {colors.label}
                             </span>
-                        )}
 
-                        {/* AKCIE */}
-                        <div className="flex gap-2">
-                            <button
-                                onClick={() => setEditModalOpen(true)}
-                                className="p-2.5 bg-blue-600 hover:bg-blue-700 cursor-pointer text-white rounded-lg transition shadow-md"
-                                title="Upraviť obdobie"
-                            >
-                                <Edit className="w-5 h-5" />
-                            </button>
-                            <button
-                                onClick={() => setDeleteModal(true)}
-                                className="p-2.5 bg-red-600 hover:bg-red-700 cursor-pointer text-white rounded-lg transition shadow-md"
-                                title="Odstrániť obdobie"
-                            >
-                                <Trash2 className="w-5 h-5" />
-                            </button>
+                            {/* AKCIE */}
+                            <div className="flex gap-2">
+                                <button
+                                    onClick={() => setEditModalOpen(true)}
+                                    className="p-2.5 bg-blue-600 hover:bg-blue-700 cursor-pointer text-white rounded-lg transition shadow-md"
+                                    title="Upraviť obdobie"
+                                >
+                                    <Edit className="w-5 h-5" />
+                                </button>
+                                <button
+                                    onClick={() => setDeleteModal(true)}
+                                    className="p-2.5 bg-red-600 hover:bg-red-700 cursor-pointer text-white rounded-lg transition shadow-md"
+                                    title="Odstrániť obdobie"
+                                >
+                                    <Trash2 className="w-5 h-5" />
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 {/* DÁTUMY */}
-                <div className="bg-card p-6 rounded-xl">
+                <div className="bg-background p-6 rounded-xl border border-custom">
                     <h3 className="text-lg font-semibold mb-3 flex items-center gap-2 cl-text-decor">
                         <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                             <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zM4 8h12v8H4V8z" />
@@ -183,16 +226,16 @@ export default function WorkPeriodsDashboardDetail({
 
                 {/* POPIS */}
                 {detail.description && (
-                    <div>
+                    <div className="border border-custom rounded-xl p-6 bg-background">
                         <h3 className="text-lg font-semibold mb-2 cl-text-decor">Popis</h3>
-                        <p className="bg-card text-color p-4 rounded-lg">
+                        <p className="text-color">
                             {detail.description}
                         </p>
                     </div>
                 )}
 
                 {/* POŽIADAVKY */}
-                <div>
+                <div className="border border-custom rounded-xl p-6 bg-background">
                     <h3 className="text-lg font-semibold mb-4 flex items-center justify-between">
                         <span className="flex items-center gap-2 cl-text-decor">
                             <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
@@ -204,7 +247,7 @@ export default function WorkPeriodsDashboardDetail({
                     </h3>
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                         {detail.requirements.map(r => (
-                            <div key={r.profession} className="bg-card border-custom p-4 rounded-lg text-center">
+                            <div key={r.profession} className="bg-background border border-custom p-4 rounded-lg text-center">
                                 <p className="font-medium cl-text-decor">
                                     {r.profession === "WELDER" ? "Zvárací" : r.profession === "BRICKLAYER" ? "Murári" : "Ostatní"}
                                 </p>
@@ -215,7 +258,7 @@ export default function WorkPeriodsDashboardDetail({
                 </div>
 
                 {/* PRIRADENIA */}
-                <div>
+                <div className="border border-custom rounded-xl p-6 bg-background">
                     <h3 className="text-lg font-semibold mb-4 flex items-center justify-between">
                         <span className="flex items-center gap-2 cl-text-decor">
                             <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">

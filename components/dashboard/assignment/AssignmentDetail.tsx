@@ -16,7 +16,7 @@ const getStatus = (from: string, to: string): Status => {
 
 const statusConfig = {
   active: {
-    color: "from-green-500/20 to-green-400/10 border-green-500",
+    color: "status-active",
     badge:
       "flex items-center gap-2 px-4 py-2 rounded-full font-bold text-sm bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200",
     icon: (
@@ -29,20 +29,29 @@ const statusConfig = {
     labelColor: "text-green-700 dark:text-green-400",
   },
   upcoming: {
-    color: "from-orange-500/20 to-orange-400/10 border-orange-500",
+    color: "status-upcoming",
     badge:
-      "flex items-center gap-2 px-4 py-2 rounded-full font-bold text-sm bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200",
-    icon: <AlertCircle className="w-5 h-5 text-orange-600" />,
+      "flex items-center gap-2 px-4 py-2 rounded-full font-bold text-sm bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200",
+    icon: (
+      <span className="relative flex items-center justify-center">
+        <span className="absolute inline-flex h-3 w-3 rounded-full bg-yellow-400 opacity-75 animate-pulse"></span>
+        <span className="relative inline-flex h-3 w-3 rounded-full bg-yellow-500"></span>
+      </span>
+    ),
     text: "ČAKÁ NA ŠTART",
-    labelColor: "text-orange-700 dark:text-orange-400",
+    labelColor: "text-yellow-700 dark:text-yellow-400",
   },
   ended: {
-    color: "from-red-500/20 to-red-400/10 border-red-500",
+    color: "status-ended",
     badge:
-      "flex items-center gap-2 px-4 py-2 rounded-full font-bold text-sm bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200",
-    icon: <AlertCircle className="w-5 h-5 text-red-600" />,
+      "flex items-center gap-2 px-4 py-2 rounded-full font-bold text-sm bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200",
+    icon: (
+      <span className="relative flex items-center justify-center">
+        <span className="relative inline-flex h-3 w-3 rounded-full bg-blue-500"></span>
+      </span>
+    ),
     text: "UKONČENÉ",
-    labelColor: "text-red-700 dark:text-red-400",
+    labelColor: "text-blue-700 dark:text-blue-400",
   },
 };
 
@@ -92,11 +101,11 @@ export default function AssignmentDetail({
   const config = statusConfig[status];
 
   return (
-    <div className="space-y-8">
-      <div className="flex-1 pb-16 md:pb-24 pt-6 md:pt-0 mt-5">
+    <div className="w-full space-y-8">
+      <div className="w-full pb-16 md:pb-24 pt-6 md:pt-0 mt-5">
         {/* HLAVNÁ KARTA – FAREBNÁ PODĽA STAVU */}
         <div
-          className={`relative overflow-hidden rounded-3xl p-10 shadow-2xl border-4 ${config.color} bg-linear-to-br`}
+          className={`relative overflow-hidden rounded-3xl p-10 shadow-2xl border-4 w-full ${config.color} bg-linear-to-br`}
         >
           <div className="absolute inset-0 backdrop-blur-sm" />
 

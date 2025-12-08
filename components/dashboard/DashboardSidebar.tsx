@@ -3,15 +3,17 @@
 
 import { User, Calendar } from "lucide-react";
 import { useState } from "react";
+import { useRouter, useParams } from "next/navigation";
 
 export default function DashboardSidebar() {
   const [isOpen, setIsOpen] = useState(false);
+  const router = useRouter();
+  const params = useParams();
+  const userId = params?.id as string;
 
   const switchTab = (tab: "profil" | "priradenia") => {
-    const win = window as unknown as { switchDashboardTab?: (tab: "profil" | "priradenia") => void };
-    if (win.switchDashboardTab) {
-      win.switchDashboardTab(tab);
-    }
+    // Navigate to base dashboard with hash
+    router.push(`/dashboard/${userId}#${tab}`);
     setIsOpen(false);
   };
 

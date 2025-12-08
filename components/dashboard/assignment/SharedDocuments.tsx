@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import {
     FileText,
     Download,
@@ -8,8 +8,11 @@ import {
     FileSpreadsheet,
     FileArchive,
     PlusCircle,
+    Trash2,
 } from "lucide-react";
 import UploadModal from "./UploadModal";
+import DocumentDeleteModal from "./DocumentDeleteModal";
+import { useToast } from "@/components/ui/ToastProvider";
 
 type DocumentType = "INVOICE" | "ORDER" | "CONTRACT" | "OTHER";
 
@@ -67,15 +70,20 @@ export default function SharedDocuments({
     documents = [],
     assignment,
     gridLayout = false,
-    isUserAdmin = false, // <- new prop
+    isUserAdmin = false,
 }: {
     documents: AssignmentDocument[];
     assignment: Assignment;
     gridLayout?: boolean;
-    isUserAdmin?: boolean; // <- new optional prop
+    isUserAdmin?: boolean;
 }) {
     const [isOpen, setIsOpen] = useState(false);
     const [selectedType, setSelectedType] = useState<DocumentType>("OTHER");
+
+    const [deleteOpen, setDeleteOpen] = useState(false);
+    const [targetDoc, setTargetDoc] = useState<Document | null>(null);
+    const [isPending, startTransition] = useTransition();
+    const { addToast } = useToast();
 
     const grouped = documents.reduce(
         (acc: Record<DocumentType, AssignmentDocument[]>, ad: AssignmentDocument) => {
@@ -90,6 +98,32 @@ export default function SharedDocuments({
     const openModal = (type: DocumentType) => {
         setSelectedType(type);
         setIsOpen(true);
+    };
+
+    const confirmDelete = (doc: Document) => {
+        setTargetDoc(doc);
+        setDeleteOpen(true);
+    };
+
+    const handleConfirmDelete = () => {
+        if (!targetDoc) return;
+        startTransition(async () => {
+            try {
+                const res = await fetch(`/api/documents/${targetDoc.id}`, { method: "DELETE" });
+                if (res.ok) {
+                    addToast("Dokument bol odstránený.", "success");
+                    setDeleteOpen(false);
+                    setTargetDoc(null);
+                    // Notify internal listeners to reload assignment details without closing the details modal
+                    window.dispatchEvent(new CustomEvent("assignment:documents:changed"));
+                } else {
+                    const data = await res.json().catch(() => ({}));
+                    addToast(data?.error || "Nepodarilo sa odstrániť dokument.", "error");
+                }
+            } catch {
+                addToast("Chyba pri odstraňovaní dokumentu.", "error");
+            }
+        });
     };
 
     return (
@@ -131,14 +165,15 @@ export default function SharedDocuments({
                                     </div>
 
                                     <div className="flex items-center gap-4">
-                                        <div className="cl-text-decor] text-white w-14 h-14 rounded-full flex items-center justify-center text-xl font-bold shadow-lg">
+                                        {/* FIX styling typo to ensure visibility */}
+                                        <div className="cl-text-decor text-white w-14 h-14 rounded-full flex items-center justify-center text-xl font-bold shadow-lg">
                                             {docs.length}
                                         </div>
 
                                         {isUserAdmin && (
                                             <button
                                                 onClick={() => openModal(sec.type)}
-                                                className=" cursor-pointer cl-bg-decor text-white p-3.5 rounded-full shadow-xl hover:shadow-2xl hover:scale-110 transition-all duration-300"
+                                                className="cursor-pointer cl-bg-decor text-white p-3.5 rounded-full shadow-xl hover:shadow-2xl hover:scale-110 transition-all duration-300"
                                                 title={`Nahrať do ${sec.label}`}
                                             >
                                                 <PlusCircle className="w-7 h-7" />
@@ -153,13 +188,15 @@ export default function SharedDocuments({
                                         docs.map((ad: AssignmentDocument) => {
                                             const doc = ad.document;
                                             return (
-                                                <a
+                                                <div
                                                     key={ad.id}
-                                                    href={`/api/documents/${doc.id}`}
-                                                    download={doc.fileName}
                                                     className={`group flex items-center justify-between ${gridLayout ? "p-4" : "p-6"} bg-card rounded-2xl border-2 border-custom hover:shadow-xl transition-all duration-300 hover:-translate-y-1`}
                                                 >
-                                                    <div className="flex items-center gap-5">
+                                                    <a
+                                                        href={`/api/documents/${doc.id}`}
+                                                        download={doc.fileName}
+                                                        className="flex items-center gap-5 flex-1"
+                                                    >
                                                         <div className={`bg-card ${gridLayout ? "p-3" : "p-4"} rounded-xl group-hover:scale-110 transition`}>
                                                             <FileText className={`${gridLayout ? "w-8 h-8" : "w-10 h-10"} cl-text-decor`} />
                                                         </div>
@@ -171,12 +208,24 @@ export default function SharedDocuments({
                                                                 {(doc.size / 1024 / 1024).toFixed(1)} MB
                                                             </p>
                                                         </div>
-                                                    </div>
+                                                    </a>
 
-                                                    <div className="bg-card p-3 rounded-xl transition-all duration-300 group-hover:scale-110">
-                                                        <Download className={`${gridLayout ? "w-6 h-6" : "w-7 h-7"} cl-text-decor group-hover:translate-y-1 transition`} />
+                                                    <div className="flex items-center gap-2">
+                                                        <div className="bg-card p-3 rounded-xl transition-all duration-300 group-hover:scale-110">
+                                                            <Download className={`${gridLayout ? "w-6 h-6" : "w-7 h-7"} cl-text-decor group-hover:translate-y-1 transition`} />
+                                                        </div>
+
+                                                        {isUserAdmin && (
+                                                            <button
+                                                                onClick={() => confirmDelete(doc)}
+                                                                title="Odstrániť dokument"
+                                                                className="cursor-pointer bg-red-600 hover:bg-red-700 text-white p-3 rounded-xl shadow transition"
+                                                            >
+                                                                <Trash2 className={`${gridLayout ? "w-6 h-6" : "w-7 h-7"}`} />
+                                                            </button>
+                                                        )}
                                                     </div>
-                                                </a>
+                                                </div>
                                             );
                                         })
                                     ) : (
@@ -200,6 +249,19 @@ export default function SharedDocuments({
                 onClose={() => setIsOpen(false)}
                 assignmentId={assignment.id}
                 selectedType={selectedType}
+            />
+
+            {/* DELETE CONFIRM MODAL */}
+            <DocumentDeleteModal
+                open={deleteOpen}
+                fileName={targetDoc?.fileName}
+                isDeleting={isPending}
+                onCancel={() => {
+                    if (isPending) return;
+                    setDeleteOpen(false);
+                    setTargetDoc(null);
+                }}
+                onConfirm={handleConfirmDelete}
             />
         </>
     );

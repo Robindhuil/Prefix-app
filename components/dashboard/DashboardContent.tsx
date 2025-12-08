@@ -42,9 +42,17 @@ export default function DashboardContent({ user, canEditSensitive = false }: { u
         window.history.replaceState(null, "", `#${tab}`);
     };
 
-    // Globálna funkcia pre sidebar
+    // Listen for hash changes (e.g., from back button or direct navigation)
     useEffect(() => {
-        (window as unknown as { switchDashboardTab: (tab: TabKey) => void }).switchDashboardTab = switchTab;
+        const handleHashChange = () => {
+            const hash = window.location.hash.slice(1);
+            if (hash === "priradenia" || hash === "profil") {
+                setActiveTab(hash as TabKey);
+            }
+        };
+
+        window.addEventListener("hashchange", handleHashChange);
+        return () => window.removeEventListener("hashchange", handleHashChange);
     }, []);
 
     return (

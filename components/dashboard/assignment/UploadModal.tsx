@@ -74,8 +74,9 @@ export default function UploadModal({ open, onClose, assignmentId, selectedType 
                 addToast("Dokument bol nahraný!", "success");
                 setTimeout(() => {
                     setFile(null);
-                    onClose();
-                    window.location.reload(); // alebo revalidatePath
+                    onClose(); // close only the upload modal
+                    // Notify listeners to refresh assignment documents without closing the details modal
+                    window.dispatchEvent(new CustomEvent("assignment:documents:changed"));
                 }, 800);
             } else {
                 throw new Error(result.error);

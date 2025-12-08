@@ -76,12 +76,12 @@ export default function WorkPeriodsSection() {
         <div className="relative flex min-h-screen bg-card overflow-hidden">
             {/* SIDEBAR */}
             <aside
-                className={`fixed inset-y-0 left-0 z-40 w-120 bg-card shadow-2xl border-r 
-          transition-transform duration-300 ease-out will-change-transform
-          ${sidebarOpen ? "translate-x-0" : "-translate-x-[85%]"}
+                className={`fixed inset-y-0 left-0 z-40 w-120 bg-card shadow-2xl border-r border-custom rounded-r-3xl overflow-hidden
+          transition-transform duration-300 ease-out
+          ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}
         `}
             >
-                <div className="flex items-center justify-between p-4 border-b ">
+                <div className="flex items-center justify-between p-4 border-b border-custom">
                     <h2 className="text-xl font-bold text-color">Obdobia</h2>
 
                     <div className="flex items-center gap-3">
@@ -97,7 +97,7 @@ export default function WorkPeriodsSection() {
                         {/* Toggle */}
                         <button
                             onClick={toggleSidebar}
-                            className="text-white rounded-full shadow-2xl p-3 cl-bg-decor transition-all duration-300 cursor-pointer will-change-transform"
+                            className="text-white rounded-full shadow-2xl p-3 cl-bg-decor transition-all duration-300 cursor-pointer"
                             title={sidebarOpen ? "Skryť panel" : "Zobraziť panel"}
                         >
                             <svg
@@ -113,7 +113,7 @@ export default function WorkPeriodsSection() {
                     </div>
                 </div>
 
-                <div className="h-full overflow-y-auto p-6">
+                <div className="h-[calc(100vh-73px)] overflow-y-auto p-6 rounded-br-3xl">
                     <WorkPeriodsDashboard
                         sidebarOpen={sidebarOpen}
                         onSelect={handleSelect}
@@ -122,19 +122,29 @@ export default function WorkPeriodsSection() {
                 </div>
             </aside>
 
-            {/* Trčiaci pás */}
+            {/* Toggle button when closed */}
             {!sidebarOpen && (
-                <div
-                    className="fixed inset-y-0 left-0 w-6 bg-linear-to-r bg-card cursor-pointer z-30"
+                <button
+                    className="fixed top-4 left-4 z-50 p-3 cl-bg-decor text-white rounded-full shadow-2xl cursor-pointer transition-all hover:scale-110"
                     onClick={toggleSidebar}
                     title="Otvoriť panel"
-                />
+                >
+                    <svg
+                        className="w-5 h-5"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth={2.5}
+                        viewBox="0 0 24 24"
+                    >
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                    </svg>
+                </button>
             )}
 
             {/* HLAVNÝ OBSAH */}
-            <main className={`flex-1 transition-all duration-300 will-change-[margin] ${sidebarOpen ? "ml-120" : "ml-0"}`}>
-                <div className={`mx-auto max-w-[1600px] transition-all duration-200 ${sidebarOpen ? "px-8" : "px-4 md:px-8"}`}>
-                    <div className="py-10">
+            <main className={`flex-1 transition-all duration-300 ${sidebarOpen ? "ml-120" : "ml-0"}`}>
+                <div className={`mx-auto max-w-[1600px] ${sidebarOpen ? "px-8" : "px-6"}`}>
+                    <div className="py-8">
                         <WorkPeriodsDashboardDetail
                             periodId={selectedId}
                         />

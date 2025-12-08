@@ -1,10 +1,11 @@
 "use client";
 import { useState, useEffect } from "react";
-import { LogIn, Eye, EyeOff, AlertCircle } from "lucide-react";
+import { LogIn, Eye, EyeOff } from "lucide-react";
 import { useTranslation } from "@/app/i18n/I18nProvider";
 import { useRouter } from "next/navigation";
 import { signIn, useSession } from "next-auth/react";
 import { useToast } from "@/components/ui/ToastProvider";
+import ForgottenPasswordModal from "./ForgottenPasswordModal";
 
 type Props = {
     // Server action passed from page
@@ -269,64 +270,23 @@ export default function LoginForm({ forgotPasswordAction }: Props) {
                 </div>
             </div>
 
-            {/* Forgot Password Modal */}
-            {isForgotOpen && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center">
-                    <div className="absolute inset-0 bg-black/40" onClick={() => !isForgotLoading && setIsForgotOpen(false)} />
-                    <div className="relative w-full max-w-md px-4 sm:px-6">
-                        <div className="bg-card backdrop-blur-xl rounded-2xl shadow-xl border-custom p-6">
-                            <h3 className="text-xl font-semibold text-color mb-2">
-                                {t("login.forgotPasswordTitle")}
-                            </h3>
-                            <p className="text-sm text-color opacity-70 mb-4">
-                                {t("login.forgotPasswordSubtitle")}
-                            </p>
-
-                            {forgotError && (
-                                <div className="mb-4 p-3 bg-red-500/10 border border-red-500/50 rounded-lg flex items-center gap-3">
-                                    <AlertCircle className="w-4 h-4 text-red-600 dark:text-red-400" />
-                                    <span className="text-sm text-red-600 dark:text-red-400">{forgotError}</span>
-                                </div>
-                            )}
-
-                            <form onSubmit={handleForgotSubmit} className="space-y-4">
-                                <div>
-                                    <label htmlFor="forgot-email" className="block text-sm font-medium text-color mb-1">
-                                        {t("login.email")}
-                                    </label>
-                                    <input
-                                        id="forgot-email"
-                                        name="forgot-email"
-                                        type="email"
-                                        value={forgotEmail}
-                                        onChange={(e) => setForgotEmail(e.target.value)}
-                                        className="w-full px-4 py-2 rounded-lg border-custom input-bg input-text focus-ring focus-border focus:outline-none transition-all"
-                                        placeholder={t("login.emailPlaceholder")}
-                                        disabled={isForgotLoading}
-                                    />
-                                </div>
-                                <div className="flex gap-2">
-                                    <button
-                                        type="button"
-                                        onClick={() => !isForgotLoading && setIsForgotOpen(false)}
-                                        className="cursor-pointer flex-1 py-2 border-custom rounded-lg text-color hover:bg-muted transition"
-                                        disabled={isForgotLoading}
-                                    >
-                                        {t("common.cancel")}
-                                    </button>
-                                    <button
-                                        type="submit"
-                                        disabled={isForgotLoading}
-                                        className="cursor-pointer flex-1 py-2 cl-bg-decor text-white font-semibold rounded-lg shadow-md hover:cl-bg-decor-hover transition disabled:opacity-70 disabled:cursor-not-allowed"
-                                    >
-                                        {isForgotLoading ? t("common.sending") : t("login.sendResetEmail")}
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            )}
+            {/* Forgot Password Modal (refactored) */}
+            <ForgottenPasswordModal
+                isOpen={isForgotOpen}
+                title={t("login.forgotPasswordTitle")}
+                subtitle={t("login.forgotPasswordSubtitle")}
+                emailLabel={t("login.email")}
+                emailPlaceholder={t("login.emailPlaceholder")}
+                cancelText={t("common.cancel")}
+                submitText={t("login.sendResetEmail")}
+                sendingText={t("common.sending")}
+                email={forgotEmail}
+                onEmailChange={setForgotEmail}
+                error={forgotError}
+                isLoading={isForgotLoading}
+                onCancel={() => !isForgotLoading && setIsForgotOpen(false)}
+                onSubmit={handleForgotSubmit}
+            />
 
             {/* Surface dev reset link if available */}
             {devResetLink && (

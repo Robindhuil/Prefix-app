@@ -200,6 +200,21 @@ export default function AssignedUsersTable({
         setLoadingDetails(false);
     }, [periodId, startDate, endDate]);
 
+    // Keep AssignmentDetailsModal open and refresh its data when documents change
+    useEffect(() => {
+        const handler = async () => {
+            if (!showDetailsModal) return;
+            const currentUserId = selectedAssignment?.user.id;
+            if (!currentUserId) return;
+            const result = await getAssignmentDetailsAction(currentUserId, periodId);
+            if (result.success && result.assignment) {
+                setSelectedAssignment(result.assignment);
+            }
+        };
+        window.addEventListener("assignment:documents:changed", handler);
+        return () => window.removeEventListener("assignment:documents:changed", handler);
+    }, [showDetailsModal, selectedAssignment?.user.id, periodId]);
+
     return (
         <div className="bg-card p-6 rounded-xl mt-6 mb-6 space-y-6">
             {/* FORMULÁR */}
