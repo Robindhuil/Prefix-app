@@ -20,18 +20,30 @@ export async function uploadDocumentAction(
     return { success: false, error: "Prístup odmietnutý. Len administrátori môžu nahrávať dokumenty." };
   }
 
-  const userId = parseInt(session.user.id, 10);
-  if (isNaN(userId)) return { success: false, error: "Neplatné ID" };
+  const adminId = parseInt(session.user.id, 10);
+  if (isNaN(adminId)) return { success: false, error: "Neplatné ID" };
 
   try {
+    // First, get the assignment to find the user it belongs to
+    const assignment = await prisma.userAssignment.findUnique({
+      where: { id: assignmentId },
+      select: { userId: true },
+    });
+
+    if (!assignment) {
+      return { success: false, error: "Priradenie nebolo nájdené" };
+    }
+
     const buffer = Buffer.from(await file.arrayBuffer());
     const hash = crypto.createHash("sha256").update(buffer).digest("base64");
 
     // 1. Uložíme súbor do DB (binárne dáta)
+    // userId = user who owns the document (the assignment's user)
+    // createdBy = admin who uploaded it
     const doc = await prisma.document.create({
       data: {
-        userId,
-        createdBy: userId,
+        userId: assignment.userId, // ← The user who owns the assignment
+        createdBy: adminId, // ← The admin who uploaded it
         fileName: file.name,
         mimeType: file.type || "application/octet-stream",
         size: file.size,

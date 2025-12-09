@@ -8,6 +8,8 @@ import AssignmentsList from "./AssignmentsList";
 import ProfileHeader from "./ProfileHeader";
 import DashboardSidebar from "@/components/dashboard/DashboardSidebar";
 import CalendarSection from "@/components/dashboard/calendar/CalendarSection";
+import DocumentsSection from "@/components/dashboard/documents/DocumentsSection";
+import { getDocumentsForUser } from "@/app/(root)/dashboard/[id]/documents/actions/documentListAction";
 
 
 type Assignment = {
@@ -22,6 +24,24 @@ type Assignment = {
     };
 };
 
+type Document = {
+    id: number;
+    fileName: string;
+    size: number;
+    documentType: "INVOICE" | "ORDER" | "CONTRACT" | "OTHER";
+    description?: string | null;
+    createdAt: string;
+    assignmentLinks: {
+        userAssignmentId: number;
+        userAssignment: {
+            id: number;
+            workPeriod: {
+                title: string;
+            };
+        };
+    }[];
+};
+
 type User = {
     id: number;
     username: string;
@@ -29,15 +49,29 @@ type User = {
     // Add other user fields as needed
 };
 
-type TabKey = "profil" | "priradenia" | "kalendar";
+type TabKey = "profil" | "priradenia" | "kalendar" | "dokumenty";
 
 export default function DashboardContent({ user, canEditSensitive = false }: { user: User; canEditSensitive?: boolean }) {
     // Initialize from location.hash on first render (client-only component)
     const [activeTab, setActiveTab] = useState<TabKey>(() => {
         if (typeof window === "undefined") return "profil";
         const hash = window.location.hash.slice(1);
-        return (hash === "priradenia" || hash === "profil" || hash === "kalendar") ? (hash as TabKey) : "profil";
+        return (hash === "priradenia" || hash === "profil" || hash === "kalendar" || hash === "dokumenty") ? (hash as TabKey) : "profil";
     });
+
+    const [documents, setDocuments] = useState<Document[]>([]);
+    const [isLoadingDocs, setIsLoadingDocs] = useState(false);
+
+    // Fetch documents when documents tab is active
+    useEffect(() => {
+        if (activeTab === "dokumenty" && documents.length === 0) {
+            setIsLoadingDocs(true);
+            getDocumentsForUser(user.id)
+                .then(setDocuments)
+                .catch(err => console.error("Failed to load documents:", err))
+                .finally(() => setIsLoadingDocs(false));
+        }
+    }, [activeTab, user.id, documents.length]);
 
     // Prepínanie + URL
     const switchTab = (tab: TabKey) => {
@@ -49,7 +83,7 @@ export default function DashboardContent({ user, canEditSensitive = false }: { u
     useEffect(() => {
         const handleHashChange = () => {
             const hash = window.location.hash.slice(1);
-            if (hash === "priradenia" || hash === "profil" || hash === "kalendar") {
+            if (hash === "priradenia" || hash === "profil" || hash === "kalendar" || hash === "dokumenty") {
                 setActiveTab(hash as TabKey);
             }
         };
@@ -78,6 +112,7 @@ export default function DashboardContent({ user, canEditSensitive = false }: { u
                                     { key: "profil", label: "Profil" },
                                     { key: "priradenia", label: "Priradenia" },
                                     { key: "kalendar", label: "Kalendár" },
+                                    { key: "dokumenty", label: "Dokumenty" },
                                 ].map(({ key, label }) => (
                                     <button
                                         key={key}
@@ -105,8 +140,14 @@ export default function DashboardContent({ user, canEditSensitive = false }: { u
                                 </div>
                             ) : activeTab === "priradenia" ? (
                                 <AssignmentsList assignments={user.assignments} userId={user.id} />
-                            ) : (
+                            ) : activeTab === "kalendar" ? (
                                 <CalendarSection assignments={user.assignments} userId={user.id} />
+                            ) : isLoadingDocs ? (
+                                <div className="text-center py-12">
+                                    <p className="text-xl input-text">Načítavam dokumenty...</p>
+                                </div>
+                            ) : (
+                                <DocumentsSection documents={documents} />
                             )}
                         </div>
 

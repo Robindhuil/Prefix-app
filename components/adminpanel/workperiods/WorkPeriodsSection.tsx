@@ -115,7 +115,6 @@ export default function WorkPeriodsSection() {
 
                 <div className="h-[calc(100vh-73px)] overflow-y-auto p-6 rounded-br-3xl">
                     <WorkPeriodsDashboard
-                        sidebarOpen={sidebarOpen}
                         onSelect={handleSelect}
                         selectedId={selectedId}
                     />

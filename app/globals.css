@@ -24,6 +24,9 @@
     /* gray-200 */
     --focus-ring-color: #ba1313;
   --focus-border-color: #a51212;
+  --status-active-color: rgb(10, 138, 57);
+  --status-upcoming-color: rgba(234, 178, 8, 0.777);
+  --status-ended-color: rgba(25, 104, 230, 0.801);
 }
 
 /* --- Tmavá téma --- */
@@ -49,6 +52,9 @@
     /* gray-800 */
     --focus-ring-color: #600000;
   --focus-border-color: #4b0000;
+  --status-active-color: rgb(25, 207, 92);
+  --status-upcoming-color: rgb(234, 178, 8);
+  --status-ended-color: rgb(26, 97, 211);
 }
 
 /* --- Globálne štýly --- */
@@ -60,18 +66,30 @@ body {
 }
 
 .status-active {
-  background: linear-gradient(to right, rgba(34, 197, 94, 0.5), rgba(74, 222, 128, 0.4));
-  border-color: rgb(10, 138, 57);
+  background:  rgb(from var(--status-active-color) r g b / 0.2);
+  border-color: var(--status-active-color);
+}
+
+.status-active-color {
+  background: var(--status-active-color);
 }
 
 .status-ended {
-  background: linear-gradient(to right, rgba(59, 130, 246, 0.5), rgba(147, 197, 253, 0.4));
-  border-color: rgb(20, 91, 205);
+  background: rgb(from var(--status-ended-color) r g b / 0.2);
+  border-color: var(--status-ended-color)
+}
+
+.status-ended-color {
+  background: var(--status-ended-color);
 }
 
 .status-upcoming {
-  background: linear-gradient(to right, rgba(234, 179, 8, 0.5), rgba(253, 224, 71, 0.4));
-  border-color: rgb(195, 148, 10);
+  background: rgb(from var(--status-upcoming-color) r g b / 0.2);
+  border-color: var(--status-upcoming-color);
+}
+
+.status-upcoming-color {
+  background: var(--status-upcoming-color);
 }
 
 .background {

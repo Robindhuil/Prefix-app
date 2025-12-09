@@ -16,7 +16,6 @@ type WorkPeriod = {
 type Props = {
     onSelect?: (id: number) => void;
     selectedId?: number | null;
-    sidebarOpen: boolean;
 };
 
 const TODAY = new Date();
@@ -135,34 +134,40 @@ PeriodCard.displayName = "PeriodCard";
 export default function WorkPeriodsDashboard({
     onSelect,
     selectedId: externalSelectedId,
-    sidebarOpen,
 }: Props) {
     const { t } = useTranslation();
     const [periods, setPeriods] = useState<WorkPeriod[]>([]);
     const [loading, setLoading] = useState(true);
     const [highlightId, setHighlightId] = useState<number | null>(null);
 
-    const loadPeriods = useCallback(async () => {
-        setLoading(true);
-        const data = await getWorkPeriods();
-        setPeriods(data);
-        setLoading(false);
+    useEffect(() => {
+        const loadPeriods = async () => {
+            setLoading(true);
+            const data = await getWorkPeriods();
+            setPeriods(data);
+            setLoading(false);
+        };
+
+        loadPeriods();
     }, []);
 
     useEffect(() => {
-        loadPeriods();
-    }, [loadPeriods]);
+        const loadPeriodsRefresh = async () => {
+            setLoading(true);
+            const data = await getWorkPeriods();
+            setPeriods(data);
+            setLoading(false);
+        };
 
-    useEffect(() => {
         const handlerCreated = (e: Event) => {
             const id = (e as CustomEvent).detail;
             setHighlightId(id);
-            loadPeriods();
+            loadPeriodsRefresh();
             setTimeout(() => setHighlightId(null), 3000);
         };
 
         const handlerRefresh = () => {
-            loadPeriods();
+            loadPeriodsRefresh();
         };
 
         window.addEventListener("workperiod:created", handlerCreated);
@@ -174,7 +179,7 @@ export default function WorkPeriodsDashboard({
             window.removeEventListener("workperiod:updated", handlerRefresh);
             window.removeEventListener("workperiod:deleted", handlerRefresh);
         };
-    }, [loadPeriods]);
+    }, []);
 
     const formatDate = useCallback((d: string) =>
         new Date(d).toLocaleDateString("sk-SK", {

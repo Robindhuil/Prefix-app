@@ -74,11 +74,11 @@ export default function CalendarGrid({
         let statusClasses = "";
         if (hasWorkPeriod) {
           if (day.workPeriodStatus === "active") {
-            statusClasses = "status-active";
+            statusClasses = "status-active-color";
           } else if (day.workPeriodStatus === "upcoming") {
-            statusClasses = "status-upcoming";
+            statusClasses = "status-upcoming-color";
           } else if (day.workPeriodStatus === "ended") {
-            statusClasses = "status-ended";
+            statusClasses = "status-ended-color";
           }
         }
 
