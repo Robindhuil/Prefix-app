@@ -1,5 +1,7 @@
 import { Calendar, Clock, AlertCircle, Briefcase } from "lucide-react";
 import SharedDocuments from "./SharedDocuments";
+import HourPlanning from "./HourPlanning";
+import AssignmentTabs from "./AssignmentTabs";
 
 const formatDate = (date: string) => new Date(date).toLocaleDateString("sk-SK");
 
@@ -82,7 +84,14 @@ type Assignment = {
   profession: "WELDER" | "BRICKLAYER" | "OTHER";
   fromDate: string;
   toDate: string;
-  documents?: AssignmentDocument[]; // <- typed instead of `any`
+  documents?: AssignmentDocument[];
+  workHours?: {
+    id: number;
+    date: string;
+    hoursWorked: number;
+    note?: string | null;
+    editable?: boolean;
+  }[];
   // ...other fields as needed
 };
 
@@ -180,11 +189,16 @@ export default function AssignmentDetail({
           </div>
         </div>
 
-        {/* NOVÝ KOMPONENT */}
-        <SharedDocuments 
-          documents={assignment.documents ?? []} 
-          assignment={assignment}
-          isUserAdmin={isUserAdmin}
+        {/* TABS WITH DOCUMENTS AND HOUR PLANNING */}
+        <AssignmentTabs
+          documentsContent={
+            <SharedDocuments
+              documents={assignment.documents ?? []}
+              assignment={assignment}
+              isUserAdmin={isUserAdmin}
+            />
+          }
+          hoursContent={<HourPlanning assignment={assignment} />}
         />
       </div>
     </div>

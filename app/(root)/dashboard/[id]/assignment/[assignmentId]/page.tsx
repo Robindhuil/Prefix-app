@@ -43,6 +43,11 @@ export default async function AssignmentPage({
           },
         },
       },
+      workHours: {
+        orderBy: {
+          date: "asc",
+        },
+      },
     },
   });
 
@@ -66,6 +71,13 @@ export default async function AssignmentPage({
         ...doc.document,
         size: doc.document.size ?? 0,
       },
+    })),
+    workHours: assignment.workHours.map((wh) => ({
+      id: wh.id,
+      date: wh.date.toISOString(),
+      hoursWorked: wh.hoursWorked,
+      note: wh.note,
+      editable: wh.editable,
     })),
   };
 

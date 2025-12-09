@@ -153,6 +153,9 @@ model UserAssignment {
   // Dokumenty špecifické pre daného užívateľa v tomto období
   documents AssignmentDocument[]
 
+  // Pracovné hodiny pre toto priradenie
+  workHours WorkHours[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -172,6 +175,28 @@ model AssignmentDocument {
   document       Document       @relation(fields: [documentId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
+}
+
+// ========================================
+// PRACOVNÉ HODINY
+// ========================================
+model WorkHours {
+  id               Int      @id @default(autoincrement())
+  userAssignmentId Int
+  date             DateTime // Dátum daného pracovného dňa
+  hoursWorked      Float    // Počet odpracovaných hodín
+  note             String?  // Voliteľná poznámka k danému dňu
+  editable         Boolean  @default(true) // Či môže užívateľ upravovať tento záznam
+
+  userAssignment UserAssignment @relation(fields: [userAssignmentId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Jeden záznam na deň a assignment
+  @@unique([userAssignmentId, date])
+  @@index([userAssignmentId])
+  @@index([date])
 }
 
 // Single-use, expirable opaque reset tokens
